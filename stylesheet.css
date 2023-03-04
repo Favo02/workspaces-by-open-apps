@@ -1,1 +1,34 @@
-/* Add your custom extension styling here */
+.panel-workspace-indicator {
+  padding: 0 6px;
+}
+
+.panel-workspace-indicator-box {
+  padding: 2px 0;
+}
+
+.panel-workspace-indicator-box .workspace {
+  width: 40px;
+}
+
+.panel-workspace-indicator,
+.panel-workspace-indicator-box .workspace {
+  border: 1px solid #cccccc;
+  background-color: transparent;
+  margin: 3px 3px;
+  border-radius: 3px;
+}
+
+.panel-workspace-indicator-box .workspace {
+  background-color: rgba(200, 200, 200, 0.3);
+  border-left-width: 0;
+  border-radius: 3px;
+}
+
+.panel-workspace-indicator-box .workspace:first-child {
+  border-left-width: 1px;
+  border-radius: 3px;
+}
+
+.workspace-indicator-active {
+  background-color: rgba(200, 20, 20, 0.5);
+}
