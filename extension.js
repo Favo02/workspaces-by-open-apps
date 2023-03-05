@@ -1,4 +1,4 @@
-const { Clutter, Gio, GObject, GLib, Meta, St } = imports.gi;
+const { Clutter, Gio, GObject, GLib, Meta, St, Shell } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
@@ -7,33 +7,33 @@ const PanelMenu = imports.ui.panelMenu;
 const Me = ExtensionUtils.getCurrentExtension();
 const workspaceManager = global.workspace_manager;
 
-// switch workspace
-function workspace_switch(step, scroll_wrap) {
-  let active_index = workspaceManager.get_active_workspace_index();
-  let workspace_count = workspaceManager.get_n_workspaces();
+function getWorkspaceIcons(workspace) {
+  let appSystem = Shell.AppSystem.get_default();
+  let runningApps = appSystem.get_running();
 
-  let target_index = (active_index + step + workspace_count) % workspace_count;
-  if (!scroll_wrap) {
-    if (active_index + step >= workspace_count || active_index + step < 0)
-      target_index = active_index;
-  }
+  let icons = []
 
-  workspaceManager
-    .get_workspace_by_index(target_index)
-    .activate(global.get_current_time());
-}
-
-function generateWorkspaceContent(workspace) {
-  log(workspace.index())
-  let titles = []
-
-  workspace.list_windows().forEach(w => {
-    log(w.title)
-    titles.push(w.title)
+  runningApps.forEach(app => {
+    if (app.is_on_workspace(workspace)) {
+      icons.push(app.get_icon())
+    }
   });
 
-  log(titles)
-  return titles.join(" ")
+  return icons
+}
+
+function getIcon(desktopApp) {
+  let icon = new St.Icon({
+    style_class: 'system-status-icon',
+    fallback_icon_name: 'audio-volume-high',
+    style: "padding-left: 2px; padding-right: 2px;"
+  })
+
+  let entry = Gio.DesktopAppInfo.new(desktopApp);
+  let gioIcon = entry.get_icon();
+  entry.launch;
+  icon.set_gicon(gioIcon);
+  return icon
 }
 
 // panel workspace indicator
@@ -52,17 +52,34 @@ let WorkspaceIndicator = GObject.registerClass(
         y_expand: false,
       });
 
-      this._statusLabel = new St.Label({
-        style_class: "panel-workspace-indicator",
+
+      // get icons of apps in current workspace
+      const workspaceIcons = getWorkspaceIcons(this.workspace)
+
+      // setup icon container
+      this._iconsContainer = new St.Widget({
+        layout_manager: new Clutter.FlowLayout(),
+        x_expand: true,
+        y_expand: false,
         y_align: Clutter.ActorAlign.CENTER,
-        text: generateWorkspaceContent(this.workspace),
+        style_class: "panel-workspace-indicator",
       });
 
+      workspaceIcons.forEach(icon => {
+        this._statusLabel = new St.Icon({
+          y_align: Clutter.ActorAlign.CENTER,
+        });
+        this._statusLabel.set_gicon(icon)
+
+        this._iconsContainer.add_child(this._statusLabel)
+      });
+
+
       if (this.active) {
-        this._statusLabel.add_style_class_name("workspace-indicator-active");
+        this._iconsContainer.add_style_class_name("workspace-indicator-active");
       }
 
-      this._widget.add_actor(this._statusLabel);
+      this._widget.add_actor(this._iconsContainer);
 
       this._thumbnailsBox = new St.BoxLayout({
         style_class: "panel-workspace-indicator-box",
@@ -148,23 +165,6 @@ class WorkspaceLayout {
     this.box_layout = new St.BoxLayout();
     this.panel_button.add_actor(this.box_layout);
 
-    let change_on_scroll = true;
-    if (change_on_scroll) {
-      let scroll_wrap = true;
-      this.panel_button.connect("scroll-event", (_, event) => {
-        let switch_step = 0;
-        switch (event.get_scroll_direction()) {
-          case Clutter.ScrollDirection.UP:
-            switch_step = -1;
-            break;
-          case Clutter.ScrollDirection.DOWN:
-            switch_step = +1;
-            break;
-        }
-
-        if (switch_step) workspace_switch(switch_step, scroll_wrap);
-      });
-    }
 
     let [position] = "left";
     Main.panel.addToStatusArea(
