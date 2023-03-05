@@ -22,73 +22,41 @@ function getWorkspaceIcons(workspace) {
   return icons
 }
 
-function getIcon(desktopApp) {
-  let icon = new St.Icon({
-    style_class: 'system-status-icon',
-    fallback_icon_name: 'audio-volume-high',
-    style: "padding-left: 2px; padding-right: 2px;"
-  })
-
-  let entry = Gio.DesktopAppInfo.new(desktopApp);
-  let gioIcon = entry.get_icon();
-  entry.launch;
-  icon.set_gicon(gioIcon);
-  return icon
-}
-
-// panel workspace indicator
-let WorkspaceIndicator = GObject.registerClass(
+// single workspace icons container
+let SingleWorkspace = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
+
     _init(workspace, active, skip_taskbar_mode, change_on_click) {
       super._init();
       this.active = active;
       this.workspace = workspace;
       this.skip_taskbar_mode = skip_taskbar_mode;
 
-      // setup widgets
-      this._widget = new St.Widget({
-        layout_manager: new Clutter.BinLayout(),
-        x_expand: true,
-        y_expand: false,
-      });
-
-
-      // get icons of apps in current workspace
-      const workspaceIcons = getWorkspaceIcons(this.workspace)
-
-      // setup icon container
+      // setup icons container
       this._iconsContainer = new St.Widget({
         layout_manager: new Clutter.FlowLayout(),
         x_expand: true,
         y_expand: false,
         y_align: Clutter.ActorAlign.CENTER,
-        style_class: "panel-workspace-indicator",
+        style_class: "single-workspace"
       });
 
-      workspaceIcons.forEach(icon => {
+      // get icons of apps in workspace
+      getWorkspaceIcons(this.workspace).forEach(icon => {
         this._statusLabel = new St.Icon({
           y_align: Clutter.ActorAlign.CENTER,
+          style_class: "app-icon"
         });
         this._statusLabel.set_gicon(icon)
 
         this._iconsContainer.add_child(this._statusLabel)
       });
 
-
       if (this.active) {
-        this._iconsContainer.add_style_class_name("workspace-indicator-active");
+        this._iconsContainer.add_style_class_name("active");
       }
 
-      this._widget.add_actor(this._iconsContainer);
-
-      this._thumbnailsBox = new St.BoxLayout({
-        style_class: "panel-workspace-indicator-box",
-        y_expand: true,
-        reactive: true,
-      });
-
-      this._widget.add_actor(this._thumbnailsBox);
-      this.add_actor(this._widget);
+      this.add_actor(this._iconsContainer);
 
       // Connect signals
       this._windowAddedId = this.workspace.connect("window-added", () =>
@@ -201,7 +169,7 @@ class WorkspaceLayout {
     for (; i < workspaceManager.get_n_workspaces(); i++) {
       let workspace = workspaceManager.get_workspace_by_index(i);
       if (workspace !== null) {
-        let indicator = new WorkspaceIndicator(
+        let indicator = new SingleWorkspace(
           workspace,
           i == active_index,
           true,
