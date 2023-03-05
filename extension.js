@@ -1,29 +1,12 @@
-const { Clutter, Gio, GObject, GLib, Meta, St, Shell } = imports.gi;
+const { Clutter, GObject, St, Shell } = imports.gi;
 
-const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 
-const Me = ExtensionUtils.getCurrentExtension();
 const workspaceManager = global.workspace_manager;
 
-function getWorkspaceIcons(workspace) {
-  let appSystem = Shell.AppSystem.get_default();
-  let runningApps = appSystem.get_running();
-
-  let icons = []
-
-  runningApps.forEach(app => {
-    if (app.is_on_workspace(workspace)) {
-      icons.push(app.get_icon())
-    }
-  });
-
-  return icons
-}
-
 // single workspace icons container
-let SingleWorkspace = GObject.registerClass(
+SingleWorkspace = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
 
     _init(workspace, active, skip_taskbar_mode, change_on_click) {
@@ -32,39 +15,11 @@ let SingleWorkspace = GObject.registerClass(
       this.workspace = workspace;
       this.skip_taskbar_mode = skip_taskbar_mode;
 
-      // setup icons container
-      this._iconsContainer = new St.Widget({
-        layout_manager: new Clutter.FlowLayout(),
-        x_expand: true,
-        y_expand: false,
-        y_align: Clutter.ActorAlign.CENTER,
-        style_class: "single-workspace"
-      });
-
-      // get icons of apps in workspace
-      getWorkspaceIcons(this.workspace).forEach(icon => {
-        this._statusLabel = new St.Icon({
-          y_align: Clutter.ActorAlign.CENTER,
-          style_class: "app-icon"
-        });
-        this._statusLabel.set_gicon(icon)
-
-        this._iconsContainer.add_child(this._statusLabel)
-      });
-
-      if (this.active) {
-        this._iconsContainer.add_style_class_name("active");
-      }
+      this.createIconsContainer()
 
       this.add_actor(this._iconsContainer);
 
-      // Connect signals
-      this._windowAddedId = this.workspace.connect("window-added", () =>
-        this.show_or_hide()
-      );
-      this._windowRemovedId = this.workspace.connect("window-removed", () =>
-        this.show_or_hide()
-      );
+      this.show_or_hide()
 
       if (change_on_click) {
         this.connect("clicked", () =>
@@ -73,6 +28,42 @@ let SingleWorkspace = GObject.registerClass(
       }
 
       this.show_or_hide();
+    }
+
+    // creates and fills the _iconsContainer component
+    createIconsContainer() {
+      // setup _iconsContainer
+      this._iconsContainer = new St.Widget({
+        layout_manager: new Clutter.FlowLayout(),
+        x_expand: true,
+        y_expand: false,
+        y_align: Clutter.ActorAlign.CENTER,
+        style_class: "single-workspace"
+      });
+
+      // get all running apps
+      let appSystem = Shell.AppSystem.get_default();
+      let runningApps = appSystem.get_running();
+
+      // add icons of apps running in this workspace to _iconsContainer
+      runningApps.forEach(app => {
+        if (app.is_on_workspace(this.workspace)) {
+          const icon = app.get_icon()
+
+          this._appIcon = new St.Icon({
+            y_align: Clutter.ActorAlign.CENTER,
+            style_class: "app-icon"
+          });
+          this._appIcon.set_gicon(icon)
+    
+          this._iconsContainer.add_child(this._appIcon)
+        }
+      });
+
+      // add active class if current focused workspace
+      if (this.active) {
+        this._iconsContainer.add_style_class_name("active");
+      }
     }
 
     show_or_hide() {
@@ -118,10 +109,12 @@ class WorkspaceLayout {
   disable() {
     this.destroy_indicators();
     this.destroy_panel_button();
-    workspaceManager.disconnect(this._workspaceSwitchedId);
-    workspaceManager.disconnect(this._workspaceAddedId);
-    workspaceManager.disconnect(this._workspaceRemovedId);
-    workspaceManager.disconnect(this._workspaceReordered);
+    workspaceManager.disconnect(this._workspaceSwitchedSIGNAL);
+    workspaceManager.disconnect(this._workspaceAddedSIGNAL);
+    workspaceManager.disconnect(this._workspaceRemovedSIGNAL);
+    workspaceManager.disconnect(this._workspaceReorderedSIGNAL);
+
+    // disconnect this._windowAddSIGNAL this._windowRemoveSIGNAL
   }
 
   add_panel_button() {
@@ -141,19 +134,21 @@ class WorkspaceLayout {
       0,
       position
     );
-    this._workspaceSwitchedId = workspaceManager.connect_after(
+
+    // connect to signals: switch/create/remove/reorder workspace
+    this._workspaceSwitchedSIGNAL = workspaceManager.connect_after(
       "workspace-switched",
       this.add_indicators.bind(this)
     );
-    this._workspaceAddedId = workspaceManager.connect_after(
+    this._workspaceAddedSIGNAL = workspaceManager.connect_after(
       "workspace-added",
       this.add_indicators.bind(this)
     );
-    this._workspaceRemovedId = workspaceManager.connect_after(
+    this._workspaceRemovedSIGNAL = workspaceManager.connect_after(
       "workspace-removed",
       this.add_indicators.bind(this)
     );
-    this._workspaceReordered = workspaceManager.connect_after(
+    this._workspaceReorderedSIGNAL = workspaceManager.connect_after(
       "workspaces-reordered",
       this.add_indicators.bind(this)
     );
@@ -164,9 +159,8 @@ class WorkspaceLayout {
   add_indicators() {
     this.destroy_indicators();
     let active_index = workspaceManager.get_active_workspace_index();
-    let i = 0;
 
-    for (; i < workspaceManager.get_n_workspaces(); i++) {
+    for (let i = 0; i < workspaceManager.get_n_workspaces(); i++) {
       let workspace = workspaceManager.get_workspace_by_index(i);
       if (workspace !== null) {
         let indicator = new SingleWorkspace(
