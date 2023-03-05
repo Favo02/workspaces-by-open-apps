@@ -5,95 +5,12 @@ const PanelMenu = imports.ui.panelMenu;
 
 const workspaceManager = global.workspace_manager;
 
-// single workspace icons container
-SingleWorkspace = GObject.registerClass(
-  class WorkspaceIndicator extends St.Button {
+// initialize extension
+function init() {
+  return new WorkspaceLayout();
+}
 
-    _init(workspace, active, skip_taskbar_mode, change_on_click) {
-      super._init();
-      this.active = active;
-      this.workspace = workspace;
-      this.skip_taskbar_mode = skip_taskbar_mode;
-
-      this.createIconsContainer()
-
-      this.add_actor(this._iconsContainer);
-
-      this.show_or_hide()
-
-      if (change_on_click) {
-        this.connect("clicked", () =>
-          this.workspace.activate(global.get_current_time())
-        );
-      }
-
-      this.show_or_hide();
-    }
-
-    // creates and fills the _iconsContainer component
-    createIconsContainer() {
-      // setup _iconsContainer
-      this._iconsContainer = new St.Widget({
-        layout_manager: new Clutter.FlowLayout(),
-        x_expand: true,
-        y_expand: false,
-        y_align: Clutter.ActorAlign.CENTER,
-        style_class: "single-workspace"
-      });
-
-      // get all running apps
-      let appSystem = Shell.AppSystem.get_default();
-      let runningApps = appSystem.get_running();
-
-      // add icons of apps running in this workspace to _iconsContainer
-      runningApps.forEach(app => {
-        if (app.is_on_workspace(this.workspace)) {
-          const icon = app.get_icon()
-
-          this._appIcon = new St.Icon({
-            y_align: Clutter.ActorAlign.CENTER,
-            style_class: "app-icon"
-          });
-          this._appIcon.set_gicon(icon)
-    
-          this._iconsContainer.add_child(this._appIcon)
-        }
-      });
-
-      // add active class if current focused workspace
-      if (this.active) {
-        this._iconsContainer.add_style_class_name("active");
-      }
-    }
-
-    show_or_hide() {
-      if (this.active || this.has_user_window()) {
-        this.show();
-      } else {
-        this.hide();
-      }
-    }
-
-    has_user_window() {
-      let windows = this.workspace.list_windows();
-
-      if (!this.skip_taskbar_mode) {
-        return windows.length > 0;
-      }
-
-      return windows.some((w) => {
-        return !w.is_skip_taskbar();
-      });
-    }
-
-    destroy() {
-      this.workspace.disconnect(this._windowRemovedId);
-      this.workspace.disconnect(this._windowAddedId);
-      super.destroy();
-    }
-  }
-);
-
+// extension workspace indicator
 class WorkspaceLayout {
   constructor() {}
 
@@ -195,6 +112,91 @@ class WorkspaceLayout {
   }
 }
 
-function init() {
-  return new WorkspaceLayout();
-}
+// single workspace indicator
+SingleWorkspace = GObject.registerClass(
+  class WorkspaceIndicator extends St.Button {
+
+    _init(workspace, active, skip_taskbar_mode, change_on_click) {
+      super._init();
+      this.active = active;
+      this.workspace = workspace;
+      this.skip_taskbar_mode = skip_taskbar_mode;
+
+      this.createIconsContainer()
+
+      this.add_actor(this._iconsContainer);
+
+      this.show_or_hide()
+
+      if (change_on_click) {
+        this.connect("clicked", () =>
+          this.workspace.activate(global.get_current_time())
+        );
+      }
+
+      this.show_or_hide();
+    }
+
+    // creates and fills the _iconsContainer component
+    createIconsContainer() {
+      // setup _iconsContainer
+      this._iconsContainer = new St.Widget({
+        layout_manager: new Clutter.FlowLayout(),
+        x_expand: true,
+        y_expand: false,
+        y_align: Clutter.ActorAlign.CENTER,
+        style_class: "single-workspace"
+      });
+
+      // get all running apps
+      let appSystem = Shell.AppSystem.get_default();
+      let runningApps = appSystem.get_running();
+
+      // add icons of apps running in this workspace to _iconsContainer
+      runningApps.forEach(app => {
+        if (app.is_on_workspace(this.workspace)) {
+          const icon = app.get_icon()
+
+          this._appIcon = new St.Icon({
+            y_align: Clutter.ActorAlign.CENTER,
+            style_class: "app-icon"
+          });
+          this._appIcon.set_gicon(icon)
+    
+          this._iconsContainer.add_child(this._appIcon)
+        }
+      });
+
+      // add active class if current focused workspace
+      if (this.active) {
+        this._iconsContainer.add_style_class_name("active");
+      }
+    }
+
+    show_or_hide() {
+      if (this.active || this.has_user_window()) {
+        this.show();
+      } else {
+        this.hide();
+      }
+    }
+
+    has_user_window() {
+      let windows = this.workspace.list_windows();
+
+      if (!this.skip_taskbar_mode) {
+        return windows.length > 0;
+      }
+
+      return windows.some((w) => {
+        return !w.is_skip_taskbar();
+      });
+    }
+
+    destroy() {
+      this.workspace.disconnect(this._windowRemovedId);
+      this.workspace.disconnect(this._windowAddedId);
+      super.destroy();
+    }
+  }
+);
