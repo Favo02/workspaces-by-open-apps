@@ -7,7 +7,7 @@ const PanelMenu = imports.ui.panelMenu;
 const Me = ExtensionUtils.getCurrentExtension();
 const workspaceManager = global.workspace_manager;
 
-// workspace switch to previous / next
+// switch workspace
 function workspace_switch(step, scroll_wrap) {
   let active_index = workspaceManager.get_active_workspace_index();
   let workspace_count = workspaceManager.get_n_workspaces();
@@ -23,6 +23,20 @@ function workspace_switch(step, scroll_wrap) {
     .activate(global.get_current_time());
 }
 
+function generateWorkspaceContent(workspace) {
+  log(workspace.index())
+  let titles = []
+
+  workspace.list_windows().forEach(w => {
+    log(w.title)
+    titles.push(w.title)
+  });
+
+  log(titles)
+  return titles.join(" ")
+}
+
+// panel workspace indicator
 let WorkspaceIndicator = GObject.registerClass(
   class WorkspaceIndicator extends St.Button {
     _init(workspace, active, skip_taskbar_mode, change_on_click) {
@@ -41,7 +55,7 @@ let WorkspaceIndicator = GObject.registerClass(
       this._statusLabel = new St.Label({
         style_class: "panel-workspace-indicator",
         y_align: Clutter.ActorAlign.CENTER,
-        text: `${this.workspace.index() + 1}`,
+        text: generateWorkspaceContent(this.workspace),
       });
 
       if (this.active) {
@@ -113,27 +127,6 @@ class WorkspaceLayout {
     this.box_layout = null;
     this.themeContext = St.ThemeContext.get_for_stage(global.stage);
 
-    // Custom CSS file
-    this.css_file = null;
-
-    // Custom CSS stylesheet path
-    this.custom_css_path = "";
-
-    if (this.custom_css_path !== "") {
-      if (GLib.file_test(this.custom_css_path, GLib.FileTest.EXISTS) == true) {
-        this.themesLoaded = this.themeContext
-          .get_theme()
-          .get_custom_stylesheets();
-
-        for (let i = 0; i < this.themesLoaded.length; i++) {
-          this.themeContext.get_theme().unload_stylesheet(this.themesLoaded[i]);
-        }
-
-        this.css_file = Gio.File.new_for_path(this.custom_css_path);
-        this.themeContext.get_theme().load_stylesheet(this.css_file);
-      }
-    }
-
     this.add_panel_button();
   }
 
@@ -144,9 +137,6 @@ class WorkspaceLayout {
     workspaceManager.disconnect(this._workspaceAddedId);
     workspaceManager.disconnect(this._workspaceRemovedId);
     workspaceManager.disconnect(this._workspaceReordered);
-    if (this.css_file !== null) {
-      this.themeContext.get_theme().unload_stylesheet(this.css_file);
-    }
   }
 
   add_panel_button() {
