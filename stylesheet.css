@@ -1,9 +1,14 @@
 .single-workspace {
   margin: 0px 5px;
   padding: 5px;
+  border: 2px solid transparent;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-radius: 5px;
 }
 
-.single-workspace.active {
+.active-workspace {
   border: 2px solid red;
   border-top: none;
   border-right: none;
@@ -11,7 +16,7 @@
   border-radius: 5px;
 }
 
-.single-workspace .app-icon {
+.app-icon {
   height: 20px;
   width: 20px;
   padding: 0px 0px;
