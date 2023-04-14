@@ -4,6 +4,8 @@ const Main = imports.ui.main
 const PanelMenu = imports.ui.panelMenu
 
 const workspaceManager = global.workspace_manager
+const windowTracker = Shell.WindowTracker.get_default()
+const display = global.display
 
 // initialize extension
 function init() {
@@ -30,10 +32,12 @@ class WorkspaceIndicator {
     this.destroyPanelContainer()
 
     // disconnect signals
+    workspaceManager.disconnect(this._workspaceNumberChangedSIGNAL)
     workspaceManager.disconnect(this._workspaceSwitchedSIGNAL)
-    workspaceManager.disconnect(this._workspaceAddedSIGNAL)
-    workspaceManager.disconnect(this._workspaceRemovedSIGNAL)
     workspaceManager.disconnect(this._workspaceReorderedSIGNAL)
+
+    windowTracker.disconnect(this._windowsChangedSIGNAL)
+    display.disconnect(this._windowsRestackedSIGNAL)
   }
 
   // add workspace indicator (container of single workspace indicators) to panel
@@ -53,21 +57,28 @@ class WorkspaceIndicator {
       "left"
     )
 
-    // connect signals (switch/create/remove/reorder) workspace: trigger addWorkspaceIndicators()
-    this._workspaceSwitchedSIGNAL = workspaceManager.connect_after(
-      "workspace-switched",
+    // connect signals workspace: trigger addWorkspaceIndicators()
+    this._workspaceNumberChangedSIGNAL = workspaceManager.connect(
+      "notify::n-workspaces", // add/remove workspace
       this.addWorkspaceIndicators.bind(this)
     )
-    this._workspaceAddedSIGNAL = workspaceManager.connect_after(
-      "workspace-added",
+    this._workspaceSwitchedSIGNAL = workspaceManager.connect(
+      "workspace-switched", // change active workspace
       this.addWorkspaceIndicators.bind(this)
     )
-    this._workspaceRemovedSIGNAL = workspaceManager.connect_after(
-      "workspace-removed",
+    this._workspaceReorderedSIGNAL = workspaceManager.connect(
+      "workspaces-reordered", // reorder workspaces
       this.addWorkspaceIndicators.bind(this)
     )
-    this._workspaceReorderedSIGNAL = workspaceManager.connect_after(
-      "workspaces-reordered",
+
+
+    // connect signals window: trigger addWorkspaceIndicators()
+    this._windowsChangedSIGNAL = windowTracker.connect(
+      "tracked-windows-changed",
+      this.addWorkspaceIndicators.bind(this)
+    )
+    this._windowsRestackedSIGNAL = display.connect(
+      "restacked",
       this.addWorkspaceIndicators.bind(this)
     )
 
