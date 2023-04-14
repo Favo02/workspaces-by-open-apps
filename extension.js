@@ -167,8 +167,6 @@ const SingleWorkspaceIndicator = GObject.registerClass(
 
     // remove single workspace indicator
     destroy() {
-      this.workspace.disconnect(this._windowRemovedId)
-      this.workspace.disconnect(this._windowAddedId)
       this.layout.destroy()
       super.destroy()
     }
