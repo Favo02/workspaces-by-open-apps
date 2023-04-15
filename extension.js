@@ -150,30 +150,49 @@ const SingleWorkspaceIndicator = GObject.registerClass(
     // add icons of apps in this workspace to this.layout
     addIcons() {
 
-      // get all running apps
-      const runningApps = Shell.AppSystem.get_default().get_running()
+      // scan each window in workspace
+      for (let i = 0; i < this.workspace.windows.length; i++) {
+        var window = this.workspace.windows[i]
 
-      // add icons of apps running in this workspace to this.layout
-      for (let i = 0; i < runningApps.length; i++) {
-        const app = runningApps[i]
+        if (window) {
+          let shellApp = windowTracker.get_window_app(window)
 
-        if (app.is_on_workspace(this.workspace)) {
-          const icon = app.get_icon()
+          let icon = this.generateAppIcon(shellApp, window)
 
-          this._appIcon = new St.Icon({
-            y_align: Clutter.ActorAlign.CENTER,
-            style_class: "app-icon"
-          })
-          this._appIcon.set_gicon(icon)
-    
-          this.layout.add_child(this._appIcon)
-        } 
+          this.layout.add_child(icon)
+        }
       }
-
+      
       // add active class if current focused workspace
       if (this.active) {
         this.layout.add_style_class_name("active-workspace")
       }
+    }
+
+    // create icon for a signle window, returns an St.Icon
+    generateAppIcon(app, window) {
+
+      const FALLBACK_ICON_NAME = "applications-system-symbolic"
+      const ICON_SIZE = 18
+
+      let icon
+      if (app) {
+        icon = app.create_icon_texture(ICON_SIZE)
+      }
+
+      // sometimes no icon is defined or icon is void, at least for a short time
+      if (!icon || icon.get_style_class_name() == "fallback-app-icon") {
+        icon = new St.Icon({
+          icon_name: FALLBACK_ICON_NAME,
+          icon_size: ICON_SIZE,
+        })
+
+        // Attempt to use the window icon in place of the app's icon.
+        let textureCache = St.TextureCache.get_default()
+        icon.set_gicon(textureCache.bind_cairo_surface_property(window, "icon"))
+      }
+
+      return icon
     }
 
     // remove single workspace indicator
