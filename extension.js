@@ -5,7 +5,6 @@ const PanelMenu = imports.ui.panelMenu
 
 const workspaceManager = global.workspace_manager
 const windowTracker = Shell.WindowTracker.get_default()
-const display = global.display
 
 // initialize extension
 function init() {
@@ -37,7 +36,9 @@ class WorkspaceIndicator {
     workspaceManager.disconnect(this._workspaceReorderedSIGNAL)
 
     windowTracker.disconnect(this._windowsChangedSIGNAL)
-    display.disconnect(this._windowsRestackedSIGNAL)
+    global.display.disconnect(this._windowsRestackedSIGNAL)
+    global.display.disconnect(this._windowLeftMonitorSIGNAL)
+    global.display.disconnect(this._windowEnteredMonitorSIGNAL)
   }
 
   // add workspace indicator (container of single workspace indicators) to panel
@@ -77,8 +78,16 @@ class WorkspaceIndicator {
       "tracked-windows-changed",
       this.addWorkspaceIndicators.bind(this)
     )
-    this._windowsRestackedSIGNAL = display.connect(
+    this._windowsRestackedSIGNAL = global.display.connect(
       "restacked",
+      this.addWorkspaceIndicators.bind(this)
+    )
+    this._windowLeftMonitorSIGNAL = global.display.connect(
+      "window-left-monitor",
+      this.addWorkspaceIndicators.bind(this)
+    )
+    this._windowEnteredMonitorSIGNAL = global.display.connect(
+      "window-entered-monitor",
       this.addWorkspaceIndicators.bind(this)
     )
 
@@ -142,9 +151,7 @@ const SingleWorkspaceIndicator = GObject.registerClass(
 
       this.connect("clicked", () =>
         this.workspace.activate(global.get_current_time())
-      )
-
-      
+      )      
     }
 
     // add icons of apps in this workspace to this.layout
