@@ -10,21 +10,71 @@ function init() {
 // extension workspace indicator
 class WorkspaceIndicator {
   constructor() {
-    this._buttons = [];
-    this._handle_sc;
-    this._handle_wm; 
+    this._buttons = []
+    this._workspaceNumberChangedSIGNAL
+    this._workspaceSwitchedSIGNAL 
+    this._workspaceReorderedSIGNAL
+    this._windowsChangedSIGNAL
+    this._windowsRestackedSIGNAL
+    this._windowLeftMonitorSIGNAL
+    this._windowEnteredMonitorSIGNAL
   }
 
   enable() {
-    this._handle_sc = global.display.connect('restacked', this.refresh);
-    this._handle_wm = global.window_manager.connect('switch-workspace', this.refresh);
-    this.refresh();
+    
+    // connect signals: trigger refresh()
+    const workspaceManager = global.workspace_manager
+    const windowTracker = Shell.WindowTracker.get_default()
+
+    // workspace manager: global.workspace_manager
+    this._workspaceNumberChangedSIGNAL = workspaceManager.connect(
+      "notify::n-workspaces", // add/remove workspace
+      this.refresh.bind(this)
+    )
+    this._workspaceSwitchedSIGNAL = workspaceManager.connect(
+      "workspace-switched", // change active workspace
+      this.refresh.bind(this)
+    )
+    this._workspaceReorderedSIGNAL = workspaceManager.connect(
+      "workspaces-reordered", // reorder workspaces
+      this.refresh.bind(this)
+    )
+
+    // window tracker: Shell.WindowTracker.get_default()
+    this._windowsChangedSIGNAL = windowTracker.connect(
+      "tracked-windows-changed",
+      this.refresh.bind(this)
+    )
+
+    // display: global.display
+    this._windowsRestackedSIGNAL = global.display.connect(
+      "restacked",
+      this.refresh.bind(this)
+    )
+    this._windowLeftMonitorSIGNAL = global.display.connect(
+      "window-left-monitor",
+      this.refresh.bind(this)
+    )
+    this._windowEnteredMonitorSIGNAL = global.display.connect(
+      "window-entered-monitor",
+      this.refresh.bind(this)
+    )
+
+    this.refresh()
   }
   
   disable() {
-    this._buttons.splice(0).forEach(b => b.destroy());
-    global.display.disconnect(this._handle_sc);
-    global.window_manager.disconnect(this._handle_wm);
+    this._buttons.splice(0).forEach(b => b.destroy())
+
+    workspaceManager.disconnect(this._workspaceNumberChangedSIGNAL)
+    workspaceManager.disconnect(this._workspaceSwitchedSIGNAL)
+    workspaceManager.disconnect(this._workspaceReorderedSIGNAL)
+
+    windowTracker.disconnect(this._windowsChangedSIGNAL)
+
+    global.display.disconnect(this._windowsRestackedSIGNAL)
+    global.display.disconnect(this._windowLeftMonitorSIGNAL)
+    global.display.disconnect(this._windowEnteredMonitorSIGNAL)
   }
 
   refresh() {
