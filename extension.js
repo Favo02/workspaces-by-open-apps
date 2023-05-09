@@ -33,38 +33,6 @@ class WorkspaceIndicator {
       this.create_indicator_button(i);
   }
 
-  filter_unique_apps() {
-    const ids = {};
-    return app => {
-      if (ids[app.id])
-        return false;
-      ids[app.id] = true;
-      return true;
-    };
-  }
-  
-  create_indicator_icons(button, windows) {
-    global.display.sort_windows_by_stacking(windows)
-      .reverse()
-      .map(win => Shell.WindowTracker.get_default().get_window_app(win))
-      .filter(this.filter_unique_apps())
-      //.slice(0, max !== null ? max : undefined)
-      .map(app => app.create_icon_texture(16))
-      .map(tex => new St.Bin({style_class: 'app-menu-icon', style: '', child: tex}))
-      .forEach(ico => button.get_child().add_child(ico));
-  }
-  
-  create_indicator_label(button, index) {
-    const txt = (index + 1).toString();
-    button.get_child().insert_child_at_index(new St.Label({text: txt}), 0);
-  }
-  
-  create_indicator_style(button, active) {
-    if (!active)
-      return;
-    button.pseudo_class = (button.pseudo_class || '');
-  }
-  
   create_indicator_button(index) {
     const active = global.workspace_manager.get_active_workspace_index();
     const workspc = global.workspace_manager.get_workspace_by_index(index);
@@ -86,5 +54,37 @@ class WorkspaceIndicator {
     this.create_indicator_style(button, index === active);
     Main.panel["_leftBox"].insert_child_at_index(button, 0 + index);
   }
- 
+
+  create_indicator_icons(button, windows) {
+    global.display.sort_windows_by_stacking(windows)
+      .reverse()
+      .map(win => Shell.WindowTracker.get_default().get_window_app(win))
+      .filter(this.filter_unique_apps())
+      //.slice(0, max !== null ? max : undefined)
+      .map(app => app.create_icon_texture(16))
+      .map(tex => new St.Bin({style_class: 'app-icon', style: '', child: tex}))
+      .forEach(ico => button.get_child().add_child(ico));
+  }
+
+  filter_unique_apps() {
+    const ids = {};
+    return app => {
+      if (ids[app.id])
+        return false;
+      ids[app.id] = true;
+      return true;
+    };
+  }
+  
+  create_indicator_label(button, index) {
+    const txt = (index + 1).toString();
+    button.get_child().insert_child_at_index(new St.Label({text: txt}), 0);
+  }
+  
+  create_indicator_style(button, active) {
+    if (!active)
+      return;
+    button.pseudo_class = (button.pseudo_class || '');
+  }
+
 }
