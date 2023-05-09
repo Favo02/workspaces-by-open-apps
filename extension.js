@@ -7,6 +7,9 @@ function init() {
   return new WorkspaceIndicator();
 }
 
+const workspaceManager = global.workspace_manager
+const windowTracker = Shell.WindowTracker.get_default()
+
 // extension workspace indicator
 class WorkspaceIndicator {
   constructor() {
@@ -21,11 +24,8 @@ class WorkspaceIndicator {
   }
 
   enable() {
-    
     // connect signals: trigger refresh()
-    const workspaceManager = global.workspace_manager
-    const windowTracker = Shell.WindowTracker.get_default()
-
+    
     // workspace manager: global.workspace_manager
     this._workspaceNumberChangedSIGNAL = workspaceManager.connect(
       "notify::n-workspaces", // add/remove workspace
