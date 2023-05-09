@@ -2,6 +2,9 @@ const St = imports.gi.St
 const Shell = imports.gi.Shell
 const Main = imports.ui.main
 
+// position in left panel to insert workspace indicator
+const position = 0
+
 // initialize extension
 function init() {
   return new WorkspaceIndicator()
@@ -106,7 +109,7 @@ class WorkspaceIndicator {
     this.create_indicator_label(button, index)
 
     // add to panel
-    Main.panel["_leftBox"].insert_child_at_index(button, index)
+    Main.panel["_leftBox"].insert_child_at_index(button, position + index)
   }
 
   create_indicator_icons(button, windows) {
