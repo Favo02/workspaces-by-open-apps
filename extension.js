@@ -70,7 +70,6 @@ class WorkspaceIndicator {
       .reverse()
       .map(win => Shell.WindowTracker.get_default().get_window_app(win))
       .filter(this.filter_unique_apps())
-      //.slice(0, max !== null ? max : undefined)
       .map(app => app.create_icon_texture(16))
       .map(tex => new St.Bin({style_class: 'app-icon', style: '', child: tex}))
       .forEach(ico => button.get_child().add_child(ico));
@@ -78,9 +77,10 @@ class WorkspaceIndicator {
 
   filter_unique_apps() {
     const ids = {};
-    return app => {
-      if (ids[app.id])
+    return (app) => {
+      if (ids[app.id]) {
         return false;
+      }
       ids[app.id] = true;
       return true;
     };
