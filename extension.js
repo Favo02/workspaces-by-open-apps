@@ -1,10 +1,10 @@
-const St = imports.gi.St;
-const Shell = imports.gi.Shell;
-const Main = imports.ui.main;
+const St = imports.gi.St
+const Shell = imports.gi.Shell
+const Main = imports.ui.main
 
 // initialize extension
 function init() {
-  return new WorkspaceIndicator();
+  return new WorkspaceIndicator()
 }
 
 const workspaceManager = global.workspace_manager
@@ -78,16 +78,16 @@ class WorkspaceIndicator {
   }
 
   refresh() {
-    this._buttons.splice(0).forEach(b => b.destroy());
+    this._buttons.splice(0).forEach(b => b.destroy())
     for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
-      this.create_indicator_button(i);
+      this.create_indicator_button(i)
     }
   }
 
   create_indicator_button(index) {
-    const isActive = global.workspace_manager.get_active_workspace_index() == index;
-    const workspace = global.workspace_manager.get_workspace_by_index(index);
-    const windows = workspace.list_windows();
+    const isActive = global.workspace_manager.get_active_workspace_index() == index
+    const workspace = global.workspace_manager.get_workspace_by_index(index)
+    const windows = workspace.list_windows()
     
     const button = new St.Bin({
       style_class: 'single-workspace',
@@ -95,11 +95,11 @@ class WorkspaceIndicator {
       can_focus:   true,
       track_hover: true,
       child:       new St.BoxLayout({style_class : ''})
-    });
-    this._buttons.push(button);
+    })
+    this._buttons.push(button)
 
     // switch to workspace on click
-    button.connect('button-press-event', () => workspace.activate(global.get_current_time()));
+    button.connect('button-press-event', () => workspace.activate(global.get_current_time()))
 
     // create apps icons
     this.create_indicator_icons(button, windows);
@@ -107,7 +107,7 @@ class WorkspaceIndicator {
     this.create_indicator_style(button, isActive);
 
     // add to panel
-    Main.panel["_leftBox"].insert_child_at_index(button, index);
+    Main.panel["_leftBox"].insert_child_at_index(button, index)
   }
 
   create_indicator_icons(button, windows) {
@@ -117,18 +117,18 @@ class WorkspaceIndicator {
       .filter(this.filter_unique_apps())
       .map(app => app.create_icon_texture(16))
       .map(tex => new St.Bin({style_class: 'app-icon', style: '', child: tex}))
-      .forEach(ico => button.get_child().add_child(ico));
+      .forEach(ico => button.get_child().add_child(ico))
   }
 
   filter_unique_apps() {
-    const ids = {};
+    const ids = {}
     return (app) => {
       if (ids[app.id]) {
-        return false;
+        return false
       }
-      ids[app.id] = true;
-      return true;
-    };
+      ids[app.id] = true
+      return true
+    }
   }
   
   create_indicator_label(button, index) {
