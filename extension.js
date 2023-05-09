@@ -60,6 +60,7 @@ class WorkspaceIndicator {
   
   disable() {
     this._buttons.splice(0).forEach(b => b.destroy())
+    this._buttons = []
 
     workspaceManager.disconnect(this._workspaceNumberChangedSIGNAL)
     workspaceManager.disconnect(this._workspaceSwitchedSIGNAL)
