@@ -1,6 +1,5 @@
 .single-workspace {
   margin: 0px 5px;
-  padding: 5px;
   border: 2px solid transparent;
   border-top: none;
   border-right: none;
@@ -9,6 +8,7 @@
 }
 
 .active-workspace {
+  margin: 0px 5px;
   border: 2px solid red;
   border-top: none;
   border-right: none;
@@ -16,9 +16,12 @@
   border-radius: 5px;
 }
 
-.app-icon {
-  height: 20px;
-  width: 20px;
-  padding: 0px 0px;
+.workspace-text {
+  padding: 5px;
+  color: rgb(110, 110, 110);
+  font-size: 12px;
 }
 
+.active-workspace .workspace-text {
+  color: white;
+}

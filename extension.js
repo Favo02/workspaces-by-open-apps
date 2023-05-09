@@ -90,11 +90,11 @@ class WorkspaceIndicator {
     const windows = workspace.list_windows()
     
     const button = new St.Bin({
-      style_class: 'single-workspace',
+      style_class: isActive ? 'active-workspace' : 'single-workspace',
       reactive:    true,
       can_focus:   true,
       track_hover: true,
-      child:       new St.BoxLayout({style_class : ''})
+      child:       new St.BoxLayout()
     })
     this._buttons.push(button)
 
@@ -112,14 +112,14 @@ class WorkspaceIndicator {
   create_indicator_icons(button, windows) {
     global.display.sort_windows_by_stacking(windows)
       .map(win => Shell.WindowTracker.get_default().get_window_app(win))
-      .map(app => app.create_icon_texture(16))
-      .map(tex => new St.Bin({style_class: 'app-icon', style: '', child: tex}))
+      .map(app => app.create_icon_texture(20))
+      .map(tex => new St.Bin({style_class: 'app-icon', child: tex}))
       .forEach(ico => button.get_child().add_child(ico))
   }
 
   create_indicator_label(button, index) {
     const txt = (index + 1).toString()
-    button.get_child().insert_child_at_index(new St.Label({text: txt}), 0)
+    button.get_child().insert_child_at_index(new St.Label({text: txt, style_class: 'workspace-text'}), 0)
   }
 
 }
