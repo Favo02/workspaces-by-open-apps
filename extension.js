@@ -88,11 +88,6 @@ class WorkspaceIndicator {
     const isActive = global.workspace_manager.get_active_workspace_index() == index;
     const workspace = global.workspace_manager.get_workspace_by_index(index);
     const windows = workspace.list_windows();
-
-    // empty workspace
-    if (!windows.length) {
-      return;
-    }
     
     const button = new St.Bin({
       style_class: 'single-workspace',
