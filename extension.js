@@ -15,19 +15,11 @@ const windowTracker = Shell.WindowTracker.get_default()
 
 // extension workspace indicator
 class WorkspaceIndicator {
-  constructor() {
-    this._buttons = []
-    this._workspaceNumberChangedSIGNAL
-    this._workspaceSwitchedSIGNAL 
-    this._workspaceReorderedSIGNAL
-    this._windowsChangedSIGNAL
-    this._windowsRestackedSIGNAL
-    this._windowLeftMonitorSIGNAL
-    this._windowEnteredMonitorSIGNAL
-  }
+  constructor() {}
 
   enable() {
     // connect signals: trigger refresh()
+    this._buttons = []
     
     // workspace manager: global.workspace_manager
     this._workspaceNumberChangedSIGNAL = workspaceManager.connect(
