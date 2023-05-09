@@ -18,7 +18,9 @@ To install execute the `./deploy.sh` script (requires sudo priviledges).
   - position to insert indicator
   - color of active indicator
   - show/hide workspace index text
-
+- CI/CD (github actions): 
+  - Linting ([Eslint](https://eslint.org))
+  - Versioning ([GitVersion](https://gitversion.net))
 
 ## Contributions:
 
