@@ -111,25 +111,12 @@ class WorkspaceIndicator {
 
   create_indicator_icons(button, windows) {
     global.display.sort_windows_by_stacking(windows)
-      .reverse()
       .map(win => Shell.WindowTracker.get_default().get_window_app(win))
-      .filter(this.filter_unique_apps())
       .map(app => app.create_icon_texture(16))
       .map(tex => new St.Bin({style_class: 'app-icon', style: '', child: tex}))
       .forEach(ico => button.get_child().add_child(ico))
   }
 
-  filter_unique_apps() {
-    const ids = {}
-    return (app) => {
-      if (ids[app.id]) {
-        return false
-      }
-      ids[app.id] = true
-      return true
-    }
-  }
-  
   create_indicator_label(button, index) {
     const txt = (index + 1).toString()
     button.get_child().insert_child_at_index(new St.Label({text: txt}), 0)
