@@ -29,30 +29,40 @@ class WorkspaceIndicator {
 
   refresh() {
     this._buttons.splice(0).forEach(b => b.destroy());
-    for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++)
+    for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
       this.create_indicator_button(i);
+    }
   }
 
   create_indicator_button(index) {
-    const active = global.workspace_manager.get_active_workspace_index();
-    const workspc = global.workspace_manager.get_workspace_by_index(index);
-    const windows = workspc.list_windows();
-    if (!windows.length)
+    const isActive = global.workspace_manager.get_active_workspace_index() == index;
+    const workspace = global.workspace_manager.get_workspace_by_index(index);
+    const windows = workspace.list_windows();
+
+    // empty workspace
+    if (!windows.length) {
       return;
+    }
+    
     const button = new St.Bin({
-      style_class: 'panel-button',
+      style_class: 'single-workspace',
       reactive:    true,
       can_focus:   true,
       track_hover: true,
-      child:       new St.BoxLayout({style_class : 'panel-status-menu-box'})
+      child:       new St.BoxLayout({style_class : ''})
     });
     this._buttons.push(button);
-    button.connect('button-press-event',
-                   () => workspc.activate(global.get_current_time()));
+
+    // switch to workspace on click
+    button.connect('button-press-event', () => workspace.activate(global.get_current_time()));
+
+    // create apps icons
     this.create_indicator_icons(button, windows);
     this.create_indicator_label(button, index);
-    this.create_indicator_style(button, index === active);
-    Main.panel["_leftBox"].insert_child_at_index(button, 0 + index);
+    this.create_indicator_style(button, isActive);
+
+    // add to panel
+    Main.panel["_leftBox"].insert_child_at_index(button, index);
   }
 
   create_indicator_icons(button, windows) {
