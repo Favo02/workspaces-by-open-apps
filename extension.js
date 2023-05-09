@@ -102,9 +102,8 @@ class WorkspaceIndicator {
     button.connect('button-press-event', () => workspace.activate(global.get_current_time()))
 
     // create apps icons
-    this.create_indicator_icons(button, windows);
-    this.create_indicator_label(button, index);
-    this.create_indicator_style(button, isActive);
+    this.create_indicator_icons(button, windows)
+    this.create_indicator_label(button, index)
 
     // add to panel
     Main.panel["_leftBox"].insert_child_at_index(button, index)
@@ -132,14 +131,8 @@ class WorkspaceIndicator {
   }
   
   create_indicator_label(button, index) {
-    const txt = (index + 1).toString();
-    button.get_child().insert_child_at_index(new St.Label({text: txt}), 0);
-  }
-  
-  create_indicator_style(button, active) {
-    if (!active)
-      return;
-    button.pseudo_class = (button.pseudo_class || '');
+    const txt = (index + 1).toString()
+    button.get_child().insert_child_at_index(new St.Label({text: txt}), 0)
   }
 
 }
