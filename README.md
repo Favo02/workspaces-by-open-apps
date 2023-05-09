@@ -2,12 +2,20 @@
 
 **GNOME shell estension** to display a simple **workspace indicator** showing **icons of apps open** in it instead of classic numbers or dots.
 
+<img src="https://extensions.gnome.org/extension-data/screenshots/screenshot_5967.png" alt="Preview" height="50">
+
 
 ## Deploy:
 
-Not currently available on [GNOME extensions](https://extensions.gnome.org/).
+Available for GNOME 44: [gnome shell extensions store](andyholmes/gnome-shell-extensions-badge)
 
-To install execute the `./deploy.sh` script (requires sudo priviledges).
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="80">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+
+
+### Alternative install:
+
+- Download this folder
+- Execute `./deploy.sh` (requires sudo priviledges).
 
 
 ## TODO:
