@@ -20,15 +20,21 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 
 ## TODO:
 
-- Drag and drop support to move applications between workspaces
-- Highlight focues app in workspace with more than one app
-- Add settings to customize various settings:
+- Drag and drop support to move applications between workspaces ([#10][i10])
+- Highlight focues app in workspace with more than one app ([#3][i3])
+- Add settings to customize various settings: ([#8][i8])
   - position to insert indicator
   - color of active indicator
   - show/hide workspace index text
+- Add support for multiple monitors ([#9][i9])
 - CI/CD (github actions): 
   - Linting ([Eslint](https://eslint.org))
   - Versioning ([GitVersion](https://gitversion.net))
+
+[i3]: https://github.com/Favo02/workspaces-by-open-apps/issues/3
+[i8]: https://github.com/Favo02/workspaces-by-open-apps/issues/8
+[i9]: https://github.com/Favo02/workspaces-by-open-apps/issues/9
+[i10]: https://github.com/Favo02/workspaces-by-open-apps/issues/10
 
 ## Contributions:
 
