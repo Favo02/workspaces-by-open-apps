@@ -16,7 +16,8 @@
   font-size: 12px;
 }
 
-.workspace.active .text {
+.workspace.active .text,
+.workspace.active-no-indicator .text {
   color: white;
 }
 

@@ -100,12 +100,19 @@ class WorkspaceIndicator {
   }
 
   create_indicator_button(index) {
-    const isActive = global.workspace_manager.get_active_workspace_index() == index
     const workspace = global.workspace_manager.get_workspace_by_index(index)
     const windows = workspace.list_windows()
     
+    const isActive = global.workspace_manager.get_active_workspace_index() == index
+    const showActiveWorkspaceIndicator = this._settings.get_boolean('show-active-workspace-indicator')
+
     const workspaceIndicator = new St.Bin({
-      style_class: isActive ? 'workspace active' : 'workspace',
+      style_class:
+        isActive ? 
+          showActiveWorkspaceIndicator ?
+            'workspace active' :
+            'workspace active-no-indicator' :
+          'workspace',
       reactive:    true,
       can_focus:   true,
       track_hover: true,
