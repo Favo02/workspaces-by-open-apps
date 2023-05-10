@@ -1,4 +1,4 @@
-.single-workspace {
+.workspace {
   margin: 0px 5px;
   border: 2px solid transparent;
   border-top: none;
@@ -7,13 +7,11 @@
   border-radius: 5px;
 }
 
-.active-workspace {
-  margin: 0px 5px;
+.active {
   border: 2px solid white;
   border-top: none;
   border-right: none;
   border-left: none;
-  border-radius: 5px;
 }
 
 .workspace-text {

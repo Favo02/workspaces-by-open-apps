@@ -14,15 +14,15 @@ class WorkspaceIndicator {
   constructor() {}
 
   enable() {
-    this._buttons = []
+    this._workspacesIndicators = []
     
     this.connectSignals() // signals that triggers refresh()
     this.refresh() // initialize indicator
   }
   
   disable() {
-    this._buttons.splice(0).forEach(b => b.destroy())
-    this._buttons = []
+    this._workspacesIndicators.splice(0).forEach(i => i.destroy())
+    this._workspacesIndicators = []
 
     this.disconnectSignals()
   }
@@ -76,7 +76,8 @@ class WorkspaceIndicator {
   }
 
   refresh() {
-    this._buttons.splice(0).forEach(b => b.destroy())
+    this._workspacesIndicators.splice(0).forEach(i => i.destroy())
+
     for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
       this.create_indicator_button(i)
     }
@@ -87,24 +88,24 @@ class WorkspaceIndicator {
     const workspace = global.workspace_manager.get_workspace_by_index(index)
     const windows = workspace.list_windows()
     
-    const button = new St.Bin({
-      style_class: isActive ? 'active-workspace' : 'single-workspace',
+    const workspaceIndicator = new St.Bin({
+      style_class: isActive ? 'workspace active' : 'workspace',
       reactive:    true,
       can_focus:   true,
       track_hover: true,
       child:       new St.BoxLayout()
     })
-    this._buttons.push(button)
+    this._workspacesIndicators.push(workspaceIndicator)
 
     // switch to workspace on click
-    button.connect('button-press-event', () => workspace.activate(global.get_current_time()))
+    workspaceIndicator.connect('button-press-event', () => workspace.activate(global.get_current_time()))
 
     // create apps icons
-    this.create_indicator_icons(button, windows)
-    this.create_indicator_label(button, index)
+    this.create_indicator_icons(workspaceIndicator, windows)
+    this.create_indicator_label(workspaceIndicator, index)
 
     // add to panel
-    main.panel["_leftBox"].insert_child_at_index(button, position + index)
+    main.panel["_leftBox"].insert_child_at_index(workspaceIndicator, position + index)
   }
 
   create_indicator_icons(button, windows) {
