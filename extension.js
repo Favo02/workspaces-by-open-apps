@@ -105,14 +105,15 @@ class WorkspaceIndicator {
     
     const isActive = global.workspace_manager.get_active_workspace_index() == index
     const showActiveWorkspaceIndicator = this._settings.get_boolean('show-active-workspace-indicator')
+    const roundIndicatorsBorder = this._settings.get_boolean('round-indicators-border')
+
+    let styles = 'workspace'
+    if (isActive) { styles += ' active' }
+    if (!showActiveWorkspaceIndicator) { styles += ' no-indicator' }
+    if (!roundIndicatorsBorder) { styles += ' no-rounded' }
 
     const workspaceIndicator = new St.Bin({
-      style_class:
-        isActive ? 
-          showActiveWorkspaceIndicator ?
-            'workspace active' :
-            'workspace active-no-indicator' :
-          'workspace',
+      style_class: styles,
       reactive:    true,
       can_focus:   true,
       track_hover: true,
@@ -164,8 +165,15 @@ class WorkspaceIndicator {
 
         // create container (with texture as child)
         const showFocusedAppIndicator = this._settings.get_boolean('show-focused-app-indicator')
+        const roundIndicatorsBorder = this._settings.get_boolean('round-indicators-border')
+
+        let styles = 'app'
+        if (win.has_focus()) { styles += ' active' }
+        if (!showFocusedAppIndicator) { styles += ' no-indicator' }
+        if (!roundIndicatorsBorder) { styles += ' no-rounded' }
+
         const icon = new St.Bin({
-          style_class: (win.has_focus() && showFocusedAppIndicator) ? 'app active' : 'app',
+          style_class: styles,
           child: texture
         })
 

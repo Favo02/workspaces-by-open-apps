@@ -25,3 +25,11 @@
   border-top: 2px solid white;
   border-radius: 5px;
 }
+
+.no-indicator {
+  border: none !important;
+}
+
+.no-rounded {
+  border-radius: 0px !important;
+}

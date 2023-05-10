@@ -39,6 +39,12 @@
       <summary>Reduce inactive apps opacity</summary>
       <description>Reduce opacity of application not currently focused.</description>
     </key>
+
+    <key type="b" name="round-indicators-border">
+      <default>true</default>
+      <summary>Round indicators border</summary>
+      <description>Apply a round effect to the "show focused app" and "show active workspace" indicator.</description>
+    </key>
     
   </schema>
   
