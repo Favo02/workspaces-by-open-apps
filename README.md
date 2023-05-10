@@ -27,6 +27,7 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
   - color of active indicator
   - show/hide workspace index text
 - Add support for multiple monitors ([#9][i9])
+- Click on application focuses that application ([#11][i11])
 - CI/CD (github actions): 
   - Linting ([Eslint](https://eslint.org))
   - Versioning ([GitVersion](https://gitversion.net))
@@ -35,6 +36,7 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 [i8]: https://github.com/Favo02/workspaces-by-open-apps/issues/8
 [i9]: https://github.com/Favo02/workspaces-by-open-apps/issues/9
 [i10]: https://github.com/Favo02/workspaces-by-open-apps/issues/10
+[i11]: https://github.com/Favo02/workspaces-by-open-apps/issues/11
 
 ## Contributions:
 
