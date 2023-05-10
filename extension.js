@@ -9,38 +9,46 @@ function init() {
   return new WorkspaceIndicator()
 }
 
-const workspaceManager = global.workspace_manager
-const windowTracker = Shell.WindowTracker.get_default()
-
 // extension workspace indicator
 class WorkspaceIndicator {
   constructor() {}
 
   enable() {
-    // connect signals: trigger refresh()
     this._buttons = []
     
-    // workspace manager: global.workspace_manager
-    this._workspaceNumberChangedSIGNAL = workspaceManager.connect(
+    this.connectSignals() // signals that triggers refresh()
+    this.refresh() // initialize indicator
+  }
+  
+  disable() {
+    this._buttons.splice(0).forEach(b => b.destroy())
+    this._buttons = []
+
+    this.disconnectSignals()
+  }
+
+  connectSignals() {
+    // signals for global.workspace_manager
+    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect(
       "notify::n-workspaces", // add/remove workspace
       this.refresh.bind(this)
     )
-    this._workspaceSwitchedSIGNAL = workspaceManager.connect(
+    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect(
       "workspace-switched", // change active workspace
       this.refresh.bind(this)
     )
-    this._workspaceReorderedSIGNAL = workspaceManager.connect(
+    this._workspaceReorderedSIGNAL = global.workspace_manager.connect(
       "workspaces-reordered", // reorder workspaces
       this.refresh.bind(this)
     )
 
-    // window tracker: Shell.WindowTracker.get_default()
-    this._windowsChangedSIGNAL = windowTracker.connect(
+    // signals for Shell.WindowTracker.get_default()
+    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect(
       "tracked-windows-changed",
       this.refresh.bind(this)
     )
 
-    // display: global.display
+    // signals for global.display
     this._windowsRestackedSIGNAL = global.display.connect(
       "restacked",
       this.refresh.bind(this)
@@ -53,19 +61,14 @@ class WorkspaceIndicator {
       "window-entered-monitor",
       this.refresh.bind(this)
     )
-
-    this.refresh()
   }
-  
-  disable() {
-    this._buttons.splice(0).forEach(b => b.destroy())
-    this._buttons = []
 
-    workspaceManager.disconnect(this._workspaceNumberChangedSIGNAL)
-    workspaceManager.disconnect(this._workspaceSwitchedSIGNAL)
-    workspaceManager.disconnect(this._workspaceReorderedSIGNAL)
+  disconnectSignals() {
+    global.workspace_manager.disconnect(this._workspaceNumberChangedSIGNAL)
+    global.workspace_manager.disconnect(this._workspaceSwitchedSIGNAL)
+    global.workspace_manager.disconnect(this._workspaceReorderedSIGNAL)
 
-    windowTracker.disconnect(this._windowsChangedSIGNAL)
+    Shell.WindowTracker.get_default().disconnect(this._windowsChangedSIGNAL)
 
     global.display.disconnect(this._windowsRestackedSIGNAL)
     global.display.disconnect(this._windowLeftMonitorSIGNAL)
