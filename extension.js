@@ -106,11 +106,26 @@ class WorkspaceIndicator {
   }
 
   create_indicator_icons(button, windows) {
-    global.display.sort_windows_by_stacking(windows)
-      .map(win => Shell.WindowTracker.get_default().get_window_app(win))
-      .map(app => app.create_icon_texture(20))
-      .map(tex => new St.Bin({style_class: 'app-icon', child: tex}))
-      .forEach(ico => button.get_child().add_child(ico))
+    windows
+      .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by ids
+      .forEach(win => {
+        // convert from Meta.window to Shell.app
+        const app = Shell.WindowTracker.get_default().get_window_app(win)
+
+        // create Clutter.actor
+        const texture = app.create_icon_texture(20)
+
+        // set low opacity for not focused apps
+        if (!win.has_focus()) {
+          texture.set_opacity(150)
+        }
+
+        // create container (with texture as child)
+        const icon = new St.Bin({style_class: win.has_focus() ? 'app-icon-active' : 'app-icon', child: texture})
+
+        // add app Icon to buttons
+        button.get_child().add_child(icon)
+      })
   }
 
   create_indicator_label(button, index) {

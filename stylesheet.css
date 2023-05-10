@@ -9,7 +9,7 @@
 
 .active-workspace {
   margin: 0px 5px;
-  border: 2px solid red;
+  border: 2px solid white;
   border-top: none;
   border-right: none;
   border-left: none;
@@ -24,4 +24,9 @@
 
 .active-workspace .workspace-text {
   color: white;
+}
+
+.app-icon-active {
+  border-top: 2px solid white;
+  border-radius: 5px;
 }
