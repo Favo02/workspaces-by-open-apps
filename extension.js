@@ -157,7 +157,8 @@ class WorkspaceIndicator {
         const texture = app.create_icon_texture(20)
 
         // set low opacity for not focused apps
-        if (!win.has_focus()) {
+        const reduceInactiveAppsOpacity = this._settings.get_boolean('reduce-inactive-apps-opacity')
+        if (!win.has_focus() && reduceInactiveAppsOpacity) {
           texture.set_opacity(150)
         }
 
