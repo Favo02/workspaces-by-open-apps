@@ -162,8 +162,9 @@ class WorkspaceIndicator {
         }
 
         // create container (with texture as child)
+        const showFocusedAppIndicator = this._settings.get_boolean('show-focused-app-indicator')
         const icon = new St.Bin({
-          style_class: win.has_focus() ? 'app active' : 'app',
+          style_class: (win.has_focus() && showFocusedAppIndicator) ? 'app active' : 'app',
           child: texture
         })
 
