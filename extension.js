@@ -124,7 +124,10 @@ class WorkspaceIndicator {
         }
 
         // create container (with texture as child)
-        const icon = new St.Bin({style_class: win.has_focus() ? 'app-icon-active' : 'app-icon', child: texture})
+        const icon = new St.Bin({
+          style_class: win.has_focus() ? 'app active' : 'app',
+          child: texture
+        })
 
         // add app Icon to buttons
         button.get_child().add_child(icon)
@@ -133,7 +136,10 @@ class WorkspaceIndicator {
 
   create_indicator_label(button, index) {
     const txt = (index + 1).toString()
-    button.get_child().insert_child_at_index(new St.Label({text: txt, style_class: 'workspace-text'}), 0)
+    button.get_child().insert_child_at_index(new St.Label({
+      text: txt,
+      style_class: 'text'
+    }), 0)
   }
 
 }
