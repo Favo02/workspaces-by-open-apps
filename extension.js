@@ -2,9 +2,6 @@ const { St, Shell, Gio } = imports.gi
 const { main } = imports.ui
 const Me = imports.misc.extensionUtils.getCurrentExtension()
 
-// position in left panel to insert workspace indicator
-const position = 0
-
 // initialize extension
 function init() {
   return new WorkspaceIndicator()
@@ -124,7 +121,22 @@ class WorkspaceIndicator {
     this.create_indicator_label(workspaceIndicator, index)
 
     // add to panel
-    main.panel["_leftBox"].insert_child_at_index(workspaceIndicator, position + index)
+    let box
+    switch (this._settings.get_enum('panel-position')) {
+      case 0:
+        box = '_leftBox'
+        break;
+      case 1:
+        box = '_centerBox'
+        break;
+      case 2:
+        box = '_rightBox'
+        break;
+    }
+
+    const position = this._settings.get_int('position')
+
+    main.panel[box].insert_child_at_index(workspaceIndicator, position + index)
   }
 
   create_indicator_icons(button, windows) {
