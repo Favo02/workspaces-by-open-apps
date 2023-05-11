@@ -2,17 +2,17 @@
 
 **GNOME shell estension** to display a simple **workspace indicator** showing **icons of apps open** in it instead of classic numbers or dots.
 
-[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/a4139bec-db00-4de9-a49a-74e640163e7e" alt="Preview" height="50" sanitize=true">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/a4139bec-db00-4de9-a49a-74e640163e7e" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
 ## Customizable
 
 Change indicator **color**, **toggle indicator** for focused app, toggle **rounded** indicator border and much more!
 
-[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/83ff712a-ff47-4592-8cec-c2c34bb8552a" alt="Preview" height="50" sanitize=true">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/83ff712a-ff47-4592-8cec-c2c34bb8552a" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
 <br />
 
-[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/d838baf9-1f70-45d0-a8ba-26975823ab95" alt="Preview" height="50" sanitize=true">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/d838baf9-1f70-45d0-a8ba-26975823ab95" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
 ## Deploy
 
