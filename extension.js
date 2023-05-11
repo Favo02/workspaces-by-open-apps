@@ -1,6 +1,5 @@
 const { St, Shell, Gio } = imports.gi
 const { main } = imports.ui
-const Me = imports.misc.extensionUtils.getCurrentExtension()
 
 // initialize extension
 function init() {
@@ -12,7 +11,7 @@ class WorkspaceIndicator {
   constructor() {}
 
   enable() {
-    this._settings = this.getSettings()
+    this._settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
     this._workspacesIndicators = []
     
@@ -27,20 +26,6 @@ class WorkspaceIndicator {
     this._workspacesIndicators = []
 
     this.disconnectSignals()
-  }
-
-  getSettings() {
-    let GioSSS = Gio.SettingsSchemaSource
-    let schemaSource = GioSSS.new_from_directory(
-      Me.dir.get_child("schemas").get_path(),
-      GioSSS.get_default(),
-      false
-    )
-    let schemaObj = schemaSource.lookup('org.gnome.shell.extensions.workspaces-indicator-by-open-apps', true)
-    if (!schemaObj) {
-      throw new Error('cannot find schemas')
-    }
-    return new Gio.Settings({ settings_schema : schemaObj })
   }
 
   connectSignals() {
