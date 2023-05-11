@@ -126,7 +126,11 @@ class WorkspaceIndicator {
 
     // create apps icons
     this.create_indicator_icons(workspaceIndicator, windows)
-    this.create_indicator_label(workspaceIndicator, index)
+
+    const showWorkspaceIndex = this._settings.get_boolean('show-workspace-index')
+    if (showWorkspaceIndex) {
+      this.create_indicator_label(workspaceIndicator, index)
+    }
 
     // add to panel
     let box

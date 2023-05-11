@@ -23,7 +23,6 @@ Available for GNOME 44: [gnome shell extensions store](andyholmes/gnome-shell-ex
 - Drag and drop support to move applications between workspaces
 - Add settings:
   - color of active indicator
-  - show/hide workspace index text
 - CI/CD (github actions): 
   - Linting ([Eslint](https://eslint.org))
   - Versioning ([GitVersion](https://gitversion.net))

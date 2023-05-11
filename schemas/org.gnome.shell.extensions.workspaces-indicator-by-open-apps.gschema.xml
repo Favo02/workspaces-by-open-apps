@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
 
+  <!-- Compile with: glib-compile-schemas ./schemas/ -->
+
   <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-panel-position">
     <value value="0" nick="LEFT"/>
     <value value="1" nick="CENTER"/>
@@ -44,6 +46,12 @@
       <default>true</default>
       <summary>Round indicators border</summary>
       <description>Apply a round effect to the "show focused app" and "show active workspace" indicator.</description>
+    </key>
+
+    <key type="b" name="show-workspace-index">
+      <default>true</default>
+      <summary>Show workspace index</summary>
+      <description>Adds the workspace index before the icons.</description>
     </key>
     
   </schema>

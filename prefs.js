@@ -150,6 +150,23 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 6, 1, 1)
   gridWidget.attach(widget, 1, 6, 1, 1)
 
+  // show-workspace-index
+  label = new Gtk.Label({
+    label: "Show workspace index",
+    hexpand: true,
+    halign: Gtk.Align.START,
+  })
+  widget = new Gtk.Switch({
+    halign: Gtk.Align.END
+  })
+  settings.bind(
+    "show-workspace-index",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  gridWidget.attach(label, 0, 7, 1, 1)
+  gridWidget.attach(widget, 1, 7, 1, 1)
 
 
   // -------- LINKS --------
