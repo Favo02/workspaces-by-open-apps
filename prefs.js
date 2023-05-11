@@ -168,6 +168,30 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 7, 1, 1)
   gridWidget.attach(widget, 1, 7, 1, 1)
 
+  // indicators-color
+  label = new Gtk.Label({
+    label: "Active/Focused indicators color",
+    hexpand: true,
+    halign: Gtk.Align.START,
+  })
+  const rgba = new Gdk.RGBA()
+  rgba.parse(settings.get_string('indicators-color'))
+  widget = new Gtk.ColorButton({
+      rgba: rgba,
+      show_editor: true,
+      use_alpha: true,
+      visible: true
+  })
+  widget.connect(
+    'color-set',
+    () => {
+      settings.set_string(
+        'indicators-color',
+        widget.get_rgba().to_string()
+      )
+  })
+  gridWidget.attach(label, 0, 8, 1, 1)
+  gridWidget.attach(widget, 1, 8, 1, 1)
 
   // -------- LINKS --------
 

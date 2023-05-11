@@ -112,8 +112,11 @@ class WorkspaceIndicator {
     if (!showActiveWorkspaceIndicator) { styles += ' no-indicator' }
     if (!roundIndicatorsBorder) { styles += ' no-rounded' }
 
+    const indicatorsColor = this._settings.get_string('indicators-color')
+
     const workspaceIndicator = new St.Bin({
       style_class: styles,
+      style: `border-color: ${indicatorsColor}`,
       reactive:    true,
       can_focus:   true,
       track_hover: true,
@@ -176,8 +179,11 @@ class WorkspaceIndicator {
         if (!showFocusedAppIndicator) { styles += ' no-indicator' }
         if (!roundIndicatorsBorder) { styles += ' no-rounded' }
 
+        const indicatorsColor = this._settings.get_string('indicators-color')
+
         const icon = new St.Bin({
           style_class: styles,
+          style: `border-color: ${indicatorsColor}`,
           child: texture
         })
 
