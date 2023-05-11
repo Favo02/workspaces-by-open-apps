@@ -2,23 +2,30 @@
 
 **GNOME shell estension** to display a simple **workspace indicator** showing **icons of apps open** in it instead of classic numbers or dots.
 
-<img src="https://extensions.gnome.org/extension-data/screenshots/screenshot_5967.png" alt="Preview" height="50">
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/a4139bec-db00-4de9-a49a-74e640163e7e" alt="Preview" height="50">
 
+## Customizable
 
-## Deploy:
+Change indicator **color**, **toggle indicator** for focused app, toggle **rounded** indicator border and much more!
 
-Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/83ff712a-ff47-4592-8cec-c2c34bb8552a" alt="Preview" height="50">
+
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/d838baf9-1f70-45d0-a8ba-26975823ab95" alt="Preview" height="50">
+
+## Deploy
+
+Available for GNOME 44: <a href="https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/" target="_blank">gnome shell extensions store</a>
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="80">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
 
-### Alternative install:
+### Alternative install
 
 - Download this folder
 - Execute `./deploy.sh` (requires sudo priviledges).
 
 
-## TODO:
+## TODO
 
 - Drag and drop support to move applications between workspaces ([#10][i10])
 - Add support for multiple monitors ([#9][i9])
@@ -31,16 +38,16 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 [i10]: https://github.com/Favo02/workspaces-by-open-apps/issues/10
 [i11]: https://github.com/Favo02/workspaces-by-open-apps/issues/11
 
-## Contributions:
+## Contributions
 
 Any contribution is welcome!
 
 Submit any bug or feature request through an **issue**, or submit your code creating a **pull request**. 
 
 
-## Commit, Branch and Pull request convention:
+## Commit, Branch and Pull request convention
 
-### **Commit**:
+### Commit
 
 Commit message convention: `<type>(<scope>): <summary>`
 
@@ -50,17 +57,17 @@ Summary: short summary in present tense, not capitalized, no period at the end
 
 Example: `feat(extension): add drag and drop`
 
-### **Branch**:
+### Branch
 Create a new branch for new features. Branch name should be self explanatory.\
 *It is possible to not to create the new branch for single-commit fixes or small modifications.*
 
 Example: `add-drag-and-drop`
 
-### **Pull request**:
+### Pull request
 When the feature is ready and stable create a new pull request.
 
 
-## Credits:
+## Credits
 
 Due to the poor (really poor) documentation to develop any gnome shell extension I used snippets of already existing extension (often deprecated and not working anymore) and merged them to create what I was looking for.
 
