@@ -161,6 +161,10 @@ class WorkspaceIndicator {
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
 
+        if (!app || !win) {
+          return
+        }
+
         // create Clutter.actor
         const texture = app.create_icon_texture(20)
 
