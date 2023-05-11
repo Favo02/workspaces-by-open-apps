@@ -1,4 +1,4 @@
-const { Gio, Gtk } = imports.gi
+const { Gio, Gtk, Gdk } = imports.gi
 const Me = imports.misc.extensionUtils.getCurrentExtension()
 
 function init() {}
