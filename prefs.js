@@ -71,10 +71,12 @@ function buildPrefsWidget() {
 
   // info label
   const info = new Gtk.Label({
-    label: '<i>Close settings to apply modifications below this label (working on a fix)</i>',
+    label: '<span foreground="red"><i><b>Close settings to apply modifications below this label (working on a fix)</b></i></span>',
     halign: Gtk.Align.CENTER,
     use_markup: true,
     visible: true,
+    margin_top: 10,
+    margin_bottom: 10
   })
   gridWidget.attach(info, 0, 2, 2, 1)
 	
@@ -200,6 +202,7 @@ function buildPrefsWidget() {
     halign: Gtk.Align.CENTER,
     use_markup: true,
     visible: true,
+    margin_top: 40,
   })
   gridWidget.attach(github, 0, 15, 2, 1)
 
