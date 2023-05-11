@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+
+  <!-- Compile with: glib-compile-schemas ./schemas/ -->
+
+  <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-panel-position">
+    <value value="0" nick="LEFT"/>
+    <value value="1" nick="CENTER"/>
+    <value value="2" nick="RIGHT"/>
+  </enum>
+
+  <schema id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps"
+    path="/org/gnome/shell/extensions/workspaces-indicator-by-open-apps/">
+
+    <key name="panel-position" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-panel-position">
+      <default>'LEFT'</default>
+      <summary>Box where the indicator will be inserted</summary>
+      <description>Box where the indicator will be inserted (left, center or right).</description>
+    </key>
+    
+    <key type="i" name="position">
+      <default>0</default>
+      <summary>Position in panel (index)</summary>
+      <description>Position where the indicator will be inserted (0 = first, 1 = second, ...).</description>
+    </key>
+    
+    <key type="b" name="show-focused-app-indicator">
+      <default>true</default>
+      <summary>Show focused app indicator</summary>
+      <description>Show focused app indicator with an indicator above it.</description>
+    </key>
+
+    <key type="b" name="show-active-workspace-indicator">
+      <default>true</default>
+      <summary>Show active workspace indicator</summary>
+      <description>Show active workspace indicator with an indicator below it.</description>
+    </key>
+
+    <key type="b" name="reduce-inactive-apps-opacity">
+      <default>true</default>
+      <summary>Reduce inactive apps opacity</summary>
+      <description>Reduce opacity of application not currently focused.</description>
+    </key>
+
+    <key type="b" name="round-indicators-border">
+      <default>true</default>
+      <summary>Round indicators border</summary>
+      <description>Apply a round effect to the "show focused app" and "show active workspace" indicator.</description>
+    </key>
+
+    <key type="b" name="show-workspace-index">
+      <default>true</default>
+      <summary>Show workspace index</summary>
+      <description>Adds the workspace index before the icons.</description>
+    </key>
+
+    <key type="s" name="indicators-color">
+      <default>'rgba(255,255,255,1)'</default>
+      <summary>Active/Focused indicators color</summary>
+      <description>Sets the indicators color.</description>
+    </key>
+    
+  </schema>
+  
+</schemalist>
+

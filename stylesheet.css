@@ -1,27 +1,35 @@
-.single-workspace {
+.workspace {
   margin: 0px 5px;
-  border: 2px solid transparent;
-  border-top: none;
-  border-right: none;
-  border-left: none;
-  border-radius: 5px;
 }
 
-.active-workspace {
-  margin: 0px 5px;
-  border: 2px solid red;
-  border-top: none;
-  border-right: none;
-  border-left: none;
+.workspace.active {
   border-radius: 5px;
+  border: 2px solid white;
+  border-top: none;
+  border-left: none;
+  border-right: none;
 }
 
-.workspace-text {
+.text {
   padding: 5px;
   color: rgb(110, 110, 110);
   font-size: 12px;
 }
 
-.active-workspace .workspace-text {
+.workspace.active .text,
+.workspace.active-no-indicator .text {
   color: white;
+}
+
+.app.active {
+  border-top: 2px solid white;
+  border-radius: 5px;
+}
+
+.no-indicator {
+  border: none !important;
+}
+
+.no-rounded {
+  border-radius: 0px !important;
 }
