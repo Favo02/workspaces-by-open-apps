@@ -3,7 +3,7 @@
   "description": "Display a simple workspace indicator showing icons of apps open in it",
   "uuid": "workspaces-by-open-apps@favo02.github.com",
   "url": "https://github.com/Favo02/workspaces-by-open-apps",
-  "version": "2",
+  "version": "4",
   "shell-version": [
     "44"
   ]
