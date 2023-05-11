@@ -21,9 +21,7 @@ Available for GNOME 44: [gnome shell extensions store](andyholmes/gnome-shell-ex
 ## TODO:
 
 - Drag and drop support to move applications between workspaces
-- Highlight focues app in workspace with more than one app
-- Add settings to customize various settings:
-  - position to insert indicator
+- Add settings:
   - color of active indicator
   - show/hide workspace index text
 - CI/CD (github actions): 
@@ -44,7 +42,7 @@ Submit any bug or feature request through an **issue**, or submit your code crea
 Commit message convention: `<type>(<scope>): <summary>`
 
 Type: `build`, `feat`, `fix`, `refactor`, `docs`\
-Scope: `extension`, `prefs`, `schemas`, `css`\
+Scope: `extension`, `settings`, `css`\
 Summary: short summary in present tense, not capitalized, no period at the end
 
 Example: `feat(extension): add drag and drop`
@@ -61,8 +59,10 @@ When the feature is ready and stable create a new pull request.
 
 ## Credits:
 
-Due to the poor (really poor) documentation to develop any gnome shell extension I used snippets of already existing extension (all deprecated and not working anymore) and merged them to create what I was looking for.
+Due to the poor (really poor) documentation to develop any gnome shell extension I used snippets of already existing extension (often deprecated and not working anymore) and merged them to create what I was looking for.
 
 - BaBar taskbar _(and various other fthx extensions)_ (https://github.com/fthx/babar)
 - TaskIcons (https://github.com/rliang/gnome-shell-extension-task-icons)
 - Improved workspace indicator (https://github.com/MichaelAquilina/improved-workspace-indicator)
+- New workspaces shortcut (https://github.com/barnscott/newworkspaceshortcut-barnix.io)
+- AppIndicator Support (https://github.com/ubuntu/gnome-shell-extension-appindicator)
