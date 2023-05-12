@@ -59,6 +59,12 @@
       <summary>Active/Focused indicators color</summary>
       <description>Sets the indicators color.</description>
     </key>
+
+    <key type="s" name="apps-on-all-workspaces-indicator">
+      <default>'ALL'</default>
+      <summary>Apps on all workspaces indicator displayed name</summary>
+      <description>Name displayed for the indicator of apps on all workspaces (second monitor).</description>
+    </key>
     
   </schema>
   

@@ -30,15 +30,11 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 ## TODO
 
 - Drag and drop support to move applications between workspaces ([#10][i10])
-- Add support for multiple monitors ([#9][i9])
-- Click on application focuses that application ([#11][i11])
 - CI/CD (github actions): 
   - Linting ([Eslint](https://eslint.org))
   - Versioning ([GitVersion](https://gitversion.net))
 
-[i9]: https://github.com/Favo02/workspaces-by-open-apps/issues/9
 [i10]: https://github.com/Favo02/workspaces-by-open-apps/issues/10
-[i11]: https://github.com/Favo02/workspaces-by-open-apps/issues/11
 
 ## Contributions
 
