@@ -195,6 +195,43 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 8, 1, 1)
   gridWidget.attach(widget, 1, 8, 1, 1)
 
+  // apps-on-all-workspaces-indicator
+  const old_value = settings.get_string('apps-on-all-workspaces-indicator')
+  label = new Gtk.Label({
+    label: "Text for apps on all workspaces (second monitor)",
+    hexpand: true,
+    halign: Gtk.Align.START,
+  })
+  widget = new Gtk.Entry({
+    halign: Gtk.Align.END,
+    valign: Gtk.Align.CENTER,
+    hexpand: true,
+    xalign: 0,
+  })
+  widget.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, 'edit-clear-symbolic')
+  widget.set_icon_activatable(Gtk.EntryIconPosition.SECONDARY, true)
+  widget.connect('icon-press', (e) => e.set_text(old_value))
+  widget.is_entry = true
+  widget.set_text(old_value)
+  widget.connect(
+    'changed',
+    e => {
+      settings.set_string(
+        'apps-on-all-workspaces-indicator',
+        e.get_text().length > 0 ? e.get_text() : old_value
+      )
+    }
+  )
+
+  settings.bind(
+    "apps-on-all-workspaces-indicator",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  gridWidget.attach(label, 0, 9, 1, 1)
+  gridWidget.attach(widget, 1, 9, 1, 1)
+
   // -------- LINKS --------
 
   const github = new Gtk.Label({

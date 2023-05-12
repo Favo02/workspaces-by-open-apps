@@ -89,7 +89,7 @@ class WorkspaceIndicator {
 
     if (windows && windows.length > 0) {
       this._hasOtherMonitor = true
-      this.create_indicator_button(-1, true)
+      this.create_indicator_button(0, true)
     }
 
     for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
@@ -98,12 +98,12 @@ class WorkspaceIndicator {
   }
 
   create_indicator_button(index, isOtherMonitor) {
-    const workspace = global.workspace_manager.get_workspace_by_index(isOtherMonitor ? 0 : index)
+    const workspace = global.workspace_manager.get_workspace_by_index(index)
     const windows = workspace
       .list_windows()
       .filter(w => isOtherMonitor ? w.is_on_all_workspaces() : !w.is_on_all_workspaces())
     
-    const isActive = global.workspace_manager.get_active_workspace_index() == index
+    const isActive = !isOtherMonitor && global.workspace_manager.get_active_workspace_index() == index
     const showActiveWorkspaceIndicator = this._settings.get_boolean('show-active-workspace-indicator')
     const roundIndicatorsBorder = this._settings.get_boolean('round-indicators-border')
 
@@ -132,7 +132,11 @@ class WorkspaceIndicator {
 
     const showWorkspaceIndex = this._settings.get_boolean('show-workspace-index')
     if (showWorkspaceIndex || isOtherMonitor) {
-      this.create_indicator_label(workspaceIndicator, index)
+      this.create_indicator_label(
+        workspaceIndicator,
+        index,
+        isOtherMonitor ? this._settings.get_string('apps-on-all-workspaces-indicator') : null
+      )
     }
 
     // add to panel
@@ -204,8 +208,8 @@ class WorkspaceIndicator {
       })
   }
 
-  create_indicator_label(button, index) {
-    const txt = index === -1 ? 'ALL' : (index + 1).toString()
+  create_indicator_label(button, index, otherMonitorText) {
+    const txt = otherMonitorText ?? (index + 1).toString()
     button.get_child().insert_child_at_index(new St.Label({
       text: txt,
       style_class: 'text'
