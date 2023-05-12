@@ -190,8 +190,14 @@ class WorkspaceIndicator {
         const icon = new St.Bin({
           style_class: styles,
           style: `border-color: ${indicatorsColor}`,
+          reactive:    true,
+          can_focus:   true,
+          track_hover: true,
           child: texture
         })
+
+        // focus application on click
+        icon.connect('button-press-event', () => win.activate(global.get_current_time()))
 
         // add app Icon to buttons
         button.get_child().add_child(icon)
