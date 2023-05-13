@@ -32,7 +32,6 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 - Drag and drop support to move applications between workspaces ([#10][i10])
 - CI/CD (github actions): 
   - Linting ([Eslint](https://eslint.org))
-  - Versioning ([GitVersion](https://gitversion.net))
 
 [i10]: https://github.com/Favo02/workspaces-by-open-apps/issues/10
 
