@@ -158,13 +158,13 @@ class WorkspaceIndicator {
     switch (this._settings.get_enum('panel-position')) {
       case 0:
         box = '_leftBox'
-        break;
+        break
       case 1:
         box = '_centerBox'
-        break;
+        break
       case 2:
         box = '_rightBox'
-        break;
+        break
     }
 
     const position = this._settings.get_int('position')
