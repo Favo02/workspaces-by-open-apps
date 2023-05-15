@@ -6,7 +6,9 @@
 
 ## Customizable
 
-Change indicator **color**, **toggle indicator** for focused app, toggle **rounded** indicator border and much more! Supports **drag and drop**, change an application workspace just dragging its icon!
+Change indicator **color**, **toggle indicator** for focused app, toggle **rounded** indicator border and much more!
+
+Supports **drag and drop**, change an application workspace just dragging its icon!
 
 [<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/83ff712a-ff47-4592-8cec-c2c34bb8552a" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
@@ -30,8 +32,6 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 ## TODO
 
 - Apply settings without closing settings window ([#14][i14])
-- CI/CD (github actions): 
-  - Linting ([Eslint](https://eslint.org))
 
 [i14]: https://github.com/Favo02/workspaces-by-open-apps/issues/14
 
