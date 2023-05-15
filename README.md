@@ -29,11 +29,11 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 
 ## TODO
 
-- Drag and drop support to move applications between workspaces ([#10][i10])
+- Apply settings without closing settings window ([#14][i14])
 - CI/CD (github actions): 
   - Linting ([Eslint](https://eslint.org))
 
-[i10]: https://github.com/Favo02/workspaces-by-open-apps/issues/10
+[i14]: https://github.com/Favo02/workspaces-by-open-apps/issues/14
 
 ## Contributions
 
