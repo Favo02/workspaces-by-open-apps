@@ -1,5 +1,5 @@
 const { St, Shell, Gio } = imports.gi
-const { main } = imports.ui
+const { main, dnd } = imports.ui
 
 // initialize extension
 function init() {
@@ -123,12 +123,26 @@ class WorkspaceIndicator {
       child:       new St.BoxLayout()
     })
     this._workspacesIndicators.push(workspaceIndicator)
+    
+    // drag and drop
+    workspaceIndicator._delegate = workspaceIndicator
+
+    workspaceIndicator._workspaceIndex = index
+    
+    workspaceIndicator.acceptDrop = function (source) {
+      if (source._workspaceIndex !== this._workspaceIndex) {
+        source._window.change_workspace_by_index(this._workspaceIndex, false)
+        source._window.activate(global.get_current_time())
+        return true
+      }
+      return false
+    } 
 
     // switch to workspace on click
-    workspaceIndicator.connect('button-press-event', () => workspace.activate(global.get_current_time()))
+    workspaceIndicator.connect('button-release-event', () => workspace.activate(global.get_current_time()))
 
     // create apps icons
-    this.create_indicator_icons(workspaceIndicator, windows)
+    this.create_indicator_icons(workspaceIndicator, windows, index)
 
     const showWorkspaceIndex = this._settings.get_boolean('show-workspace-index')
     if (showWorkspaceIndex || isOtherMonitor) {
@@ -144,13 +158,13 @@ class WorkspaceIndicator {
     switch (this._settings.get_enum('panel-position')) {
       case 0:
         box = '_leftBox'
-        break;
+        break
       case 1:
         box = '_centerBox'
-        break;
+        break
       case 2:
         box = '_rightBox'
-        break;
+        break
     }
 
     const position = this._settings.get_int('position')
@@ -160,7 +174,7 @@ class WorkspaceIndicator {
     main.panel[box].insert_child_at_index(workspaceIndicator, insertIndex)
   }
 
-  create_indicator_icons(button, windows) {
+  create_indicator_icons(button, windows, index) {
     windows
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by ids
       .forEach(win => {
@@ -201,7 +215,16 @@ class WorkspaceIndicator {
         })
 
         // focus application on click
-        icon.connect('button-press-event', () => win.activate(global.get_current_time()))
+        icon.connect('button-release-event', () => win.activate(global.get_current_time()))
+
+        // drag and drop
+        icon._workspaceIndex = index
+        icon._window = win
+
+        icon._delegate = icon
+        icon._draggable = dnd.makeDraggable(icon, {
+          dragActorOpacity: 150
+        })
 
         // add app Icon to buttons
         button.get_child().add_child(icon)
