@@ -1,4 +1,4 @@
-const { St, Shell, Gio } = imports.gi
+const { Clutter, St, Shell, Gio } = imports.gi
 const { main, dnd } = imports.ui
 
 // initialize extension
@@ -141,6 +141,12 @@ class WorkspaceIndicator {
     // switch to workspace on click
     workspaceIndicator.connect('button-release-event', () => workspace.activate(global.get_current_time()))
 
+    // assign to "this" settings otherwise function triggered on connect can't access them
+    workspaceIndicator.scrollWrap = this._settings.get_boolean('scroll-wraparound')
+    workspaceIndicator.inverseScroll = this._settings.get_boolean('inverse-scroll')
+    // scroll workspaces on mousewhell scroll
+    workspaceIndicator.connect('scroll-event', this.scrollWorkspace.bind(workspaceIndicator))
+
     // create apps icons
     this.create_indicator_icons(workspaceIndicator, windows, index)
 
@@ -215,7 +221,8 @@ class WorkspaceIndicator {
         })
 
         // focus application on click
-        icon.connect('button-release-event', () => win.activate(global.get_current_time()))
+        icon.middleClosesApp = this._settings.get_boolean('middle-click-close-app')
+        icon.connect('button-release-event', this.clickApplication.bind(icon))
 
         // drag and drop
         icon._workspaceIndex = index
@@ -237,6 +244,53 @@ class WorkspaceIndicator {
       text: txt,
       style_class: 'text'
     }), 0)
+  }
+
+  clickApplication(actor, event) {
+    // left/right click: focus application
+    if (event.get_button() == 1 || event.get_button() == 3) {
+      this._window.activate(global.get_current_time())
+    }
+
+    // middle click: close application
+    if (this.middleClosesApp && event.get_button() == 2) {
+      this._window.delete(global.get_current_time())
+    }
+  }
+
+  scrollWorkspace(actor, event) {
+    let scroll_direction = event.get_scroll_direction()
+    let direction = 0
+
+		switch (scroll_direction) {
+      case Clutter.ScrollDirection.LEFT:
+      case Clutter.ScrollDirection.UP:
+        direction = this.inverseScroll ? -1 : 1
+        break
+      case Clutter.ScrollDirection.RIGHT:
+      case Clutter.ScrollDirection.DOWN:
+        direction = this.inverseScroll ? 1 : -1
+        break
+      default:
+        return Clutter.EVENT_PROPAGATE
+    }
+
+    const workspaceManager = global.workspace_manager
+
+    let newIndex = workspaceManager.get_active_workspace_index() + direction
+
+    // wrap
+    const wrap = this.scrollWrap
+    if (wrap) newIndex = mod(newIndex, workspaceManager.n_workspaces)
+
+    if (newIndex >= 0 && newIndex < workspaceManager.n_workspaces) {
+      workspaceManager.get_workspace_by_index(newIndex).activate(global.get_current_time())
+    }
+
+    // modulo working for negative numbers
+    function mod(n, m) {
+      return ((n % m) + m) % m;
+    }
   }
 
 }
