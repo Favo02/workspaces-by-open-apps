@@ -4,17 +4,27 @@
 
 [<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/a4139bec-db00-4de9-a49a-74e640163e7e" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
-## Customizable
+## Usage and Customization
 
-Change indicator **color**, **toggle indicator** for focused app, toggle **rounded** indicator border and much more!
+- Support for **drag and drop**: change an application workspace just dragging its icon
+- **Right/Left** click to focus application, **Middle click** to close
+- **Workspaces scrolling**: change active workspace scrolling hover the indicator
+- Toggle application icons **desaturation**
+- Show/Hide workspaces **index label**
+- Show/Hide active workspace and focused app **indicator**
+- Change indicator **style** and **color**
+- Support for **multiple monitor** _(for both static and dynamic workspaces)_
 
-Supports **drag and drop**, change an application workspace just dragging its icon and **workspaces scrolling**, move between workspaces scrolling hover the indicator.
 
 [<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/83ff712a-ff47-4592-8cec-c2c34bb8552a" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
 <br />
 
 [<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/d838baf9-1f70-45d0-a8ba-26975823ab95" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+
+<br />
+
+[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/f022ed21-d150-4871-817c-c604f3c28921" alt="Preview" height="47">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
 ## Deploy
 
