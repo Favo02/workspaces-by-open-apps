@@ -221,7 +221,8 @@ class WorkspaceIndicator {
         })
 
         // focus application on click
-        icon.connect('button-release-event', () => win.activate(global.get_current_time()))
+        icon.middleClosesApp = this._settings.get_boolean('middle-click-close-app')
+        icon.connect('button-release-event', this.clickApplication.bind(icon))
 
         // drag and drop
         icon._workspaceIndex = index
@@ -243,6 +244,18 @@ class WorkspaceIndicator {
       text: txt,
       style_class: 'text'
     }), 0)
+  }
+
+  clickApplication(actor, event) {
+    // left/right click: focus application
+    if (event.get_button() == 1 || event.get_button() == 3) {
+      this._window.activate(global.get_current_time())
+    }
+
+    // middle click: close application
+    if (this.middleClosesApp && event.get_button() == 2) {
+      this._window.delete(global.get_current_time())
+    }
   }
 
   scrollWorkspace(actor, event) {

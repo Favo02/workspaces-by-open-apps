@@ -66,6 +66,12 @@
       <description>Scrolling workspaces in inverse order.</description>
     </key>
 
+    <key type="b" name="middle-click-close-app">
+      <default>true</default>
+      <summary>Middle click closes application</summary>
+      <description>Middle click closes application.</description>
+    </key>
+
     <key type="s" name="indicators-color">
       <default>'rgba(255,255,255,1)'</default>
       <summary>Active/Focused indicators color</summary>
