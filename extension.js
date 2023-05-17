@@ -200,6 +200,11 @@ class WorkspaceIndicator {
           texture.set_opacity(150)
         }
 
+        const desaturateApps = this._settings.get_boolean('desaturate-apps')
+        if (desaturateApps) {
+          texture.add_effect(new Clutter.DesaturateEffect())
+        }
+
         // create container (with texture as child)
         const showFocusedAppIndicator = this._settings.get_boolean('show-focused-app-indicator')
         const roundIndicatorsBorder = this._settings.get_boolean('round-indicators-border')
