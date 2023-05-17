@@ -224,6 +224,24 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 10, 1, 1)
   gridWidget.attach(widget, 1, 10, 1, 1)
 
+  // desaturate-apps
+  label = new Gtk.Label({
+    label: "Desaturate applications icons",
+    hexpand: true,
+    halign: Gtk.Align.START,
+  })
+  widget = new Gtk.Switch({
+    halign: Gtk.Align.END
+  })
+  settings.bind(
+    "desaturate-apps",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  gridWidget.attach(label, 0, 11, 1, 1)
+  gridWidget.attach(widget, 1, 11, 1, 1)
+
   // indicators-color
   label = new Gtk.Label({
     label: "Active/Focused indicators color",
@@ -246,8 +264,8 @@ function buildPrefsWidget() {
         widget.get_rgba().to_string()
       )
   })
-  gridWidget.attach(label, 0, 11, 1, 1)
-  gridWidget.attach(widget, 1, 11, 1, 1)
+  gridWidget.attach(label, 0, 12, 1, 1)
+  gridWidget.attach(widget, 1, 12, 1, 1)
 
   // apps-on-all-workspaces-indicator
   const old_value = settings.get_string('apps-on-all-workspaces-indicator')
@@ -283,8 +301,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 12, 1, 1)
-  gridWidget.attach(widget, 1, 12, 1, 1)
+  gridWidget.attach(label, 0, 13, 1, 1)
+  gridWidget.attach(widget, 1, 13, 1, 1)
 
   // -------- LINKS --------
 
