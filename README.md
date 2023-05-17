@@ -8,7 +8,7 @@
 
 Change indicator **color**, **toggle indicator** for focused app, toggle **rounded** indicator border and much more!
 
-Supports **drag and drop**, change an application workspace just dragging its icon!
+Supports **drag and drop**, change an application workspace just dragging its icon and **workspaces scrolling**, move between workspaces scrolling hover the indicator.
 
 [<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/83ff712a-ff47-4592-8cec-c2c34bb8552a" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
@@ -73,3 +73,4 @@ Due to the poor (really poor) documentation to develop any gnome shell extension
 - Improved workspace indicator (https://github.com/MichaelAquilina/improved-workspace-indicator)
 - New workspaces shortcut (https://github.com/barnscott/newworkspaceshortcut-barnix.io)
 - AppIndicator Support (https://github.com/ubuntu/gnome-shell-extension-appindicator)
+- Top Panel Workspace Scroll (https://github.com/timbertson/gnome-shell-scroll-workspaces)
