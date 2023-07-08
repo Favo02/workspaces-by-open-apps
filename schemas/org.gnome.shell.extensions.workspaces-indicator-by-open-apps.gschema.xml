@@ -78,6 +78,12 @@
       <description>Removes saturation to application icons.</description>
     </key>
 
+    <key type="b" name="hide-empty-workspaces">
+      <default>false</default>
+      <summary>Hide empty workspaces</summary>
+      <description>Removes the indicator of empty workspaces.</description>
+    </key>
+
     <key type="s" name="indicators-color">
       <default>'rgba(255,255,255,1)'</default>
       <summary>Active/Focused indicators color</summary>
