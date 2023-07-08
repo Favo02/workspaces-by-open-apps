@@ -106,7 +106,8 @@ class WorkspaceIndicator {
     const isActive = !isOtherMonitor && global.workspace_manager.get_active_workspace_index() == index
 
     // hide empty workspaces
-    if (windows.length === 0 && !isActive) return
+    const hideEmptyWorkspaces = this._settings.get_boolean('hide-empty-workspaces')
+    if (hideEmptyWorkspaces && !isActive && windows.length === 0) return
 
     const showActiveWorkspaceIndicator = this._settings.get_boolean('show-active-workspace-indicator')
     const roundIndicatorsBorder = this._settings.get_boolean('round-indicators-border')
