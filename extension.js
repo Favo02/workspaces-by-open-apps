@@ -19,7 +19,7 @@ class WorkspaceIndicator {
     this._workspacesIndicators = []
     this._hasOtherMonitor = false
     
-    this.connectSignals() // signals that triggers refresh()
+    this.connect_signals() // signals that triggers refresh()
     this.refresh() // initialize indicator
   }
   
@@ -33,13 +33,13 @@ class WorkspaceIndicator {
     this._workspacesIndicators = []
     this._hasOtherMonitor = null
 
-    this.disconnectSignals()
+    this.disconnect_signals()
   }
 
   /**
    * connect signals to refresh indicators
    */
-  connectSignals() {
+  connect_signals() {
     // signals for global.workspace_manager
     this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect(
       "notify::n-workspaces", // add/remove workspace
@@ -78,7 +78,7 @@ class WorkspaceIndicator {
   /**
    * disconnect signals
    */
-  disconnectSignals() {
+  disconnect_signals() {
     global.workspace_manager.disconnect(this._workspaceNumberChangedSIGNAL)
     global.workspace_manager.disconnect(this._workspaceSwitchedSIGNAL)
     global.workspace_manager.disconnect(this._workspaceReorderedSIGNAL)
@@ -180,7 +180,7 @@ class WorkspaceIndicator {
     workspaceIndicator.inverseScroll = this._settings.get_boolean('inverse-scroll')
 
     // scroll workspaces on mousewhell scroll
-    workspaceIndicator.connect('scroll-event', this.scrollWorkspace.bind(workspaceIndicator))
+    workspaceIndicator.connect('scroll-event', this.on_scroll_workspace.bind(workspaceIndicator))
 
     // create apps icons
     this.create_indicator_icons(workspaceIndicator, windows, index)
@@ -271,7 +271,7 @@ class WorkspaceIndicator {
 
         // focus application on click
         icon.middleClosesApp = this._settings.get_boolean('middle-click-close-app')
-        icon.connect('button-release-event', this.clickApplication.bind(icon))
+        icon.connect('button-release-event', this.on_click_application.bind(icon))
 
         // drag and drop
         icon._workspaceIndex = index
@@ -327,7 +327,7 @@ class WorkspaceIndicator {
    * @param actor actor clicked
    * @param event click event 
    */
-  clickApplication(actor, event) {
+  on_click_application(actor, event) {
     // left/right click: focus application
     if (event.get_button() == 1 || event.get_button() == 3) {
       this._window.activate(global.get_current_time())
@@ -345,7 +345,7 @@ class WorkspaceIndicator {
    * @param event click event 
    * @returns 
    */
-  scrollWorkspace(actor, event) {
+  on_scroll_workspace(actor, event) {
     // scroll direction
     let scroll_direction = event.get_scroll_direction()
 
