@@ -1,4 +1,4 @@
-const { Clutter, St, Shell, Gio } = imports.gi
+const { Clutter, St, Shell, Gio, Meta } = imports.gi
 const { main, dnd } = imports.ui
 
 // initialize extension
@@ -249,9 +249,27 @@ class WorkspaceIndicator {
   }
 
   create_indicator_label(button, index, otherMonitorText) {
-    const txt = otherMonitorText ?? (index + 1).toString()
+    let indicatorText
+
+    // other monitor custom text
+    if (otherMonitorText) {
+      indicatorText = otherMonitorText
+    }
+    else {
+      const customName = Meta.prefs_get_workspace_name(index)
+
+      // custom workspace name
+      if (customName !== `Workspace ${index+1}`) {
+        indicatorText = customName
+      }
+      // default text: index
+      else {
+        indicatorText = (index+1).toString()
+      }
+    }
+
     button.get_child().insert_child_at_index(new St.Label({
-      text: txt,
+      text: indicatorText,
       style_class: 'text'
     }), 0)
   }
