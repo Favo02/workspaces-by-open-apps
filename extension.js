@@ -119,7 +119,6 @@ class WorkspaceIndicator {
    * create indicator for a single workspace
    * @param {number} index index of workspace 
    * @param {boolean} isOtherMonitor special indicator for other monitor 
-   * @returns 
    */
   create_indicator_button(index, isOtherMonitor) {
     const workspace = global.workspace_manager.get_workspace_by_index(index)
@@ -362,7 +361,6 @@ class WorkspaceIndicator {
    * scroll on workspace indicator handler
    * @param actor actor scrolled on 
    * @param event click event 
-   * @returns 
    */
   on_scroll_workspace(actor, event) {
     // scroll direction
