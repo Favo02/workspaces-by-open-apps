@@ -172,8 +172,8 @@ class WorkspaceIndicator {
     } 
 
     // switch to workspace on click
-    // TODO: move this to custom function
-    workspaceIndicator.connect('button-release-event', () => workspace.activate(global.get_current_time()))
+    workspaceIndicator._workspace = workspace
+    workspaceIndicator.connect('button-release-event', this.on_click_workspace.bind(workspaceIndicator))
 
     // assign to "this" settings otherwise function triggered on connect can't access them
     workspaceIndicator.scrollWrap = this._settings.get_boolean('scroll-wraparound')
@@ -320,6 +320,25 @@ class WorkspaceIndicator {
       text: indicatorText,
       style_class: 'text'
     }), 0)
+  }
+
+  /**
+   * click on workspace handler
+   * @param actor actor clicked
+   * @param event click event 
+   */
+  on_click_workspace(actor, event) {
+    // left click: focus workspace
+    if (event.get_button() == 1) {
+      this._workspace.activate(global.get_current_time())
+    }
+
+    // middle click: do nothing
+
+    // right click: rename workspace
+    if (event.get_button() == 1) {
+      // TODO: rename workspace
+    }
   }
 
   /**
