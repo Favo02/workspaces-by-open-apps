@@ -129,20 +129,20 @@ class WorkspaceIndicator {
     const isActive = !isOtherMonitor && global.workspace_manager.get_active_workspace_index() == index
 
     // hide empty workspaces
-    const hideEmptyWorkspaces = this._settings.get_boolean('hide-empty-workspaces')
+    const hideEmptyWorkspaces = this._settings.get_boolean("hide-empty-workspaces")
     if (hideEmptyWorkspaces && !isActive && windows.length === 0) return
 
     // indicator settings
-    const showActiveWorkspaceIndicator = this._settings.get_boolean('show-active-workspace-indicator')
-    const roundIndicatorsBorder = this._settings.get_boolean('round-indicators-border')
+    const showActiveWorkspaceIndicator = this._settings.get_boolean("show-active-workspace-indicator")
+    const roundIndicatorsBorder = this._settings.get_boolean("round-indicators-border")
 
     // indicator styles
-    let style_classes = 'workspace'
-    if (isActive) { style_classes += ' active' }
-    if (!showActiveWorkspaceIndicator) { style_classes += ' no-indicator' }
-    if (!roundIndicatorsBorder) { style_classes += ' no-rounded' }
+    let style_classes = "workspace"
+    if (isActive) { style_classes += " active" }
+    if (!showActiveWorkspaceIndicator) { style_classes += " no-indicator" }
+    if (!roundIndicatorsBorder) { style_classes += " no-rounded" }
 
-    const indicatorsColor = this._settings.get_string('indicators-color')
+    const indicatorsColor = this._settings.get_string("indicators-color")
     const style = `border-color: ${indicatorsColor}`
 
     // create indicator
@@ -172,43 +172,43 @@ class WorkspaceIndicator {
 
     // switch to workspace on click
     workspaceIndicator._workspace = workspace
-    workspaceIndicator.connect('button-release-event', this.on_click_workspace.bind(workspaceIndicator))
+    workspaceIndicator.connect("button-release-event", this.on_click_workspace.bind(workspaceIndicator))
 
     // assign to "this" settings otherwise function triggered on connect can't access them
-    workspaceIndicator.scrollWrap = this._settings.get_boolean('scroll-wraparound')
-    workspaceIndicator.inverseScroll = this._settings.get_boolean('inverse-scroll')
+    workspaceIndicator.scrollWrap = this._settings.get_boolean("scroll-wraparound")
+    workspaceIndicator.inverseScroll = this._settings.get_boolean("inverse-scroll")
 
     // scroll workspaces on mousewhell scroll
-    workspaceIndicator.connect('scroll-event', this.on_scroll_workspace.bind(workspaceIndicator))
+    workspaceIndicator.connect("scroll-event", this.on_scroll_workspace.bind(workspaceIndicator))
 
     // create apps icons
     this.create_indicator_icons(workspaceIndicator, windows, index)
 
     // create indicator label
-    const showWorkspaceIndex = this._settings.get_boolean('show-workspace-index')
+    const showWorkspaceIndex = this._settings.get_boolean("show-workspace-index")
     if (showWorkspaceIndex || isOtherMonitor) {
       this.create_indicator_label(
         workspaceIndicator,
         index,
-        isOtherMonitor ? this._settings.get_string('apps-on-all-workspaces-indicator') : null
+        isOtherMonitor ? this._settings.get_string("apps-on-all-workspaces-indicator") : null
       )
     }
 
     // add to panel
     let box
-    switch (this._settings.get_enum('panel-position')) {
+    switch (this._settings.get_enum("panel-position")) {
       case 0:
-        box = '_leftBox'
+        box = "_leftBox"
         break
       case 1:
-        box = '_centerBox'
+        box = "_centerBox"
         break
       case 2:
-        box = '_rightBox'
+        box = "_rightBox"
         break
     }
 
-    const position = this._settings.get_int('position')
+    const position = this._settings.get_int("position")
 
     // index to insert indicator in panel
     const insertIndex = isOtherMonitor ? 0 : position + index + (this._hasOtherMonitor ? 1 : 0)
@@ -236,27 +236,27 @@ class WorkspaceIndicator {
         const texture = app.create_icon_texture(20)
 
         // set low opacity for not focused apps
-        const reduceInactiveAppsOpacity = this._settings.get_boolean('reduce-inactive-apps-opacity')
+        const reduceInactiveAppsOpacity = this._settings.get_boolean("reduce-inactive-apps-opacity")
         if (!win.has_focus() && reduceInactiveAppsOpacity) {
           texture.set_opacity(150)
         }
 
         // desaturate icon setting
-        const desaturateApps = this._settings.get_boolean('desaturate-apps')
+        const desaturateApps = this._settings.get_boolean("desaturate-apps")
         if (desaturateApps) {
           texture.add_effect(new Clutter.DesaturateEffect())
         }
 
         // styles
-        const showFocusedAppIndicator = this._settings.get_boolean('show-focused-app-indicator')
-        const roundIndicatorsBorder = this._settings.get_boolean('round-indicators-border')
+        const showFocusedAppIndicator = this._settings.get_boolean("show-focused-app-indicator")
+        const roundIndicatorsBorder = this._settings.get_boolean("round-indicators-border")
 
-        let style_classes = 'app'
-        if (win.has_focus()) { style_classes += ' active' }
-        if (!showFocusedAppIndicator) { style_classes += ' no-indicator' }
-        if (!roundIndicatorsBorder) { style_classes += ' no-rounded' }
+        let style_classes = "app"
+        if (win.has_focus()) { style_classes += " active" }
+        if (!showFocusedAppIndicator) { style_classes += " no-indicator" }
+        if (!roundIndicatorsBorder) { style_classes += " no-rounded" }
 
-        const indicatorsColor = this._settings.get_string('indicators-color')
+        const indicatorsColor = this._settings.get_string("indicators-color")
         const style = `border-color: ${indicatorsColor}`
 
         const icon = new St.Bin({
@@ -269,8 +269,8 @@ class WorkspaceIndicator {
         })
 
         // focus application on click
-        icon.middleClosesApp = this._settings.get_boolean('middle-click-close-app')
-        icon.connect('button-release-event', this.on_click_application.bind(icon))
+        icon.middleClosesApp = this._settings.get_boolean("middle-click-close-app")
+        icon.connect("button-release-event", this.on_click_application.bind(icon))
 
         // drag and drop
         icon._workspaceIndex = index
@@ -317,7 +317,7 @@ class WorkspaceIndicator {
     // add label to indicator
     button.get_child().insert_child_at_index(new St.Label({
       text: indicatorText,
-      style_class: 'text'
+      style_class: "text"
     }), 0)
   }
 
@@ -356,11 +356,11 @@ class WorkspaceIndicator {
       // create text input
       const entry = new St.Entry({
         text: Meta.prefs_get_workspace_name(workspaceIndex),
-        style_class: 'text',
+        style_class: "text",
       })
       
       // connect typing event: update workspace name
-      entry.connect('key-press-event', () => {
+      entry.connect("key-press-event", () => {
         const text = entry.get_text()
         Meta.prefs_change_workspace_name(workspaceIndex, text)
       })
