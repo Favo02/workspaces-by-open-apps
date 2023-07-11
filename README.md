@@ -45,7 +45,7 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 - Display workspace new name without switching workspace ([#26][i26])
 
 [i14]: https://github.com/Favo02/workspaces-by-open-apps/issues/14
-[i14]: https://github.com/Favo02/workspaces-by-open-apps/issues/26
+[i26]: https://github.com/Favo02/workspaces-by-open-apps/issues/26
 
 ## Contributions
 
