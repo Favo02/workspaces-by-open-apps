@@ -1,4 +1,4 @@
-const { Clutter, St, Shell, Gio, Meta } = imports.gi
+const { Clutter, St, Shell, Meta } = imports.gi
 const { main, dnd } = imports.ui
 
 // initialize extension
@@ -335,8 +335,41 @@ class WorkspaceIndicator {
     // middle click: do nothing
 
     // right click: rename workspace
-    if (event.get_button() == 1) {
-      // TODO: rename workspace
+    if (event.get_button() == 3) {
+
+      const workspaceManager = global.workspace_manager
+      const workspaceIndex = this._workspaceIndex
+
+      // activate workspace
+      if (workspaceManager.get_active_workspace_index() !== workspaceIndex) {
+        this._workspace.activate(global.get_current_time())
+        return
+      }
+
+      // if rename label exists, destroy it 
+      if (this._renameWorkspace) {
+        this._renameWorkspace.destroy()
+        this._renameWorkspace = null
+        return
+      }
+
+      // create text input
+      const entry = new St.Entry({
+        text: Meta.prefs_get_workspace_name(workspaceIndex),
+        style_class: 'text',
+      })
+      
+      // connect typing event: update workspace name
+      entry.connect('key-press-event', () => {
+        const text = entry.get_text()
+        Meta.prefs_change_workspace_name(workspaceIndex, text)
+      })
+
+      // add to indicator
+      this.get_child().insert_child_at_index(entry, 0)
+      entry.grab_key_focus()      
+      
+      this._renameWorkspace = entry
     }
   }
 
