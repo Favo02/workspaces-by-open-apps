@@ -14,17 +14,17 @@
 - Show/Hide active workspace and focused app **indicator**
 - Change indicator **style** and **color**
 - Support for **multiple monitor** _(for both static and dynamic workspaces)_
+- **_[NEW!]_** Hide **empty** workspaces
+- **_[NEW!]_** **Rename workspaces** directly from the extension _(switch workspace to apply new name)_
 
 
 [<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/83ff712a-ff47-4592-8cec-c2c34bb8552a" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
-<br />
-
 [<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/d838baf9-1f70-45d0-a8ba-26975823ab95" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
-<br />
-
 [<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/f022ed21-d150-4871-817c-c604f3c28921" alt="Preview" height="47">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+
+[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/71453236-581f-4580-81b3-4f461db508e2" alt="Preview" height="47">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
 ## Deploy
 
@@ -42,8 +42,10 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 ## TODO
 
 - Apply settings without closing settings window ([#14][i14])
+- Display workspace new name without switching workspace ([#26][i26])
 
 [i14]: https://github.com/Favo02/workspaces-by-open-apps/issues/14
+[i14]: https://github.com/Favo02/workspaces-by-open-apps/issues/26
 
 ## Contributions
 
