@@ -41,38 +41,17 @@ class WorkspaceIndicator {
    */
   connect_signals() {
     // signals for global.workspace_manager
-    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect(
-      "notify::n-workspaces", // add/remove workspace
-      this.refresh.bind(this)
-    )
-    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect(
-      "workspace-switched", // change active workspace
-      this.refresh.bind(this)
-    )
-    this._workspaceReorderedSIGNAL = global.workspace_manager.connect(
-      "workspaces-reordered", // reorder workspaces
-      this.refresh.bind(this)
-    )
+    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect("notify::n-workspaces", () => this.refresh())
+    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect("workspace-switched", () => this.refresh())
+    this._workspaceReorderedSIGNAL = global.workspace_manager.connect("workspaces-reordered", () => this.refresh())
 
     // signals for Shell.WindowTracker.get_default()
-    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect(
-      "tracked-windows-changed",
-      this.refresh.bind(this)
-    )
+    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect("tracked-windows-changed", () => this.refresh())
 
     // signals for global.display
-    this._windowsRestackedSIGNAL = global.display.connect(
-      "restacked",
-      this.refresh.bind(this)
-    )
-    this._windowLeftMonitorSIGNAL = global.display.connect(
-      "window-left-monitor",
-      this.refresh.bind(this)
-    )
-    this._windowEnteredMonitorSIGNAL = global.display.connect(
-      "window-entered-monitor",
-      this.refresh.bind(this)
-    )
+    this._windowsRestackedSIGNAL = global.display.connect("restacked", () => this.refresh())
+    this._windowLeftMonitorSIGNAL = global.display.connect("window-left-monitor", () => this.refresh())
+    this._windowEnteredMonitorSIGNAL = global.display.connect("window-entered-monitor", () => this.refresh())
   }
 
   /**
