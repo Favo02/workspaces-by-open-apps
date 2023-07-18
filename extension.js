@@ -207,11 +207,12 @@ class WorkspaceIndicator {
         box = "_rightBox"
         break
     }
-
-    const position = this._settings.get_int("position")
-
+    
+    // position in panel selected by user
+    const positionInPanel = this._settings.get_int("position")
     // index to insert indicator in panel
-    const insertIndex = isOtherMonitor ? 0 : position + index + (this._hasOtherMonitor ? 1 : 0)
+    const insertIndex = positionInPanel + (this._workspacesIndicators.length-1)
+
     main.panel[box].insert_child_at_index(workspaceIndicator, insertIndex)
   }
 
