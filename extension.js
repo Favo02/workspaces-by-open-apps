@@ -41,38 +41,17 @@ class WorkspaceIndicator {
    */
   connect_signals() {
     // signals for global.workspace_manager
-    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect(
-      "notify::n-workspaces", // add/remove workspace
-      this.refresh.bind(this)
-    )
-    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect(
-      "workspace-switched", // change active workspace
-      this.refresh.bind(this)
-    )
-    this._workspaceReorderedSIGNAL = global.workspace_manager.connect(
-      "workspaces-reordered", // reorder workspaces
-      this.refresh.bind(this)
-    )
+    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect("notify::n-workspaces", () => this.refresh())
+    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect("workspace-switched", () => this.refresh())
+    this._workspaceReorderedSIGNAL = global.workspace_manager.connect("workspaces-reordered", () => this.refresh())
 
     // signals for Shell.WindowTracker.get_default()
-    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect(
-      "tracked-windows-changed",
-      this.refresh.bind(this)
-    )
+    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect("tracked-windows-changed", () => this.refresh())
 
     // signals for global.display
-    this._windowsRestackedSIGNAL = global.display.connect(
-      "restacked",
-      this.refresh.bind(this)
-    )
-    this._windowLeftMonitorSIGNAL = global.display.connect(
-      "window-left-monitor",
-      this.refresh.bind(this)
-    )
-    this._windowEnteredMonitorSIGNAL = global.display.connect(
-      "window-entered-monitor",
-      this.refresh.bind(this)
-    )
+    this._windowsRestackedSIGNAL = global.display.connect("restacked", () => this.refresh())
+    this._windowLeftMonitorSIGNAL = global.display.connect("window-left-monitor", () => this.refresh())
+    this._windowEnteredMonitorSIGNAL = global.display.connect("window-entered-monitor", () => this.refresh())
   }
 
   /**
@@ -173,6 +152,7 @@ class WorkspaceIndicator {
     // switch to workspace on click
     workspaceIndicator._workspace = workspace
     workspaceIndicator.connect("button-release-event", this.on_click_workspace.bind(workspaceIndicator))
+    workspaceIndicator.connect("touch-event", this.on_touch_workspace.bind(workspaceIndicator))
 
     // assign to "this" settings otherwise function triggered on connect can't access them
     workspaceIndicator.scrollWrap = this._settings.get_boolean("scroll-wraparound")
@@ -272,6 +252,7 @@ class WorkspaceIndicator {
         // focus application on click
         icon.middleClosesApp = this._settings.get_boolean("middle-click-close-app")
         icon.connect("button-release-event", this.on_click_application.bind(icon))
+        icon.connect("touch-event", this.on_touch_application.bind(icon))
 
         // drag and drop
         icon._workspaceIndex = index
@@ -375,6 +356,13 @@ class WorkspaceIndicator {
   }
 
   /**
+   * touch on workspace handler
+   */
+  on_touch_workspace() {
+    this._workspace.activate(global.get_current_time())
+  }
+
+  /**
    * click on application icon handler
    * @param actor actor clicked
    * @param event click event 
@@ -389,6 +377,13 @@ class WorkspaceIndicator {
     if (this.middleClosesApp && event.get_button() == 2) {
       this._window.delete(global.get_current_time())
     }
+  }
+
+  /**
+   * touch on application handler
+   */
+  on_touch_application() {
+    this._window.activate(global.get_current_time())
   }
 
   /**
