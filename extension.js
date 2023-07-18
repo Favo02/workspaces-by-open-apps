@@ -152,6 +152,7 @@ class WorkspaceIndicator {
     // switch to workspace on click
     workspaceIndicator._workspace = workspace
     workspaceIndicator.connect("button-release-event", this.on_click_workspace.bind(workspaceIndicator))
+    workspaceIndicator.connect("touch-event", this.on_touch_workspace.bind(workspaceIndicator))
 
     // assign to "this" settings otherwise function triggered on connect can't access them
     workspaceIndicator.scrollWrap = this._settings.get_boolean("scroll-wraparound")
@@ -251,6 +252,7 @@ class WorkspaceIndicator {
         // focus application on click
         icon.middleClosesApp = this._settings.get_boolean("middle-click-close-app")
         icon.connect("button-release-event", this.on_click_application.bind(icon))
+        icon.connect("touch-event", this.on_touch_application.bind(icon))
 
         // drag and drop
         icon._workspaceIndex = index
@@ -354,6 +356,13 @@ class WorkspaceIndicator {
   }
 
   /**
+   * touch on workspace handler
+   */
+  on_touch_workspace() {
+    this._workspace.activate(global.get_current_time())
+  }
+
+  /**
    * click on application icon handler
    * @param actor actor clicked
    * @param event click event 
@@ -368,6 +377,13 @@ class WorkspaceIndicator {
     if (this.middleClosesApp && event.get_button() == 2) {
       this._window.delete(global.get_current_time())
     }
+  }
+
+  /**
+   * touch on application handler
+   */
+  on_touch_application() {
+    this._window.activate(global.get_current_time())
   }
 
   /**
