@@ -204,6 +204,9 @@ class WorkspaceIndicator {
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id
       .forEach((win, count) => {
 
+        // hide dialogs, popovers and tooltip
+        if (this._settings.get_boolean("hide-tooltips") && (win.get_window_type() != Meta.WindowType.NORMAL)) return
+
         // limit icons
         if (!win.has_focus() && count >= limitIcons) {
           if (count == limitIcons) {
