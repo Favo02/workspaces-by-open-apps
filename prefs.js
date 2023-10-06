@@ -284,6 +284,24 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 13, 1, 1)
   gridWidget.attach(widget, 1, 13, 1, 1)
 
+  // hide-tooltips
+  label = new Gtk.Label({
+    label: "Hide tooltips",
+    hexpand: true,
+    halign: Gtk.Align.START,
+  })
+  widget = new Gtk.Switch({
+    halign: Gtk.Align.END
+  })
+  settings.bind(
+    "hide-tooltips",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  gridWidget.attach(label, 0, 14, 1, 1)
+  gridWidget.attach(widget, 1, 14, 1, 1)
+
   // indicators-color
   label = new Gtk.Label({
     label: "Active/Focused indicators color",
@@ -306,8 +324,8 @@ function buildPrefsWidget() {
         widget.get_rgba().to_string()
       )
   })
-  gridWidget.attach(label, 0, 14, 1, 1)
-  gridWidget.attach(widget, 1, 14, 1, 1)
+  gridWidget.attach(label, 0, 15, 1, 1)
+  gridWidget.attach(widget, 1, 15, 1, 1)
 
   // apps-on-all-workspaces-indicator
   const old_value = settings.get_string('apps-on-all-workspaces-indicator')
@@ -343,8 +361,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 15, 1, 1)
-  gridWidget.attach(widget, 1, 15, 1, 1)
+  gridWidget.attach(label, 0, 16, 1, 1)
+  gridWidget.attach(widget, 1, 16, 1, 1)
 
   // -------- LINKS --------
 
@@ -355,7 +373,7 @@ function buildPrefsWidget() {
     visible: true,
     margin_top: 40,
   })
-  gridWidget.attach(github, 0, 16, 2, 1)
+  gridWidget.attach(github, 0, 17, 2, 1)
 
   const issue = new Gtk.Label({
     label: `<a href="https://github.com/Favo02/workspaces-by-open-apps/issues">Report a bug / Feature request</a>`,
@@ -363,7 +381,7 @@ function buildPrefsWidget() {
     use_markup: true,
     visible: true,
   })
-  gridWidget.attach(issue, 0, 17, 2, 1)
+  gridWidget.attach(issue, 0, 18, 2, 1)
 
   return prefsWidget
 }
