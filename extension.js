@@ -75,17 +75,9 @@ class WorkspaceIndicator {
   refresh() {
     this._workspacesIndicators.splice(0).forEach(i => i.destroy())
 
-    // check if apps on all workspaces (other monitor)
-    const windows = global.workspace_manager
-      .get_workspace_by_index(0)
-      .list_windows()
-      .filter(w => w.is_on_all_workspaces())
-
     // build indicator for other monitor
-    if (windows && windows.length > 0) {
-      this._hasOtherMonitor = true
-      this.create_indicator_button(0, true)
-    }
+    this._hasOtherMonitor = true
+    this.create_indicator_button(0, true)
 
     // build normal workspaces indicators
     for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
@@ -93,7 +85,6 @@ class WorkspaceIndicator {
     }
   }
 
-  // create indicator for a signle workspace
   /**
    * create indicator for a single workspace
    * @param {number} index index of workspace 
@@ -104,6 +95,9 @@ class WorkspaceIndicator {
     const windows = workspace
       .list_windows()
       .filter(w => isOtherMonitor ? w.is_on_all_workspaces() : !w.is_on_all_workspaces())
+
+    // hide other monitor indicator if no windows on all workspaces
+    if (isOtherMonitor && windows.length === 0) return
     
     const isActive = !isOtherMonitor && global.workspace_manager.get_active_workspace_index() == index
 
