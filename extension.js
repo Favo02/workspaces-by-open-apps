@@ -156,7 +156,7 @@ class WorkspaceIndicator {
     workspaceIndicator.connect("scroll-event", this.on_scroll_workspace.bind(workspaceIndicator))
 
     // create apps icons
-    this.create_indicator_icons(workspaceIndicator, windows, index)
+    this.create_indicator_icons(workspaceIndicator, windows, isActive, index)
 
     // create indicator label
     const showWorkspaceIndex = this._settings.get_boolean("show-workspace-index")
@@ -196,10 +196,26 @@ class WorkspaceIndicator {
    * @param windows windows to create icons of 
    * @param {number} index index of workspace 
    */
-  create_indicator_icons(button, windows, index) {
+  create_indicator_icons(button, windows, isActive, index) {
+    const limitIcons = isActive ? 100 : 3 // FIXME: add setting
+
     windows
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id
-      .forEach(win => {
+      .forEach((win, count) => {
+
+        // limit icons
+        if (!win.has_focus() && count >= limitIcons) {
+          if (count == limitIcons) {
+            const plusIcon = new St.Icon({
+              icon_name: "list-add-symbolic",
+              icon_size: 10
+            })
+            plusIcon.set_opacity(150)
+            button.get_child().add_child(plusIcon)
+          }
+          return
+        }
+
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
 
