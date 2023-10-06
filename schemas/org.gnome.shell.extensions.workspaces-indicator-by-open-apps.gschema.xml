@@ -23,7 +23,13 @@
       <summary>Position in panel (index)</summary>
       <description>Position where the indicator will be inserted (0 = first, 1 = second, ...).</description>
     </key>
-    
+
+    <key type="i" name="icons-limit">
+      <default>0</default>
+      <summary>Maximum number of icons per workspace (0 = unlimited)</summary>
+      <description>Maximum number of icons displayed in a single workspace indicator.</description>
+    </key>
+
     <key type="b" name="show-focused-app-indicator">
       <default>true</default>
       <summary>Show focused app indicator</summary>

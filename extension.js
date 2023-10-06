@@ -75,17 +75,9 @@ class WorkspaceIndicator {
   refresh() {
     this._workspacesIndicators.splice(0).forEach(i => i.destroy())
 
-    // check if apps on all workspaces (other monitor)
-    const windows = global.workspace_manager
-      .get_workspace_by_index(0)
-      .list_windows()
-      .filter(w => w.is_on_all_workspaces())
-
     // build indicator for other monitor
-    if (windows && windows.length > 0) {
-      this._hasOtherMonitor = true
-      this.create_indicator_button(0, true)
-    }
+    this._hasOtherMonitor = true
+    this.create_indicator_button(0, true)
 
     // build normal workspaces indicators
     for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
@@ -93,7 +85,6 @@ class WorkspaceIndicator {
     }
   }
 
-  // create indicator for a signle workspace
   /**
    * create indicator for a single workspace
    * @param {number} index index of workspace 
@@ -104,6 +95,9 @@ class WorkspaceIndicator {
     const windows = workspace
       .list_windows()
       .filter(w => isOtherMonitor ? w.is_on_all_workspaces() : !w.is_on_all_workspaces())
+
+    // hide other monitor indicator if no windows on all workspaces
+    if (isOtherMonitor && windows.length === 0) return
     
     const isActive = !isOtherMonitor && global.workspace_manager.get_active_workspace_index() == index
 
@@ -162,7 +156,7 @@ class WorkspaceIndicator {
     workspaceIndicator.connect("scroll-event", this.on_scroll_workspace.bind(workspaceIndicator))
 
     // create apps icons
-    this.create_indicator_icons(workspaceIndicator, windows, index)
+    this.create_indicator_icons(workspaceIndicator, windows, isActive, index)
 
     // create indicator label
     const showWorkspaceIndex = this._settings.get_boolean("show-workspace-index")
@@ -202,10 +196,27 @@ class WorkspaceIndicator {
    * @param windows windows to create icons of 
    * @param {number} index index of workspace 
    */
-  create_indicator_icons(button, windows, index) {
+  create_indicator_icons(button, windows, isActive, index) {
+    const limit = this._settings.get_int("icons-limit")
+    const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
+
     windows
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id
-      .forEach(win => {
+      .forEach((win, count) => {
+
+        // limit icons
+        if (!win.has_focus() && count >= limitIcons) {
+          if (count == limitIcons) {
+            const plusIcon = new St.Icon({
+              icon_name: "list-add-symbolic",
+              icon_size: 10
+            })
+            plusIcon.set_opacity(150)
+            button.get_child().add_child(plusIcon)
+          }
+          return
+        }
+
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
 
