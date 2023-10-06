@@ -197,7 +197,8 @@ class WorkspaceIndicator {
    * @param {number} index index of workspace 
    */
   create_indicator_icons(button, windows, isActive, index) {
-    const limitIcons = isActive ? 100 : 3 // FIXME: add setting
+    const limit = this._settings.get_int("icons-limit")
+    const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
 
     windows
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id
