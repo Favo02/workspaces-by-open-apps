@@ -17,7 +17,6 @@ class WorkspaceIndicator {
     this._settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
     this._workspacesIndicators = []
-    this._hasOtherMonitor = false
     
     this.connect_signals() // signals that triggers refresh()
     this.refresh() // initialize indicator
@@ -31,7 +30,6 @@ class WorkspaceIndicator {
 
     this._workspacesIndicators.splice(0).forEach(i => i.destroy())
     this._workspacesIndicators = []
-    this._hasOtherMonitor = null
 
     this.disconnect_signals()
   }
@@ -76,7 +74,6 @@ class WorkspaceIndicator {
     this._workspacesIndicators.splice(0).forEach(i => i.destroy())
 
     // build indicator for other monitor
-    this._hasOtherMonitor = true
     this.create_indicator_button(0, true)
 
     // build normal workspaces indicators
@@ -201,7 +198,7 @@ class WorkspaceIndicator {
     const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
 
     windows
-      .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id
+      .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id (creation order)
       .forEach((win, count) => {
 
         // hide dialogs, popovers and tooltip
