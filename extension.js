@@ -3,58 +3,49 @@ const { main, dnd } = imports.ui
 
 // initialize extension
 function init() {
-  return new WorkspaceIndicator()
+  return new Extension()
 }
 
 // extension workspace indicator
-class WorkspaceIndicator {
+class Extension {
   constructor() {}
 
-  /**
-   * enable extension: intialize variables, connectSignals() and refresh()
-   */
+  /** enable extension: initialize everything */
   enable() {
     this._settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
-    this._workspacesIndicators = []
+    this._indicators = [] // each indicator is a workspace
     
-    this.connect_signals() // signals that triggers refresh()
-    this.refresh() // initialize indicator
+    this.connect_signals() // signals that triggers render
+    this.render() // initialize indicator
   }
   
-  /**
-   * disable extension: destroy variables, disconnectSignals()
-   */
+  /** disable extension: destroy everything */
   disable() {
     this._settings = {}
 
-    this._workspacesIndicators.splice(0).forEach(i => i.destroy())
-    this._workspacesIndicators = []
+    this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
 
-    this.disconnect_signals()
+    this.disconnect_signals() // disconnect signals
   }
 
-  /**
-   * connect signals to refresh indicators
-   */
+  /** connect signals that triggers a re-render of indicators */
   connect_signals() {
     // signals for global.workspace_manager
-    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect("notify::n-workspaces", () => this.refresh())
-    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect("workspace-switched", () => this.refresh())
-    this._workspaceReorderedSIGNAL = global.workspace_manager.connect("workspaces-reordered", () => this.refresh())
+    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect("notify::n-workspaces", () => this.render())
+    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect("workspace-switched", () => this.render())
+    this._workspaceReorderedSIGNAL = global.workspace_manager.connect("workspaces-reordered", () => this.render())
 
     // signals for Shell.WindowTracker.get_default()
-    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect("tracked-windows-changed", () => this.refresh())
+    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect("tracked-windows-changed", () => this.render())
 
     // signals for global.display
-    this._windowsRestackedSIGNAL = global.display.connect("restacked", () => this.refresh())
-    this._windowLeftMonitorSIGNAL = global.display.connect("window-left-monitor", () => this.refresh())
-    this._windowEnteredMonitorSIGNAL = global.display.connect("window-entered-monitor", () => this.refresh())
+    this._windowsRestackedSIGNAL = global.display.connect("restacked", () => this.render())
+    this._windowLeftMonitorSIGNAL = global.display.connect("window-left-monitor", () => this.render())
+    this._windowEnteredMonitorSIGNAL = global.display.connect("window-entered-monitor", () => this.render())
   }
 
-  /**
-   * disconnect signals
-   */
+  /** disconnect signals */
   disconnect_signals() {
     global.workspace_manager.disconnect(this._workspaceNumberChangedSIGNAL)
     global.workspace_manager.disconnect(this._workspaceSwitchedSIGNAL)
@@ -67,18 +58,16 @@ class WorkspaceIndicator {
     global.display.disconnect(this._windowEnteredMonitorSIGNAL)
   }
 
-  /**
-   * refresh indicators: destroy and rebuild
-   */
-  refresh() {
-    this._workspacesIndicators.splice(0).forEach(i => i.destroy())
+  /** render indicators: destroy current indicators and rebuild */
+  render() {
+    this._indicators.splice(0).forEach(i => i.destroy())
 
     // build indicator for other monitor
     this.create_indicator_button(0, true)
 
     // build normal workspaces indicators
     for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
-      this.create_indicator_button(i, false)
+      this.create_indicator_button(i)
     }
   }
 
@@ -124,7 +113,7 @@ class WorkspaceIndicator {
       track_hover: true,
       child:       new St.BoxLayout()
     })
-    this._workspacesIndicators.push(workspaceIndicator)
+    this._indicators.push(workspaceIndicator)
     
     // drag and drop
     workspaceIndicator._delegate = workspaceIndicator
@@ -182,7 +171,7 @@ class WorkspaceIndicator {
     // position in panel selected by user
     const positionInPanel = this._settings.get_int("position")
     // index to insert indicator in panel
-    const insertIndex = positionInPanel + (this._workspacesIndicators.length-1)
+    const insertIndex = positionInPanel + (this._indicators.length-1)
 
     main.panel[box].insert_child_at_index(workspaceIndicator, insertIndex)
   }
