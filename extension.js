@@ -63,49 +63,57 @@ class Extension {
     this._indicators.splice(0).forEach(i => i.destroy())
 
     // build indicator for other monitor
-    this.create_indicator_button(0, true)
+    this.render_workspace(0, true)
 
     // build normal workspaces indicators
     for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
-      this.create_indicator_button(i)
+      this.render_workspace(i)
     }
   }
 
   /**
    * create indicator for a single workspace
    * @param {number} index index of workspace 
-   * @param {boolean} isOtherMonitor special indicator for other monitor 
+   * @param {boolean} is_other_monitor special indicator for other monitor 
    */
-  create_indicator_button(index, isOtherMonitor) {
+  render_workspace(index, is_other_monitor) {
+    // get settings
+    const sett_hide_empty = this._settings.get_boolean("hide-empty-workspaces")
+    const sett_highlight_active = this._settings.get_boolean("show-active-workspace-indicator")
+    const sett_round_borders = this._settings.get_boolean("round-indicators-border")
+    const sett_color = this._settings.get_string("indicators-color")
+    const sett_show_index = this._settings.get_boolean("show-workspace-index")
+    const sett_all_indicator_text = this._settings.get_string("apps-on-all-workspaces-indicator")
+    const sett_panel_position = this._settings.get_enum("panel-position")
+    const sett_position = this._settings.get_int("position")
+    const sett_scroll_wraparound = this._settings.get_boolean("scroll-wraparound")
+    const sett_inverse_scroll = this._settings.get_boolean("inverse-scroll")
+
     const workspace = global.workspace_manager.get_workspace_by_index(index)
+
     const windows = workspace
       .list_windows()
-      .filter(w => isOtherMonitor ? w.is_on_all_workspaces() : !w.is_on_all_workspaces())
+      // filter out windows on all workspaces (or not on all workspaces for special other monitor indicator)
+      .filter(w => is_other_monitor ? w.is_on_all_workspaces() : !w.is_on_all_workspaces())
 
     // hide other monitor indicator if no windows on all workspaces
-    if (isOtherMonitor && windows.length === 0) return
+    if (is_other_monitor && windows.length === 0) return
     
-    const isActive = !isOtherMonitor && global.workspace_manager.get_active_workspace_index() == index
+    const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() == index
 
     // hide empty workspaces
-    const hideEmptyWorkspaces = this._settings.get_boolean("hide-empty-workspaces")
-    if (hideEmptyWorkspaces && !isActive && windows.length === 0) return
-
-    // indicator settings
-    const showActiveWorkspaceIndicator = this._settings.get_boolean("show-active-workspace-indicator")
-    const roundIndicatorsBorder = this._settings.get_boolean("round-indicators-border")
+    if (sett_hide_empty && !is_active && windows.length === 0) return
 
     // indicator styles
     let style_classes = "workspace"
-    if (isActive) { style_classes += " active" }
-    if (!showActiveWorkspaceIndicator) { style_classes += " no-indicator" }
-    if (!roundIndicatorsBorder) { style_classes += " no-rounded" }
+    if (is_active) { style_classes += " active" }
+    if (!sett_highlight_active) { style_classes += " no-indicator" }
+    if (!sett_round_borders) { style_classes += " no-rounded" }
 
-    const indicatorsColor = this._settings.get_string("indicators-color")
-    const style = `border-color: ${indicatorsColor}`
+    const style = `border-color: ${sett_color}`
 
     // create indicator
-    const workspaceIndicator = new St.Bin({
+    const indicator = new St.Bin({
       style_class: style_classes,
       style: style,
       reactive:    true,
@@ -113,50 +121,45 @@ class Extension {
       track_hover: true,
       child:       new St.BoxLayout()
     })
-    this._indicators.push(workspaceIndicator)
+    this._indicators.push(indicator)
     
-    // drag and drop
-    workspaceIndicator._delegate = workspaceIndicator
+    // indicator properties
+    indicator._index = index
+    indicator._workspace = workspace
+    indicator._scroll_wraparound = sett_scroll_wraparound
+    indicator._inverse_scroll = sett_inverse_scroll
 
-    workspaceIndicator._workspaceIndex = index
-    
-    workspaceIndicator.acceptDrop = function (source) {
-      if (source._workspaceIndex !== this._workspaceIndex) {
-        source._window.change_workspace_by_index(this._workspaceIndex, false)
+    // drag and drop
+    indicator._delegate = indicator
+    indicator.acceptDrop = (source) => {
+      if (source._index !== this._index) {
+        source._window.change_workspace_by_index(this._index, false)
         source._window.activate(global.get_current_time())
         return true
       }
       return false
     } 
 
-    // switch to workspace on click
-    workspaceIndicator._workspace = workspace
-    workspaceIndicator.connect("button-release-event", this.on_click_workspace.bind(workspaceIndicator))
-    workspaceIndicator.connect("touch-event", this.on_touch_workspace.bind(workspaceIndicator))
-
-    // assign to "this" settings otherwise function triggered on connect can't access them
-    workspaceIndicator.scrollWrap = this._settings.get_boolean("scroll-wraparound")
-    workspaceIndicator.inverseScroll = this._settings.get_boolean("inverse-scroll")
-
-    // scroll workspaces on mousewhell scroll
-    workspaceIndicator.connect("scroll-event", this.on_scroll_workspace.bind(workspaceIndicator))
+    // connect click, touch, scroll signals
+    indicator.connect("button-release-event", this.on_click_workspace.bind(indicator))
+    indicator.connect("touch-event", this.on_touch_workspace.bind(indicator))
+    indicator.connect("scroll-event", this.on_scroll_workspace.bind(indicator))
 
     // create apps icons
-    this.create_indicator_icons(workspaceIndicator, windows, isActive, index)
+    this.create_indicator_icons(indicator, windows, is_active, index)
 
     // create indicator label
-    const showWorkspaceIndex = this._settings.get_boolean("show-workspace-index")
-    if (showWorkspaceIndex || isOtherMonitor) {
+    if (sett_show_index || is_other_monitor) {
       this.create_indicator_label(
-        workspaceIndicator,
+        indicator,
         index,
-        isOtherMonitor ? this._settings.get_string("apps-on-all-workspaces-indicator") : null
+        is_other_monitor ? sett_all_indicator_text : null
       )
     }
 
     // add to panel
     let box
-    switch (this._settings.get_enum("panel-position")) {
+    switch (sett_panel_position) {
       case 0:
         box = "_leftBox"
         break
@@ -167,13 +170,11 @@ class Extension {
         box = "_rightBox"
         break
     }
-    
-    // position in panel selected by user
-    const positionInPanel = this._settings.get_int("position")
-    // index to insert indicator in panel
-    const insertIndex = positionInPanel + (this._indicators.length-1)
 
-    main.panel[box].insert_child_at_index(workspaceIndicator, insertIndex)
+    // index (selected by user) to insert indicator in panel
+    const insertIndex = sett_position + (this._indicators.length-1)
+
+    main.panel[box].insert_child_at_index(indicator, insertIndex)
   }
 
   /**
@@ -255,7 +256,7 @@ class Extension {
         icon.connect("touch-event", this.on_touch_application.bind(icon))
 
         // drag and drop
-        icon._workspaceIndex = index
+        icon._index = index
         icon._window = win
 
         icon._delegate = icon
@@ -320,7 +321,7 @@ class Extension {
     if (event.get_button() == 3) {
 
       const workspaceManager = global.workspace_manager
-      const workspaceIndex = this._workspaceIndex
+      const workspaceIndex = this._index
 
       // activate workspace
       if (workspaceManager.get_active_workspace_index() !== workspaceIndex) {
@@ -400,11 +401,11 @@ class Extension {
 		switch (scroll_direction) {
       case Clutter.ScrollDirection.LEFT:
       case Clutter.ScrollDirection.UP:
-        direction = this.inverseScroll ? -1 : 1
+        direction = this._inverse_scroll ? -1 : 1
         break
       case Clutter.ScrollDirection.RIGHT:
       case Clutter.ScrollDirection.DOWN:
-        direction = this.inverseScroll ? 1 : -1
+        direction = this._inverse_scroll ? 1 : -1
         break
       default:
         return Clutter.EVENT_PROPAGATE
@@ -415,8 +416,7 @@ class Extension {
     let newIndex = workspaceManager.get_active_workspace_index() + direction
 
     // wrap
-    const wrap = this.scrollWrap
-    if (wrap) newIndex = mod(newIndex, workspaceManager.n_workspaces)
+    if (this._scroll_wraparound) newIndex = mod(newIndex, workspaceManager.n_workspaces)
 
     if (newIndex >= 0 && newIndex < workspaceManager.n_workspaces) {
       workspaceManager.get_workspace_by_index(newIndex).activate(global.get_current_time())
