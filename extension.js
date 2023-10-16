@@ -12,7 +12,8 @@ class Extension {
 
   /** enable extension: initialize everything */
   enable() {
-    this._settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
+    // parse settings
+    this._settings = this.parse_settings(imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps"))
 
     this._indicators = [] // each indicator is a workspace
     
@@ -27,6 +28,27 @@ class Extension {
     this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
 
     this.disconnect_signals() // disconnect signals
+  }
+
+  parse_settings(raw_settings) {
+    return {
+      panel_position: raw_settings.get_enum("panel-position"),
+      position: raw_settings.get_int("position"),
+      icons_limit: raw_settings.get_int("icons-limit"),
+      show_focused_app_indicator: raw_settings.get_boolean("show-focused-app-indicator"),
+      show_active_workspace_indicator: raw_settings.get_boolean("show-active-workspace-indicator"),
+      reduce_inactive_apps_opacity: raw_settings.get_boolean("reduce-inactive-apps-opacity"),
+      round_indicators_border: raw_settings.get_boolean("round-indicators-border"),
+      show_workspace_index: raw_settings.get_boolean("show-workspace-index"),
+      scroll_wraparound: raw_settings.get_boolean("scroll-wraparound"),
+      inverse_scroll: raw_settings.get_boolean("inverse-scroll"),
+      middle_click_close_app: raw_settings.get_boolean("middle-click-close-app"),
+      desaturate_apps: raw_settings.get_boolean("desaturate-apps"),
+      hide_empty_workspaces: raw_settings.get_boolean("hide-empty-workspaces"),
+      hide_tooltips: raw_settings.get_boolean("hide-tooltips"),
+      indicators_color: raw_settings.get_string("indicators-color"),
+      apps_on_all_workspaces_indicator: raw_settings.get_string("apps-on-all-workspaces-indicator")
+    }
   }
 
   /** connect signals that triggers a re-render of indicators */
@@ -77,18 +99,6 @@ class Extension {
    * @param {boolean} is_other_monitor special indicator for other monitor 
    */
   render_workspace(index, is_other_monitor) {
-    // get settings
-    const sett_hide_empty = this._settings.get_boolean("hide-empty-workspaces")
-    const sett_highlight_active = this._settings.get_boolean("show-active-workspace-indicator")
-    const sett_round_borders = this._settings.get_boolean("round-indicators-border")
-    const sett_color = this._settings.get_string("indicators-color")
-    const sett_show_index = this._settings.get_boolean("show-workspace-index")
-    const sett_all_indicator_text = this._settings.get_string("apps-on-all-workspaces-indicator")
-    const sett_panel_position = this._settings.get_enum("panel-position")
-    const sett_position = this._settings.get_int("position")
-    const sett_scroll_wraparound = this._settings.get_boolean("scroll-wraparound")
-    const sett_inverse_scroll = this._settings.get_boolean("inverse-scroll")
-
     const workspace = global.workspace_manager.get_workspace_by_index(index)
 
     const windows = workspace
@@ -102,15 +112,15 @@ class Extension {
     const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() == index
 
     // hide empty workspaces
-    if (sett_hide_empty && !is_active && windows.length === 0) return
+    if (this._settings.hide_empty_workspaces && !is_active && windows.length === 0) return
 
     // indicator styles
     let style_classes = "workspace"
     if (is_active) { style_classes += " active" }
-    if (!sett_highlight_active) { style_classes += " no-indicator" }
-    if (!sett_round_borders) { style_classes += " no-rounded" }
+    if (!this._settings.show_active_workspace_indicator) { style_classes += " no-indicator" }
+    if (!this._settings.round_indicators_border) { style_classes += " no-rounded" }
 
-    const style = `border-color: ${sett_color}`
+    const style = `border-color: ${this._settings.indicators_color}`
 
     // create indicator
     const indicator = new St.Bin({
@@ -126,8 +136,8 @@ class Extension {
     // indicator properties
     indicator._index = index
     indicator._workspace = workspace
-    indicator._scroll_wraparound = sett_scroll_wraparound
-    indicator._inverse_scroll = sett_inverse_scroll
+    indicator._scroll_wraparound = this._settings.scroll_wraparound
+    indicator._inverse_scroll = this._settings.inverse_scroll
 
     // drag and drop
     indicator._delegate = indicator
@@ -149,17 +159,17 @@ class Extension {
     this.create_indicator_icons(indicator, windows, is_active, index)
 
     // create indicator label
-    if (sett_show_index || is_other_monitor) {
+    if (this._settings.show_workspace_index || is_other_monitor) {
       this.create_indicator_label(
         indicator,
         index,
-        is_other_monitor ? sett_all_indicator_text : null
+        is_other_monitor ? this._settings.apps_on_all_workspaces_indicator : null
       )
     }
 
     // add to panel
     let box
-    switch (sett_panel_position) {
+    switch (this._settings.panel_position) {
       case 0:
         box = "_leftBox"
         break
@@ -172,7 +182,7 @@ class Extension {
     }
 
     // index (selected by user) to insert indicator in panel
-    const insertIndex = sett_position + (this._indicators.length-1)
+    const insertIndex = this._settings.position + (this._indicators.length-1)
 
     main.panel[box].insert_child_at_index(indicator, insertIndex)
   }
@@ -184,7 +194,7 @@ class Extension {
    * @param {number} index index of workspace 
    */
   create_indicator_icons(button, windows, isActive, index) {
-    const limit = this._settings.get_int("icons-limit")
+    const limit = this._settings.icons_limit
     const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
 
     windows
@@ -192,7 +202,7 @@ class Extension {
       .forEach((win, count) => {
 
         // hide dialogs, popovers and tooltip
-        if (this._settings.get_boolean("hide-tooltips") && (win.get_window_type() != Meta.WindowType.NORMAL)) return
+        if (this._settings.hide_tooltips && (win.get_window_type() != Meta.WindowType.NORMAL)) return
 
         // limit icons
         if (!win.has_focus() && count >= limitIcons) {
@@ -218,27 +228,27 @@ class Extension {
         const texture = app.create_icon_texture(20)
 
         // set low opacity for not focused apps
-        const reduceInactiveAppsOpacity = this._settings.get_boolean("reduce-inactive-apps-opacity")
+        const reduceInactiveAppsOpacity = this._settings.reduce_inactive_apps_opacity
         if (!win.has_focus() && reduceInactiveAppsOpacity) {
           texture.set_opacity(150)
         }
 
         // desaturate icon setting
-        const desaturateApps = this._settings.get_boolean("desaturate-apps")
+        const desaturateApps = this._settings.desaturate_apps
         if (desaturateApps) {
           texture.add_effect(new Clutter.DesaturateEffect())
         }
 
         // styles
-        const showFocusedAppIndicator = this._settings.get_boolean("show-focused-app-indicator")
-        const roundIndicatorsBorder = this._settings.get_boolean("round-indicators-border")
+        const showFocusedAppIndicator = this._settings.show_focused_app_indicator
+        const roundIndicatorsBorder = this._settings.round_indicators_border
 
         let style_classes = "app"
         if (win.has_focus()) { style_classes += " active" }
         if (!showFocusedAppIndicator) { style_classes += " no-indicator" }
         if (!roundIndicatorsBorder) { style_classes += " no-rounded" }
 
-        const indicatorsColor = this._settings.get_string("indicators-color")
+        const indicatorsColor = this._settings.indicators_color
         const style = `border-color: ${indicatorsColor}`
 
         const icon = new St.Bin({
@@ -251,7 +261,7 @@ class Extension {
         })
 
         // focus application on click
-        icon.middleClosesApp = this._settings.get_boolean("middle-click-close-app")
+        icon.middleClosesApp = this._settings.middle_click_close_app
         icon.connect("button-release-event", this.on_click_application.bind(icon))
         icon.connect("touch-event", this.on_touch_application.bind(icon))
 
