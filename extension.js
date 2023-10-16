@@ -160,11 +160,11 @@ class Extension {
     indicator.connect("scroll-event", this._on_scroll_workspace.bind(indicator))
 
     // create apps icons
-    this._create_indicator_icons(indicator, windows, is_active, index)
+    this._render_workspace_applications(indicator, windows, is_active, index)
 
     // create indicator label
     if (this._settings.show_workspace_index || is_other_monitor) {
-      this._create_indicator_label(
+      this._render_workspace_label(
         indicator,
         index,
         is_other_monitor ? this._settings.apps_on_all_workspaces_indicator : null
@@ -194,10 +194,11 @@ class Extension {
   /**
    * create icons of running applications inside a workspace indicator
    * @param button indicator to add childs (icons)
-   * @param windows windows to create icons of 
-   * @param {number} index index of workspace 
+   * @param windows windows to create icons of
+   * @param {boolean} isActive if the workspace is active
+   * @param {number} index index of workspace
    */
-  _create_indicator_icons(button, windows, isActive, index) {
+  _render_workspace_applications(button, windows, isActive, index) {
     const limit = this._settings.icons_limit
     const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
 
@@ -210,7 +211,7 @@ class Extension {
 
         // limit icons
         if (!win.has_focus() && count >= limitIcons) {
-          if (count == limitIcons) {
+          if (count == limitIcons) { // render + icon
             const plusIcon = new St.Icon({
               icon_name: "list-add-symbolic",
               icon_size: 10
@@ -224,9 +225,7 @@ class Extension {
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
 
-        if (!app || !win) {
-          return
-        }
+        if (!app || !win) return
 
         // create Clutter.actor
         const texture = app.create_icon_texture(20)
@@ -289,7 +288,7 @@ class Extension {
    * @param {number} index index of workspace 
    * @param {string} otherMonitorText custom other workspace text to display 
    */
-  _create_indicator_label(button, index, otherMonitorText) {
+  _render_workspace_label(button, index, otherMonitorText) {
     // text to display
     let indicatorText
 
@@ -370,9 +369,7 @@ class Extension {
     }
   }
 
-  /**
-   * touch on workspace handler
-   */
+  /** touch on workspace handler */
   _on_touch_workspace() {
     this._workspace.activate(global.get_current_time())
   }
@@ -394,9 +391,7 @@ class Extension {
     }
   }
 
-  /**
-   * touch on application handler
-   */
+  /** touch on application handler */
   _on_touch_application() {
     this._window.activate(global.get_current_time())
   }
