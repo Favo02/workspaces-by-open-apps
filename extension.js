@@ -17,8 +17,8 @@ class Extension {
     this._settings = {} // parsed settings
     this._indicators = [] // each indicator is a workspace
     
-    this.connect_signals() // signals that triggers render
-    this.render() // initialize indicator
+    this._connect_signals() // signals that triggers render
+    this._render() // initialize indicator
   }
   
   /** disable extension: destroy everything */
@@ -27,10 +27,11 @@ class Extension {
     this._settings = {}
     this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
 
-    this.disconnect_signals() // disconnect signals
+    this._disconnect_signals() // disconnect signals
   }
 
-  parse_settings() {
+  /** parse raw settings object into a better formatted object */
+  _parse_settings() {
     const rs = this._raw_settings
     this._settings = {
       panel_position: rs.get_enum("panel-position"),
@@ -53,23 +54,23 @@ class Extension {
   }
 
   /** connect signals that triggers a re-render of indicators */
-  connect_signals() {
+  _connect_signals() {
     // signals for global.workspace_manager
-    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect("notify::n-workspaces", () => this.render())
-    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect("workspace-switched", () => this.render())
-    this._workspaceReorderedSIGNAL = global.workspace_manager.connect("workspaces-reordered", () => this.render())
+    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect("notify::n-workspaces", () => this._render())
+    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect("workspace-switched", () => this._render())
+    this._workspaceReorderedSIGNAL = global.workspace_manager.connect("workspaces-reordered", () => this._render())
 
     // signals for Shell.WindowTracker.get_default()
-    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect("tracked-windows-changed", () => this.render())
+    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect("tracked-windows-changed", () => this._render())
 
     // signals for global.display
-    this._windowsRestackedSIGNAL = global.display.connect("restacked", () => this.render())
-    this._windowLeftMonitorSIGNAL = global.display.connect("window-left-monitor", () => this.render())
-    this._windowEnteredMonitorSIGNAL = global.display.connect("window-entered-monitor", () => this.render())
+    this._windowsRestackedSIGNAL = global.display.connect("restacked", () => this._render())
+    this._windowLeftMonitorSIGNAL = global.display.connect("window-left-monitor", () => this._render())
+    this._windowEnteredMonitorSIGNAL = global.display.connect("window-entered-monitor", () => this._render())
   }
 
   /** disconnect signals */
-  disconnect_signals() {
+  _disconnect_signals() {
     global.workspace_manager.disconnect(this._workspaceNumberChangedSIGNAL)
     global.workspace_manager.disconnect(this._workspaceSwitchedSIGNAL)
     global.workspace_manager.disconnect(this._workspaceReorderedSIGNAL)
@@ -82,17 +83,17 @@ class Extension {
   }
 
   /** render indicators: destroy current indicators and rebuild */
-  render() {
-    this.parse_settings()
+  _render() {
+    this._parse_settings()
 
     this._indicators.splice(0).forEach(i => i.destroy())
 
     // build indicator for other monitor
-    this.render_workspace(0, true)
+    this._render_workspace(0, true)
 
     // build normal workspaces indicators
     for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
-      this.render_workspace(i)
+      this._render_workspace(i)
     }
   }
 
@@ -101,7 +102,7 @@ class Extension {
    * @param {number} index index of workspace 
    * @param {boolean} is_other_monitor special indicator for other monitor 
    */
-  render_workspace(index, is_other_monitor) {
+  _render_workspace(index, is_other_monitor) {
     const workspace = global.workspace_manager.get_workspace_by_index(index)
 
     const windows = workspace
@@ -154,16 +155,16 @@ class Extension {
     } 
 
     // connect click, touch, scroll signals
-    indicator.connect("button-release-event", this.on_click_workspace.bind(indicator))
-    indicator.connect("touch-event", this.on_touch_workspace.bind(indicator))
-    indicator.connect("scroll-event", this.on_scroll_workspace.bind(indicator))
+    indicator.connect("button-release-event", this._on_click_workspace.bind(indicator))
+    indicator.connect("touch-event", this._on_touch_workspace.bind(indicator))
+    indicator.connect("scroll-event", this._on_scroll_workspace.bind(indicator))
 
     // create apps icons
-    this.create_indicator_icons(indicator, windows, is_active, index)
+    this._create_indicator_icons(indicator, windows, is_active, index)
 
     // create indicator label
     if (this._settings.show_workspace_index || is_other_monitor) {
-      this.create_indicator_label(
+      this._create_indicator_label(
         indicator,
         index,
         is_other_monitor ? this._settings.apps_on_all_workspaces_indicator : null
@@ -196,7 +197,7 @@ class Extension {
    * @param windows windows to create icons of 
    * @param {number} index index of workspace 
    */
-  create_indicator_icons(button, windows, isActive, index) {
+  _create_indicator_icons(button, windows, isActive, index) {
     const limit = this._settings.icons_limit
     const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
 
@@ -265,8 +266,8 @@ class Extension {
 
         // focus application on click
         icon.middleClosesApp = this._settings.middle_click_close_app
-        icon.connect("button-release-event", this.on_click_application.bind(icon))
-        icon.connect("touch-event", this.on_touch_application.bind(icon))
+        icon.connect("button-release-event", this._on_click_application.bind(icon))
+        icon.connect("touch-event", this._on_touch_application.bind(icon))
 
         // drag and drop
         icon._index = index
@@ -288,7 +289,7 @@ class Extension {
    * @param {number} index index of workspace 
    * @param {string} otherMonitorText custom other workspace text to display 
    */
-  create_indicator_label(button, index, otherMonitorText) {
+  _create_indicator_label(button, index, otherMonitorText) {
     // text to display
     let indicatorText
 
@@ -322,7 +323,7 @@ class Extension {
    * @param actor actor clicked
    * @param event click event 
    */
-  on_click_workspace(actor, event) {
+  _on_click_workspace(actor, event) {
     // left click: focus workspace
     if (event.get_button() == 1) {
       this._workspace.activate(global.get_current_time())
@@ -372,7 +373,7 @@ class Extension {
   /**
    * touch on workspace handler
    */
-  on_touch_workspace() {
+  _on_touch_workspace() {
     this._workspace.activate(global.get_current_time())
   }
 
@@ -381,7 +382,7 @@ class Extension {
    * @param actor actor clicked
    * @param event click event 
    */
-  on_click_application(actor, event) {
+  _on_click_application(actor, event) {
     // left/right click: focus application
     if (event.get_button() == 1 || event.get_button() == 3) {
       this._window.activate(global.get_current_time())
@@ -396,7 +397,7 @@ class Extension {
   /**
    * touch on application handler
    */
-  on_touch_application() {
+  _on_touch_application() {
     this._window.activate(global.get_current_time())
   }
 
@@ -405,7 +406,7 @@ class Extension {
    * @param actor actor scrolled on 
    * @param event click event 
    */
-  on_scroll_workspace(actor, event) {
+  _on_scroll_workspace(actor, event) {
     // scroll direction
     let scroll_direction = event.get_scroll_direction()
 
