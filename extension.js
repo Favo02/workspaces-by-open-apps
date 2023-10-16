@@ -131,7 +131,7 @@ class Extension {
 
     // drag and drop
     indicator._delegate = indicator
-    indicator.acceptDrop = (source) => {
+    indicator.acceptDrop = function (source) {
       if (source._index !== this._index) {
         source._window.change_workspace_by_index(this._index, false)
         source._window.activate(global.get_current_time())
