@@ -16,6 +16,12 @@
   font-size: 12px;
 }
 
+.text-group {
+  padding: 6px 3px 5px 0px;
+  color: rgba(110, 110, 110, 0.6);
+  font-size: 12px;
+}
+
 .workspace.active .text,
 .workspace.active-no-indicator .text {
   color: white;

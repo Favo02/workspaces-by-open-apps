@@ -202,11 +202,37 @@ class Extension {
     const limit = this._settings.icons_limit
     const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
 
+    // group same application
+    let occurrences
+    if (this._settings.group_same_application) {
+      // count occurences of each application
+      occurrences = windows.reduce((acc, curr) => {
+        const id = curr.get_pid()
+        if (!acc[id]) acc[id] = 1
+        else acc[id]++
+        return acc
+      }, {})
+
+      // filter out duplicates
+      const unique_windows = windows.reduce((acc, curr) => {
+        const found = acc.find(obj => obj.get_pid() === curr.get_pid())
+        if (!found) acc.push(curr)
+        return acc
+      }, []);
+
+      windows = unique_windows
+    }
+
+
     windows
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id (creation order)
       .forEach((win, count) => {
 
-        // hide dialogs, popovers and tooltip
+        // current window is focused
+        const focus = win.has_focus() ||
+          (this._settings.group_same_application && global.display.get_focus_window()?.get_pid() == win.get_pid())
+
+        // hide dialogs, popovers and tooltip duplicate windows
         if (this._settings.hide_tooltips && (win.get_window_type() != Meta.WindowType.NORMAL)) return
 
         // limit icons
@@ -225,14 +251,12 @@ class Extension {
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
 
-        if (!app || !win) return
-
         // create Clutter.actor
         const texture = app.create_icon_texture(20)
 
         // set low opacity for not focused apps
         const reduceInactiveAppsOpacity = this._settings.reduce_inactive_apps_opacity
-        if (!win.has_focus() && reduceInactiveAppsOpacity) {
+        if (!focus && reduceInactiveAppsOpacity) {
           texture.set_opacity(150)
         }
 
@@ -247,7 +271,7 @@ class Extension {
         const roundIndicatorsBorder = this._settings.round_indicators_border
 
         let style_classes = "app"
-        if (win.has_focus()) { style_classes += " active" }
+        if (focus) { style_classes += " active" }
         if (!showFocusedAppIndicator) { style_classes += " no-indicator" }
         if (!roundIndicatorsBorder) { style_classes += " no-rounded" }
 
@@ -260,7 +284,7 @@ class Extension {
           reactive:    true,
           can_focus:   true,
           track_hover: true,
-          child: texture
+          child: new St.BoxLayout()
         })
 
         // focus application on click
@@ -276,6 +300,17 @@ class Extension {
         icon._draggable = dnd.makeDraggable(icon, {
           dragActorOpacity: 150
         })
+
+        // add icon texture to icon button
+        icon.get_child().add_child(texture)
+
+        // add x{occurrences} label to icon button (group same application)
+        if (this._settings.group_same_application && occurrences[win.get_pid()] > 1) {
+          icon.get_child().add_child(new St.Label({
+            text: `x${occurrences[win.get_pid()]}`,
+            style_class: "text-group"
+          }))
+        }
 
         // add app icon to buttons
         button.get_child().add_child(icon)

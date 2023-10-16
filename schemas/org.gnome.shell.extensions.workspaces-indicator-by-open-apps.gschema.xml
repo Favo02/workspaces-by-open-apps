@@ -30,6 +30,12 @@
       <description>Maximum number of icons displayed in a single workspace indicator.</description>
     </key>
 
+    <key type="b" name="group-same-application">
+      <default>true</default>
+      <summary>Group icons of same application in same workspace</summary>
+      <description>Show grouped application per workspace.</description>
+    </key>
+
     <key type="b" name="show-focused-app-indicator">
       <default>true</default>
       <summary>Show focused app indicator</summary>
