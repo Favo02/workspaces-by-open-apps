@@ -26,6 +26,17 @@ function buildPrefsWidget() {
 
   let label, widget
 
+  // info label
+  const info = new Gtk.Label({
+    label: '<span foreground="red"><i><b>Close settings to apply modifications (working on a fix)</b></i></span>',
+    halign: Gtk.Align.CENTER,
+    use_markup: true,
+    visible: true,
+    margin_top: 10,
+    margin_bottom: 10
+  })
+  gridWidget.attach(info, 0, 0, 2, 1)
+
 	// panel-position
   label = new Gtk.Label({
     label: "Box where the indicator will be inserted",
@@ -42,8 +53,8 @@ function buildPrefsWidget() {
     'active-id',
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 0, 1, 1)
-  gridWidget.attach(widget, 1, 0, 1, 1)
+  gridWidget.attach(label, 0, 1, 1, 1)
+  gridWidget.attach(widget, 1, 1, 1, 1)
 
 	// position
   label = new Gtk.Label({
@@ -66,8 +77,8 @@ function buildPrefsWidget() {
         w.get_value_as_int()
       )
   })
-  gridWidget.attach(label, 0, 1, 1, 1)
-  gridWidget.attach(widget, 1, 1, 1, 1)
+  gridWidget.attach(label, 0, 2, 1, 1)
+  gridWidget.attach(widget, 1, 2, 1, 1)
 
   // icons limit
   label = new Gtk.Label({
@@ -90,19 +101,8 @@ function buildPrefsWidget() {
         w.get_value_as_int()
       )
   })
-  gridWidget.attach(label, 0, 2, 1, 1)
-  gridWidget.attach(widget, 1, 2, 1, 1)
-
-  // info label
-  const info = new Gtk.Label({
-    label: '<span foreground="red"><i><b>Close settings to apply modifications below this label (working on a fix)</b></i></span>',
-    halign: Gtk.Align.CENTER,
-    use_markup: true,
-    visible: true,
-    margin_top: 10,
-    margin_bottom: 10
-  })
-  gridWidget.attach(info, 0, 3, 2, 1)
+  gridWidget.attach(label, 0, 3, 1, 1)
+  gridWidget.attach(widget, 1, 3, 1, 1)
 	
 	// show-focused-app-indicator
   label = new Gtk.Label({
