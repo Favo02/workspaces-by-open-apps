@@ -12,9 +12,9 @@ class Extension {
 
   /** enable extension: initialize everything */
   enable() {
-    // parse settings
-    this._settings = this.parse_settings(imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps"))
+    this._raw_settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
+    this._settings = {} // parsed settings
     this._indicators = [] // each indicator is a workspace
     
     this.connect_signals() // signals that triggers render
@@ -23,31 +23,32 @@ class Extension {
   
   /** disable extension: destroy everything */
   disable() {
+    this._raw_settings = {}
     this._settings = {}
-
     this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
 
     this.disconnect_signals() // disconnect signals
   }
 
-  parse_settings(raw_settings) {
-    return {
-      panel_position: raw_settings.get_enum("panel-position"),
-      position: raw_settings.get_int("position"),
-      icons_limit: raw_settings.get_int("icons-limit"),
-      show_focused_app_indicator: raw_settings.get_boolean("show-focused-app-indicator"),
-      show_active_workspace_indicator: raw_settings.get_boolean("show-active-workspace-indicator"),
-      reduce_inactive_apps_opacity: raw_settings.get_boolean("reduce-inactive-apps-opacity"),
-      round_indicators_border: raw_settings.get_boolean("round-indicators-border"),
-      show_workspace_index: raw_settings.get_boolean("show-workspace-index"),
-      scroll_wraparound: raw_settings.get_boolean("scroll-wraparound"),
-      inverse_scroll: raw_settings.get_boolean("inverse-scroll"),
-      middle_click_close_app: raw_settings.get_boolean("middle-click-close-app"),
-      desaturate_apps: raw_settings.get_boolean("desaturate-apps"),
-      hide_empty_workspaces: raw_settings.get_boolean("hide-empty-workspaces"),
-      hide_tooltips: raw_settings.get_boolean("hide-tooltips"),
-      indicators_color: raw_settings.get_string("indicators-color"),
-      apps_on_all_workspaces_indicator: raw_settings.get_string("apps-on-all-workspaces-indicator")
+  parse_settings() {
+    const rs = this._raw_settings
+    this._settings = {
+      panel_position: rs.get_enum("panel-position"),
+      position: rs.get_int("position"),
+      icons_limit: rs.get_int("icons-limit"),
+      show_focused_app_indicator: rs.get_boolean("show-focused-app-indicator"),
+      show_active_workspace_indicator: rs.get_boolean("show-active-workspace-indicator"),
+      reduce_inactive_apps_opacity: rs.get_boolean("reduce-inactive-apps-opacity"),
+      round_indicators_border: rs.get_boolean("round-indicators-border"),
+      show_workspace_index: rs.get_boolean("show-workspace-index"),
+      scroll_wraparound: rs.get_boolean("scroll-wraparound"),
+      inverse_scroll: rs.get_boolean("inverse-scroll"),
+      middle_click_close_app: rs.get_boolean("middle-click-close-app"),
+      desaturate_apps: rs.get_boolean("desaturate-apps"),
+      hide_empty_workspaces: rs.get_boolean("hide-empty-workspaces"),
+      hide_tooltips: rs.get_boolean("hide-tooltips"),
+      indicators_color: rs.get_string("indicators-color"),
+      apps_on_all_workspaces_indicator: rs.get_string("apps-on-all-workspaces-indicator")
     }
   }
 
@@ -82,6 +83,8 @@ class Extension {
 
   /** render indicators: destroy current indicators and rebuild */
   render() {
+    this.parse_settings()
+
     this._indicators.splice(0).forEach(i => i.destroy())
 
     // build indicator for other monitor
