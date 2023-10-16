@@ -136,7 +136,7 @@ class Extension {
       child:       new St.BoxLayout()
     })
     this._indicators.push(indicator)
-    
+
     // indicator properties
     indicator._index = index
     indicator._workspace = workspace
@@ -152,7 +152,7 @@ class Extension {
         return true
       }
       return false
-    } 
+    }
 
     // connect click, touch, scroll signals
     indicator.connect("button-release-event", this._on_click_workspace.bind(indicator))
@@ -321,7 +321,7 @@ class Extension {
   /**
    * click on workspace handler
    * @param actor actor clicked
-   * @param event click event 
+   * @param event click event
    */
   _on_click_workspace(actor, event) {
     // left click: focus workspace
@@ -343,7 +343,7 @@ class Extension {
         return
       }
 
-      // if rename label exists, destroy it 
+      // if rename label exists, destroy it
       if (this._renameWorkspace) {
         this._renameWorkspace.destroy()
         this._renameWorkspace = null
@@ -355,7 +355,7 @@ class Extension {
         text: Meta.prefs_get_workspace_name(workspaceIndex),
         style_class: "text",
       })
-      
+
       // connect typing event: update workspace name
       entry.connect("key-press-event", () => {
         const text = entry.get_text()
@@ -364,8 +364,8 @@ class Extension {
 
       // add to indicator
       this.get_child().insert_child_at_index(entry, 0)
-      entry.grab_key_focus()      
-      
+      entry.grab_key_focus()
+
       this._renameWorkspace = entry
     }
   }
@@ -380,7 +380,7 @@ class Extension {
   /**
    * click on application icon handler
    * @param actor actor clicked
-   * @param event click event 
+   * @param event click event
    */
   _on_click_application(actor, event) {
     // left/right click: focus application
@@ -403,8 +403,8 @@ class Extension {
 
   /**
    * scroll on workspace indicator handler
-   * @param actor actor scrolled on 
-   * @param event click event 
+   * @param actor actor scrolled on
+   * @param event click event
    */
   _on_scroll_workspace(actor, event) {
     // scroll direction
