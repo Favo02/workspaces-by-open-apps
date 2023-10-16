@@ -37,7 +37,7 @@ function buildPrefsWidget() {
   })
   gridWidget.attach(info, 0, 0, 2, 1)
 
-	// panel-position
+  // panel-position
   label = new Gtk.Label({
     label: "Box where the indicator will be inserted",
     hexpand: true,
@@ -56,7 +56,7 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 1, 1, 1)
   gridWidget.attach(widget, 1, 1, 1, 1)
 
-	// position
+  // position
   label = new Gtk.Label({
     label: "Position in panel (index, 0 = first)",
     hexpand: true,
@@ -103,8 +103,8 @@ function buildPrefsWidget() {
   })
   gridWidget.attach(label, 0, 3, 1, 1)
   gridWidget.attach(widget, 1, 3, 1, 1)
-	
-	// show-focused-app-indicator
+
+  // show-focused-app-indicator
   label = new Gtk.Label({
     label: "Show focused app indicator (above app)",
     hexpand: true,
@@ -122,7 +122,7 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 4, 1, 1)
   gridWidget.attach(widget, 1, 4, 1, 1)
 
-	// show-active-workspace-indicator
+  // show-active-workspace-indicator
   label = new Gtk.Label({
     label: "Show active workspace indicator (under workspace)",
     hexpand: true,
@@ -140,7 +140,7 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 5, 1, 1)
   gridWidget.attach(widget, 1, 5, 1, 1)
 
-	// reduce-inactive-apps-opacity
+  // reduce-inactive-apps-opacity
   label = new Gtk.Label({
     label: "Reduce inactive apps opacity",
     hexpand: true,
@@ -158,7 +158,7 @@ function buildPrefsWidget() {
   gridWidget.attach(label, 0, 6, 1, 1)
   gridWidget.attach(widget, 1, 6, 1, 1)
 
-	// round-indicators-border
+  // round-indicators-border
   label = new Gtk.Label({
     label: "Round indicators border",
     hexpand: true,

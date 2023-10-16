@@ -92,9 +92,8 @@ class Extension {
     this._render_workspace(0, true)
 
     // build normal workspaces indicators
-    for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++) {
+    for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++)
       this._render_workspace(i)
-    }
   }
 
   /**
@@ -111,18 +110,20 @@ class Extension {
       .filter(w => is_other_monitor ? w.is_on_all_workspaces() : !w.is_on_all_workspaces())
 
     // hide other monitor indicator if no windows on all workspaces
-    if (is_other_monitor && windows.length === 0) return
+    if (is_other_monitor && windows.length === 0)
+      return
     
     const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() == index
 
     // hide empty workspaces
-    if (this._settings.hide_empty_workspaces && !is_active && windows.length === 0) return
+    if (this._settings.hide_empty_workspaces && !is_active && windows.length === 0)
+      return
 
     // indicator styles
     let style_classes = "workspace"
-    if (is_active) { style_classes += " active" }
-    if (!this._settings.show_active_workspace_indicator) { style_classes += " no-indicator" }
-    if (!this._settings.round_indicators_border) { style_classes += " no-rounded" }
+    if (is_active) style_classes += " active"
+    if (!this._settings.show_active_workspace_indicator) style_classes += " no-indicator"
+    if (!this._settings.round_indicators_border) style_classes += " no-rounded"
 
     const style = `border-color: ${this._settings.indicators_color}`
 
@@ -229,11 +230,12 @@ class Extension {
       .forEach((win, count) => {
 
         // current window is focused
-        const focus = win.has_focus() ||
+        const is_focus = win.has_focus() ||
           (this._settings.group_same_application && global.display.get_focus_window()?.get_pid() == win.get_pid())
 
         // hide dialogs, popovers and tooltip duplicate windows
-        if (this._settings.hide_tooltips && (win.get_window_type() != Meta.WindowType.NORMAL)) return
+        if (this._settings.hide_tooltips && (win.get_window_type() != Meta.WindowType.NORMAL))
+          return
 
         // limit icons
         if (!win.has_focus() && count >= limitIcons) {
@@ -256,24 +258,22 @@ class Extension {
 
         // set low opacity for not focused apps
         const reduceInactiveAppsOpacity = this._settings.reduce_inactive_apps_opacity
-        if (!focus && reduceInactiveAppsOpacity) {
+        if (!is_focus && reduceInactiveAppsOpacity)
           texture.set_opacity(150)
-        }
 
         // desaturate icon setting
         const desaturateApps = this._settings.desaturate_apps
-        if (desaturateApps) {
+        if (desaturateApps)
           texture.add_effect(new Clutter.DesaturateEffect())
-        }
 
         // styles
         const showFocusedAppIndicator = this._settings.show_focused_app_indicator
         const roundIndicatorsBorder = this._settings.round_indicators_border
 
         let style_classes = "app"
-        if (focus) { style_classes += " active" }
-        if (!showFocusedAppIndicator) { style_classes += " no-indicator" }
-        if (!roundIndicatorsBorder) { style_classes += " no-rounded" }
+        if (is_focus) style_classes += " active"
+        if (!showFocusedAppIndicator) style_classes += " no-indicator"
+        if (!roundIndicatorsBorder) style_classes += " no-rounded"
 
         const indicatorsColor = this._settings.indicators_color
         const style = `border-color: ${indicatorsColor}`
@@ -335,14 +335,10 @@ class Extension {
       // custom workspace name
       const customName = Meta.prefs_get_workspace_name(index)
 
-      // if custom name != default
-      if (customName !== `Workspace ${index+1}`) {
+      if (customName !== `Workspace ${index+1}`) // if custom name != default
         indicatorText = customName
-      }
-      // default text: index
-      else {
+      else // default text: index
         indicatorText = (index+1).toString()
-      }
     }
 
     // add label to indicator
@@ -359,9 +355,8 @@ class Extension {
    */
   _on_click_workspace(actor, event) {
     // left click: focus workspace
-    if (event.get_button() == 1) {
+    if (event.get_button() == 1)
       this._workspace.activate(global.get_current_time())
-    }
 
     // middle click: do nothing
 
@@ -416,14 +411,12 @@ class Extension {
    */
   _on_click_application(actor, event) {
     // left/right click: focus application
-    if (event.get_button() == 1 || event.get_button() == 3) {
+    if (event.get_button() == 1 || event.get_button() == 3)
       this._window.activate(global.get_current_time())
-    }
 
     // middle click: close application
-    if (this.middleClosesApp && event.get_button() == 2) {
+    if (this.middleClosesApp && event.get_button() == 2)
       this._window.delete(global.get_current_time())
-    }
   }
 
   /** touch on application handler */
@@ -442,7 +435,7 @@ class Extension {
 
     // convert 2D direction to left/right
     let direction = 0
-		switch (scroll_direction) {
+    switch (scroll_direction) {
       case Clutter.ScrollDirection.LEFT:
       case Clutter.ScrollDirection.UP:
         direction = this._inverse_scroll ? -1 : 1
@@ -460,15 +453,15 @@ class Extension {
     let newIndex = workspaceManager.get_active_workspace_index() + direction
 
     // wrap
-    if (this._scroll_wraparound) newIndex = mod(newIndex, workspaceManager.n_workspaces)
+    if (this._scroll_wraparound)
+      newIndex = mod(newIndex, workspaceManager.n_workspaces)
 
-    if (newIndex >= 0 && newIndex < workspaceManager.n_workspaces) {
+    if (newIndex >= 0 && newIndex < workspaceManager.n_workspaces)
       workspaceManager.get_workspace_by_index(newIndex).activate(global.get_current_time())
-    }
 
     // modulo operator working for negative numbers
     function mod(n, m) {
-      return ((n % m) + m) % m;
+      return ((n % m) + m) % m
     }
   }
 
