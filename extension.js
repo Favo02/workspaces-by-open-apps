@@ -37,6 +37,7 @@ class Extension {
       panel_position: rs.get_enum("panel-position"),
       position: rs.get_int("position"),
       icons_limit: rs.get_int("icons-limit"),
+      group_same_application: rs.get_boolean("group-same-application"),
       show_focused_app_indicator: rs.get_boolean("show-focused-app-indicator"),
       show_active_workspace_indicator: rs.get_boolean("show-active-workspace-indicator"),
       reduce_inactive_apps_opacity: rs.get_boolean("reduce-inactive-apps-opacity"),
