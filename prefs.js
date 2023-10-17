@@ -9,24 +9,37 @@ function fillPreferencesWindow(window) {
   const settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
   const page1 = new Adw.PreferencesPage({
-    name: "general",
-    title: "General",
-    icon_name: "dialog-information-symbolic" // TODO: change icon
+    name: "page1",
+    title: "Position and Behavior",
+    icon_name: "preferences-other-symbolic"
   })
   page1.add(page1_group1(settings))
   page1.add(page1_group2(settings))
 
   const page2 = new Adw.PreferencesPage({
-    name: "general",
-    title: "General",
-    icon_name: "dialog-information-symbolic" // TODO: change icon
+    name: "page2",
+    title: "Appearance",
+    icon_name: "applications-graphics-symbolic"
   })
   page2.add(page2_group1(settings))
-  
-  
+
+  const page3 = new Adw.PreferencesPage({
+    name: "page3",
+    title: "Hide and ignore apps",
+    icon_name: "edit-clear-all-symbolic"
+  })
+
+  const page4 = new Adw.PreferencesPage({
+    name: "page4",
+    title: "About",
+    icon_name: "help-about-symbolic"
+  })
+
   window.add(page1)
   window.add(page2)
-  
+  window.add(page3)
+  window.add(page4)
+
   // TODO: ad at end of every page "close settings to apply modifications" label
 }
 
