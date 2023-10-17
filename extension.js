@@ -34,8 +34,8 @@ class Extension {
   _parse_settings() {
     const rs = this._raw_settings
     this._settings = {
-      panel_position: rs.get_enum("panel-position"),
-      position: rs.get_int("position"),
+      position_in_panel: rs.get_enum("position-in-panel"),
+      position_index: rs.get_int("position-index"),
       icons_limit: rs.get_int("icons-limit"),
       group_same_application: rs.get_boolean("group-same-application"),
       show_focused_app_indicator: rs.get_boolean("show-focused-app-indicator"),
@@ -175,7 +175,7 @@ class Extension {
 
     // add to panel
     let box
-    switch (this._settings.panel_position) {
+    switch (this._settings.position_in_panel) {
       case 0:
         box = "_leftBox"
         break
@@ -188,7 +188,7 @@ class Extension {
     }
 
     // index (selected by user) to insert indicator in panel
-    const insertIndex = this._settings.position + (this._indicators.length-1)
+    const insertIndex = this._settings.position_index + (this._indicators.length-1)
 
     main.panel[box].insert_child_at_index(indicator, insertIndex)
   }
