@@ -46,6 +46,44 @@
       <description>Clicking with the middle mouse button on an app icon will close the app</description>
     </key>
 
+    <!-- PAGE 2 GROUP 1: INDICATOR APPEARANCE -->
+
+    <key type="b" name="indicator-show-active-workspace">
+      <default>true</default>
+      <summary>Active workspace indicator</summary>
+      <description>Show an indicator below the current active workspace</description>
+    </key>
+
+    <key type="b" name="indicator-show-focused-app">
+      <default>true</default>
+      <summary>Focused app indicator</summary>
+      <description>Show an indicator above the current focused app</description>
+    </key>
+
+    <key type="s" name="indicator-color">
+      <default>'rgba(255,255,255,1)'</default>
+      <summary>Indicators color</summary>
+      <description>Color of active workspace and focused app indicators</description>
+    </key>
+
+    <key type="b" name="indicator-round-borders">
+      <default>true</default>
+      <summary>Round indicators borders</summary>
+      <description>Round borders of active workspace and focused app indicators</description>
+    </key>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -61,17 +99,7 @@
       <description>Show grouped application per workspace.</description>
     </key>
 
-    <key type="b" name="show-focused-app-indicator">
-      <default>true</default>
-      <summary>Show focused app indicator</summary>
-      <description>Show focused app indicator with an indicator above it.</description>
-    </key>
 
-    <key type="b" name="show-active-workspace-indicator">
-      <default>true</default>
-      <summary>Show active workspace indicator</summary>
-      <description>Show active workspace indicator with an indicator below it.</description>
-    </key>
 
     <key type="b" name="reduce-inactive-apps-opacity">
       <default>true</default>
@@ -79,11 +107,7 @@
       <description>Reduce opacity of application not currently focused.</description>
     </key>
 
-    <key type="b" name="round-indicators-border">
-      <default>true</default>
-      <summary>Round indicators border</summary>
-      <description>Apply a round effect to the "show focused app" and "show active workspace" indicator.</description>
-    </key>
+    
 
     <key type="b" name="show-workspace-index">
       <default>true</default>
@@ -115,11 +139,7 @@
       <description>Removes icon for dialogs of running applications.</description>
     </key>
 
-    <key type="s" name="indicators-color">
-      <default>'rgba(255,255,255,1)'</default>
-      <summary>Active/Focused indicators color</summary>
-      <description>Sets the indicators color.</description>
-    </key>
+    
 
     <key type="s" name="apps-on-all-workspaces-indicator">
       <default>'ALL'</default>

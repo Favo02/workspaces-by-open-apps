@@ -1,4 +1,4 @@
-const { Adw, Gio, Gtk } = imports.gi
+const { Adw, Gio, Gtk, Gdk } = imports.gi
 const Me = imports.misc.extensionUtils.getCurrentExtension()
 
 function init() {}
@@ -8,20 +8,26 @@ function fillPreferencesWindow(window) {
 
   const settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
-  let page
-
-  page = new Adw.PreferencesPage({
+  const page1 = new Adw.PreferencesPage({
     name: "general",
     title: "General",
     icon_name: "dialog-information-symbolic" // TODO: change icon
   })
-  page.add(page1_group1(settings))
-  page.add(page1_group2(settings))
+  page1.add(page1_group1(settings))
+  page1.add(page1_group2(settings))
 
-
-
-
-  window.add(page)
+  const page2 = new Adw.PreferencesPage({
+    name: "general",
+    title: "General",
+    icon_name: "dialog-information-symbolic" // TODO: change icon
+  })
+  page2.add(page2_group1(settings))
+  
+  
+  window.add(page1)
+  window.add(page2)
+  
+  // TODO: ad at end of every page "close settings to apply modifications" label
 }
 
 function page1_group1(settings) {
@@ -124,6 +130,99 @@ function page1_group2(settings) {
   })
   settings.bind(
     "middle-click-close-app",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  return group
+}
+
+function page2_group1(settings) {
+  let group, row, widget
+
+  group = new Adw.PreferencesGroup({
+    title: "Indicator appearance",
+    description: ""
+  })
+
+  row = new Adw.ActionRow({
+    title: "Active workspace indicator",
+    subtitle: "Show an indicator below the current active workspace"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "indicator-show-active-workspace",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Focused app indicator",
+    subtitle: "Show an indicator above the current focused app"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "indicator-show-focused-app",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Indicators color",
+    subtitle: "Color of active workspace and focused app indicators"
+  })
+  const rgba = new Gdk.RGBA()
+  rgba.parse(settings.get_string("indicator-color"))
+  widget = new Gtk.ColorButton({
+    rgba: rgba,
+    show_editor: true,
+    use_alpha: true,
+    visible: true,
+    valign: Gtk.Align.CENTER
+  })
+  widget.connect(
+    "color-set",
+    () => {
+      settings.set_string(
+        "indicator-color",
+        widget.get_rgba().to_string()
+      )
+  })
+  settings.bind(
+    "indicator-show-focused-app",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Round indicators borders",
+    subtitle: "Round borders of active workspace and focused app indicators"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "indicator-round-borders",
     widget,
     "active",
     Gio.SettingsBindFlags.DEFAULT

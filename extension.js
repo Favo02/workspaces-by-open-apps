@@ -40,18 +40,19 @@ class Extension {
       scroll_wraparound: rs.get_boolean("scroll-wraparound"),
       scroll_inverse: rs.get_boolean("scroll-inverse"),
       middle_click_close_app: rs.get_boolean("middle-click-close-app"),
+      
+      indicator_show_active_workspace: rs.get_boolean("indicator-show-active-workspace"),
+      indicator_show_focused_app: rs.get_boolean("indicator-show-focused-app"),
+      indicator_color: rs.get_string("indicator-color"),
+      indicator_round_borders: rs.get_boolean("indicator-round-borders"),
 
       icons_limit: rs.get_int("icons-limit"),
       group_same_application: rs.get_boolean("group-same-application"),
-      show_focused_app_indicator: rs.get_boolean("show-focused-app-indicator"),
-      show_active_workspace_indicator: rs.get_boolean("show-active-workspace-indicator"),
       reduce_inactive_apps_opacity: rs.get_boolean("reduce-inactive-apps-opacity"),
-      round_indicators_border: rs.get_boolean("round-indicators-border"),
       show_workspace_index: rs.get_boolean("show-workspace-index"),
       desaturate_apps: rs.get_boolean("desaturate-apps"),
       hide_empty_workspaces: rs.get_boolean("hide-empty-workspaces"),
       hide_tooltips: rs.get_boolean("hide-tooltips"),
-      indicators_color: rs.get_string("indicators-color"),
       apps_on_all_workspaces_indicator: rs.get_string("apps-on-all-workspaces-indicator")
     }
   }
@@ -125,10 +126,10 @@ class Extension {
     // indicator styles
     let style_classes = "workspace"
     if (is_active) style_classes += " active"
-    if (!this._settings.show_active_workspace_indicator) style_classes += " no-indicator"
-    if (!this._settings.round_indicators_border) style_classes += " no-rounded"
+    if (!this._settings.indicator_show_active_workspace) style_classes += " no-indicator"
+    if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
 
-    const style = `border-color: ${this._settings.indicators_color}`
+    const style = `border-color: ${this._settings.indicator_color}`
 
     // create indicator
     const indicator = new St.Bin({
@@ -270,15 +271,15 @@ class Extension {
           texture.add_effect(new Clutter.DesaturateEffect())
 
         // styles
-        const showFocusedAppIndicator = this._settings.show_focused_app_indicator
-        const roundIndicatorsBorder = this._settings.round_indicators_border
+        const showFocusedAppIndicator = this._settings.indicator_show_focused_app
+        const roundIndicatorsBorder = this._settings.indicator_round_borders
 
         let style_classes = "app"
         if (is_focus) style_classes += " active"
         if (!showFocusedAppIndicator) style_classes += " no-indicator"
         if (!roundIndicatorsBorder) style_classes += " no-rounded"
 
-        const indicatorsColor = this._settings.indicators_color
+        const indicatorsColor = this._settings.indicator_color
         const style = `border-color: ${indicatorsColor}`
 
         const icon = new St.Bin({
