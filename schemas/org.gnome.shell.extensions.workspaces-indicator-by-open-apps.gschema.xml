@@ -26,6 +26,29 @@
       <description>Number of other elements in the panel before the indicator</description>
     </key>
 
+    <!-- PAGE 1 GROUP 2: BEHAVIOR -->
+
+    <key type="b" name="scroll-wraparound">
+      <default>true</default>
+      <summary>Scroll wraparound</summary>
+      <description>Scrolling past the last workspace will wrap around to the first one (and viceversa)</description>
+    </key>
+
+    <key type="b" name="scroll-inverse">
+      <default>false</default>
+      <summary>Inverse scroll</summary>
+      <description>Invert the direction of scrolling</description>
+    </key>
+
+    <key type="b" name="middle-click-close-app">
+      <default>true</default>
+      <summary>Middle click closes app</summary>
+      <description>Clicking with the middle mouse button on an app icon will close the app</description>
+    </key>
+
+
+
+
     <key type="i" name="icons-limit">
       <default>0</default>
       <summary>Maximum number of icons per workspace (0 = unlimited)</summary>
@@ -68,23 +91,11 @@
       <description>Adds the workspace index before the icons.</description>
     </key>
 
-    <key type="b" name="scroll-wraparound">
-      <default>true</default>
-      <summary>Wraparound workspaces on scroll</summary>
-      <description>Scrolling after the last workspace wraps around to first workspace (and viceversa).</description>
-    </key>
+    
 
-    <key type="b" name="inverse-scroll">
-      <default>false</default>
-      <summary>Inverse scroll direction</summary>
-      <description>Scrolling workspaces in inverse order.</description>
-    </key>
+    
 
-    <key type="b" name="middle-click-close-app">
-      <default>true</default>
-      <summary>Middle click closes application</summary>
-      <description>Middle click closes application.</description>
-    </key>
+    
 
     <key type="b" name="desaturate-apps">
       <default>false</default>

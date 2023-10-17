@@ -36,6 +36,11 @@ class Extension {
     this._settings = {
       position_in_panel: rs.get_enum("position-in-panel"),
       position_index: rs.get_int("position-index"),
+
+      scroll_wraparound: rs.get_boolean("scroll-wraparound"),
+      scroll_inverse: rs.get_boolean("scroll-inverse"),
+      middle_click_close_app: rs.get_boolean("middle-click-close-app"),
+
       icons_limit: rs.get_int("icons-limit"),
       group_same_application: rs.get_boolean("group-same-application"),
       show_focused_app_indicator: rs.get_boolean("show-focused-app-indicator"),
@@ -43,9 +48,6 @@ class Extension {
       reduce_inactive_apps_opacity: rs.get_boolean("reduce-inactive-apps-opacity"),
       round_indicators_border: rs.get_boolean("round-indicators-border"),
       show_workspace_index: rs.get_boolean("show-workspace-index"),
-      scroll_wraparound: rs.get_boolean("scroll-wraparound"),
-      inverse_scroll: rs.get_boolean("inverse-scroll"),
-      middle_click_close_app: rs.get_boolean("middle-click-close-app"),
       desaturate_apps: rs.get_boolean("desaturate-apps"),
       hide_empty_workspaces: rs.get_boolean("hide-empty-workspaces"),
       hide_tooltips: rs.get_boolean("hide-tooltips"),
@@ -143,7 +145,7 @@ class Extension {
     indicator._index = index
     indicator._workspace = workspace
     indicator._scroll_wraparound = this._settings.scroll_wraparound
-    indicator._inverse_scroll = this._settings.inverse_scroll
+    indicator._inverse_scroll = this._settings.scroll_inverse
 
     // drag and drop
     indicator._delegate = indicator

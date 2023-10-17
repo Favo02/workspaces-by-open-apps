@@ -16,6 +16,7 @@ function fillPreferencesWindow(window) {
     icon_name: "dialog-information-symbolic" // TODO: change icon
   })
   page.add(page1_group1(settings))
+  page.add(page1_group2(settings))
 
 
 
@@ -36,7 +37,7 @@ function page1_group1(settings) {
     subtitle: "Panel to show the indicator in"
   })
   widget = new Gtk.ComboBoxText({
-    valign: Gtk.Align.CENTER,
+    valign: Gtk.Align.CENTER
   })
   widget.append("LEFT", "Left")
   widget.append("CENTER", "Center")
@@ -51,7 +52,7 @@ function page1_group1(settings) {
     subtitle: "Number of other elements in the panel before the indicator"
   })
   widget = new Gtk.SpinButton({
-    valign: Gtk.Align.CENTER,
+    valign: Gtk.Align.CENTER
   })
   widget.set_sensitive(true)
   widget.set_range(0, 50)
@@ -65,6 +66,68 @@ function page1_group1(settings) {
         w.get_value_as_int()
       )
   })
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  return group
+}
+
+function page1_group2(settings) {
+  let group, row, widget
+
+  group = new Adw.PreferencesGroup({
+    title: "Behavior",
+    description: ""
+  })
+
+  row = new Adw.ActionRow({
+    title: "Scroll wraparound",
+    subtitle: "Scrolling past the last workspace will wrap around to the first one (and viceversa)"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "scroll-wraparound",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Inverse scroll",
+    subtitle: "Invert the direction of scrolling"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "scroll-inverse",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Middle click closes app",
+    subtitle: "Clicking with the middle mouse button on an app icon will close the app"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "middle-click-close-app",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
