@@ -4,15 +4,18 @@
 
 .workspace.active {
   border-radius: 5px;
-  border: 2px solid white;
-  border-top: none;
-  border-left: none;
-  border-right: none;
+  border-bottom: 2px solid white;
 }
 
 .text {
   padding: 5px;
   color: rgb(110, 110, 110);
+  font-size: 12px;
+}
+
+.text-group {
+  padding: 7px 3px 5px 0px;
+  color: rgba(110, 110, 110, 0.58);
   font-size: 12px;
 }
 
@@ -24,6 +27,10 @@
 .app.active {
   border-top: 2px solid white;
   border-radius: 5px;
+}
+
+.app.active .text-group {
+  padding: 5px 3px 5px 0px;
 }
 
 .no-indicator {

@@ -26,7 +26,18 @@ function buildPrefsWidget() {
 
   let label, widget
 
-	// panel-position
+  // info label
+  const info = new Gtk.Label({
+    label: '<span foreground="red"><i><b>Close settings to apply modifications (working on a fix)</b></i></span>',
+    halign: Gtk.Align.CENTER,
+    use_markup: true,
+    visible: true,
+    margin_top: 10,
+    margin_bottom: 10
+  })
+  gridWidget.attach(info, 0, 0, 2, 1)
+
+  // panel-position
   label = new Gtk.Label({
     label: "Box where the indicator will be inserted",
     hexpand: true,
@@ -42,10 +53,10 @@ function buildPrefsWidget() {
     'active-id',
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 0, 1, 1)
-  gridWidget.attach(widget, 1, 0, 1, 1)
+  gridWidget.attach(label, 0, 1, 1, 1)
+  gridWidget.attach(widget, 1, 1, 1, 1)
 
-	// position
+  // position
   label = new Gtk.Label({
     label: "Position in panel (index, 0 = first)",
     hexpand: true,
@@ -66,8 +77,8 @@ function buildPrefsWidget() {
         w.get_value_as_int()
       )
   })
-  gridWidget.attach(label, 0, 1, 1, 1)
-  gridWidget.attach(widget, 1, 1, 1, 1)
+  gridWidget.attach(label, 0, 2, 1, 1)
+  gridWidget.attach(widget, 1, 2, 1, 1)
 
   // icons limit
   label = new Gtk.Label({
@@ -90,21 +101,28 @@ function buildPrefsWidget() {
         w.get_value_as_int()
       )
   })
-  gridWidget.attach(label, 0, 2, 1, 1)
-  gridWidget.attach(widget, 1, 2, 1, 1)
+  gridWidget.attach(label, 0, 3, 1, 1)
+  gridWidget.attach(widget, 1, 3, 1, 1)
 
-  // info label
-  const info = new Gtk.Label({
-    label: '<span foreground="red"><i><b>Close settings to apply modifications below this label (working on a fix)</b></i></span>',
-    halign: Gtk.Align.CENTER,
-    use_markup: true,
-    visible: true,
-    margin_top: 10,
-    margin_bottom: 10
+  // group-same-application
+  label = new Gtk.Label({
+    label: "Group same application in workspace",
+    hexpand: true,
+    halign: Gtk.Align.START,
   })
-  gridWidget.attach(info, 0, 3, 2, 1)
-	
-	// show-focused-app-indicator
+  widget = new Gtk.Switch({
+    halign: Gtk.Align.END
+  })
+  settings.bind(
+    "group-same-application",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  gridWidget.attach(label, 0, 4, 1, 1)
+  gridWidget.attach(widget, 1, 4, 1, 1)
+
+  // show-focused-app-indicator
   label = new Gtk.Label({
     label: "Show focused app indicator (above app)",
     hexpand: true,
@@ -119,10 +137,10 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 4, 1, 1)
-  gridWidget.attach(widget, 1, 4, 1, 1)
+  gridWidget.attach(label, 0, 5, 1, 1)
+  gridWidget.attach(widget, 1, 5, 1, 1)
 
-	// show-active-workspace-indicator
+  // show-active-workspace-indicator
   label = new Gtk.Label({
     label: "Show active workspace indicator (under workspace)",
     hexpand: true,
@@ -137,10 +155,10 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 5, 1, 1)
-  gridWidget.attach(widget, 1, 5, 1, 1)
+  gridWidget.attach(label, 0, 6, 1, 1)
+  gridWidget.attach(widget, 1, 6, 1, 1)
 
-	// reduce-inactive-apps-opacity
+  // reduce-inactive-apps-opacity
   label = new Gtk.Label({
     label: "Reduce inactive apps opacity",
     hexpand: true,
@@ -155,10 +173,10 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 6, 1, 1)
-  gridWidget.attach(widget, 1, 6, 1, 1)
+  gridWidget.attach(label, 0, 7, 1, 1)
+  gridWidget.attach(widget, 1, 7, 1, 1)
 
-	// round-indicators-border
+  // round-indicators-border
   label = new Gtk.Label({
     label: "Round indicators border",
     hexpand: true,
@@ -173,8 +191,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 7, 1, 1)
-  gridWidget.attach(widget, 1, 7, 1, 1)
+  gridWidget.attach(label, 0, 8, 1, 1)
+  gridWidget.attach(widget, 1, 8, 1, 1)
 
   // show-workspace-index
   label = new Gtk.Label({
@@ -191,8 +209,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 8, 1, 1)
-  gridWidget.attach(widget, 1, 8, 1, 1)
+  gridWidget.attach(label, 0, 9, 1, 1)
+  gridWidget.attach(widget, 1, 9, 1, 1)
 
   // scroll-wraparound
   label = new Gtk.Label({
@@ -209,8 +227,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 9, 1, 1)
-  gridWidget.attach(widget, 1, 9, 1, 1)
+  gridWidget.attach(label, 0, 10, 1, 1)
+  gridWidget.attach(widget, 1, 10, 1, 1)
 
   // inverse-scroll
   label = new Gtk.Label({
@@ -227,8 +245,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 10, 1, 1)
-  gridWidget.attach(widget, 1, 10, 1, 1)
+  gridWidget.attach(label, 0, 11, 1, 1)
+  gridWidget.attach(widget, 1, 11, 1, 1)
 
   // middle-click-close-app
   label = new Gtk.Label({
@@ -245,8 +263,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 11, 1, 1)
-  gridWidget.attach(widget, 1, 11, 1, 1)
+  gridWidget.attach(label, 0, 12, 1, 1)
+  gridWidget.attach(widget, 1, 12, 1, 1)
 
   // desaturate-apps
   label = new Gtk.Label({
@@ -263,8 +281,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 12, 1, 1)
-  gridWidget.attach(widget, 1, 12, 1, 1)
+  gridWidget.attach(label, 0, 13, 1, 1)
+  gridWidget.attach(widget, 1, 13, 1, 1)
 
   // hide-empty-workspaces
   label = new Gtk.Label({
@@ -281,8 +299,26 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 13, 1, 1)
-  gridWidget.attach(widget, 1, 13, 1, 1)
+  gridWidget.attach(label, 0, 14, 1, 1)
+  gridWidget.attach(widget, 1, 14, 1, 1)
+
+  // hide-tooltips
+  label = new Gtk.Label({
+    label: "Hide tooltips",
+    hexpand: true,
+    halign: Gtk.Align.START,
+  })
+  widget = new Gtk.Switch({
+    halign: Gtk.Align.END
+  })
+  settings.bind(
+    "hide-tooltips",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  gridWidget.attach(label, 0, 15, 1, 1)
+  gridWidget.attach(widget, 1, 15, 1, 1)
 
   // indicators-color
   label = new Gtk.Label({
@@ -306,8 +342,8 @@ function buildPrefsWidget() {
         widget.get_rgba().to_string()
       )
   })
-  gridWidget.attach(label, 0, 14, 1, 1)
-  gridWidget.attach(widget, 1, 14, 1, 1)
+  gridWidget.attach(label, 0, 16, 1, 1)
+  gridWidget.attach(widget, 1, 16, 1, 1)
 
   // apps-on-all-workspaces-indicator
   const old_value = settings.get_string('apps-on-all-workspaces-indicator')
@@ -343,8 +379,8 @@ function buildPrefsWidget() {
     "active",
     Gio.SettingsBindFlags.DEFAULT
   )
-  gridWidget.attach(label, 0, 15, 1, 1)
-  gridWidget.attach(widget, 1, 15, 1, 1)
+  gridWidget.attach(label, 0, 17, 1, 1)
+  gridWidget.attach(widget, 1, 17, 1, 1)
 
   // -------- LINKS --------
 
@@ -355,7 +391,7 @@ function buildPrefsWidget() {
     visible: true,
     margin_top: 40,
   })
-  gridWidget.attach(github, 0, 16, 2, 1)
+  gridWidget.attach(github, 0, 18, 2, 1)
 
   const issue = new Gtk.Label({
     label: `<a href="https://github.com/Favo02/workspaces-by-open-apps/issues">Report a bug / Feature request</a>`,
@@ -363,7 +399,7 @@ function buildPrefsWidget() {
     use_markup: true,
     visible: true,
   })
-  gridWidget.attach(issue, 0, 17, 2, 1)
+  gridWidget.attach(issue, 0, 19, 2, 1)
 
   return prefsWidget
 }

@@ -30,6 +30,12 @@
       <description>Maximum number of icons displayed in a single workspace indicator.</description>
     </key>
 
+    <key type="b" name="group-same-application">
+      <default>false</default>
+      <summary>Group icons of same application in same workspace</summary>
+      <description>Show grouped application per workspace.</description>
+    </key>
+
     <key type="b" name="show-focused-app-indicator">
       <default>true</default>
       <summary>Show focused app indicator</summary>
@@ -88,6 +94,12 @@
       <default>false</default>
       <summary>Hide empty workspaces</summary>
       <description>Removes the indicator of empty workspaces.</description>
+    </key>
+
+    <key type="b" name="hide-tooltips">
+      <default>false</default>
+      <summary>Hide dialogs, popovers and tooltip additional icon</summary>
+      <description>Removes icon for dialogs of running applications.</description>
     </key>
 
     <key type="s" name="indicators-color">
