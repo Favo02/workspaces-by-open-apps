@@ -291,13 +291,10 @@ class Extension {
           texture.add_effect(new Clutter.DesaturateEffect())
 
         // styles
-        const showFocusedAppIndicator = this._settings.indicator_show_focused_app
-        const roundIndicatorsBorder = this._settings.indicator_round_borders
-
         let style_classes = "app"
         if (is_focus) style_classes += " active"
-        if (!showFocusedAppIndicator) style_classes += " no-indicator"
-        if (!roundIndicatorsBorder) style_classes += " no-rounded"
+        if (!this._settings.indicator_show_focused_app) style_classes += " no-indicator"
+        if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
 
         const indicatorsColor = this._settings.indicator_color
         const style = `border-color: ${indicatorsColor}`
