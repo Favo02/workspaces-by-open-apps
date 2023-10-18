@@ -51,13 +51,17 @@ class Extension {
       indicator_all_text: rs.get_string("indicator-all-text"),
       indicator_use_custom_names: rs.get_string("indicator-use-custom-names"),
 
+      apps_all_desaturate: rs.get_boolean("apps-all-desaturate"),
+      apps_inactive_effect: rs.get_enum("apps-inactive-effect"),
+      apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
 
 
       icons_limit: rs.get_int("icons-limit"),
       group_same_application: rs.get_boolean("group-same-application"),
-      reduce_inactive_apps_opacity: rs.get_boolean("reduce-inactive-apps-opacity"),
-      desaturate_apps: rs.get_boolean("desaturate-apps"),
       hide_tooltips: rs.get_boolean("hide-tooltips"),
+
+
+      reduce_inactive_apps_opacity: true // FIXME: temporary fix
     }
   }
 
@@ -270,7 +274,7 @@ class Extension {
           texture.set_opacity(150)
 
         // desaturate icon setting
-        const desaturateApps = this._settings.desaturate_apps
+        const desaturateApps = this._settings.apps_all_desaturate
         if (desaturateApps)
           texture.add_effect(new Clutter.DesaturateEffect())
 

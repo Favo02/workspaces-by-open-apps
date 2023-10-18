@@ -9,6 +9,12 @@
     <value value="2" nick="RIGHT"/>
   </enum>
 
+  <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-apps-effects">
+    <value value="0" nick="NOTHING"/>
+    <value value="1" nick="REDUCE OPACITY"/>
+    <value value="2" nick="DESATURATE"/>
+  </enum>
+
   <schema id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps"
     path="/org/gnome/shell/extensions/workspaces-indicator-by-open-apps/">
 
@@ -98,7 +104,25 @@
       <description>Display custom (editable by rigth click on workspace) names instead of indexes</description>
     </key>
 
+    <!-- PAGE 2 GROUP 3: ICONS APPEARANCE -->
 
+    <key type="b" name="apps-all-desaturate">
+      <default>false</default>
+      <summary>Desaturate all apps icons</summary>
+      <description>Show only black and white apps icons</description>
+    </key>
+
+    <key name="apps-inactive-effect" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-apps-effects">
+      <default>'REDUCE OPACITY'</default>
+      <summary>Inactive apps effect</summary>
+      <description>Effect to apply to inactive (not focused) apps icons</description>
+    </key>
+
+    <key name="apps-minimized-effect" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-apps-effects">
+      <default>'REDUCE OPACITY'</default>
+      <summary>Minimized apps effect</summary>
+      <description>Effect to apply to minimized apps icons</description>
+    </key>
 
 
 
@@ -121,30 +145,12 @@
       <description>Show grouped application per workspace.</description>
     </key>
 
-
-
-    <key type="b" name="reduce-inactive-apps-opacity">
-      <default>true</default>
-      <summary>Reduce inactive apps opacity</summary>
-      <description>Reduce opacity of application not currently focused.</description>
-    </key>
-
-    <key type="b" name="desaturate-apps">
-      <default>false</default>
-      <summary>Desaturare applications</summary>
-      <description>Removes saturation to application icons.</description>
-    </key>
-
     <key type="b" name="hide-tooltips">
       <default>false</default>
       <summary>Hide dialogs, popovers and tooltip additional icon</summary>
       <description>Removes icon for dialogs of running applications.</description>
     </key>
 
-    
-
-    
-    
   </schema>
   
 </schemalist>

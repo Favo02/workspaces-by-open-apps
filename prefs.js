@@ -23,6 +23,7 @@ function fillPreferencesWindow(window) {
   })
   page2.add(page2_group1(settings))
   page2.add(page2_group2(settings))
+  page2.add(page2_group3(settings))
 
   const page3 = new Adw.PreferencesPage({
     name: "page3",
@@ -339,3 +340,60 @@ function page2_group2(settings) {
   return group
 }
 
+function page2_group3(settings) {
+  let group, row, widget
+
+  group = new Adw.PreferencesGroup({
+    title: "Icons appearance",
+    description: ""
+  })
+
+  row = new Adw.ActionRow({
+    title: "Desaturate all apps icons",
+    subtitle: "Show only black and white apps icons"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "apps-all-desaturate",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Inactive apps effect",
+    subtitle: "Effect to apply to inactive (not focused) apps icons"
+  })
+  widget = new Gtk.ComboBoxText({
+    valign: Gtk.Align.CENTER
+  })
+  widget.append("NOTHING", "Nothing")
+  widget.append("REDUCE OPACITY", "Reduce opacity")
+  widget.append("DESATURATE", "Desaturate")
+  settings.bind("apps-inactive-effect", widget, "active-id", Gio.SettingsBindFlags.DEFAULT)
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Minimized apps effect",
+    subtitle: "Effect to apply to minimized apps icons"
+  })
+  widget = new Gtk.ComboBoxText({
+    valign: Gtk.Align.CENTER
+  })
+  widget.append("NOTHING", "Nothing")
+  widget.append("REDUCE OPACITY", "Reduce opacity")
+  widget.append("DESATURATE", "Desaturate")
+  settings.bind("apps-minimized-effect", widget, "active-id", Gio.SettingsBindFlags.DEFAULT)
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  return group
+}
