@@ -424,9 +424,8 @@ class Extension {
       })
 
       // connect typing event: update workspace name
-      entry.connect("key-press-event", () => {
-        const text = entry.get_text()
-        Meta.prefs_change_workspace_name(workspaceIndex, text)
+      entry.connect("key-release-event", () => {
+        Meta.prefs_change_workspace_name(workspaceIndex, entry.get_text())
       })
 
       // add to indicator
