@@ -213,13 +213,19 @@ class Extension {
     const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
 
     // group same application
-    let occurrences
+    let occurrences = {}
     if (this._settings.icons_group) {
       // count occurences of each application
       occurrences = windows.reduce((acc, curr) => {
         const id = curr.get_pid()
-        if (!acc[id]) acc[id] = 1
-        else acc[id]++
+        if (!acc[id]) {
+          acc[id] = { count: 1, focus: curr.has_focus(), not_minimized: !curr.is_hidden() }
+        }
+        else {
+          acc[id].count++
+          acc[id].focus = acc[id].focus || curr.has_focus()
+          acc[id].not_minimized = acc[id].minimized || curr.is_hidden()
+        }
         return acc
       }, {})
 
@@ -233,14 +239,13 @@ class Extension {
       windows = unique_windows
     }
 
-
     windows
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id (creation order)
       .forEach((win, count) => {
 
         // current window is focused
-        const is_focus = win.has_focus() ||
-          (this._settings.icons_group && global.display.get_focus_window()?.get_pid() == win.get_pid())
+        const is_focus = win.has_focus() || occurrences[win.get_pid()]?.focus
+        const is_not_minimized = !win.is_hidden() || occurrences[win.get_pid()]?.not_minimized
 
         // hide dialogs, popovers and tooltip duplicate windows
         if (win.get_window_type() != Meta.WindowType.NORMAL)
@@ -265,14 +270,24 @@ class Extension {
         // create Clutter.actor
         const texture = app.create_icon_texture(20)
 
-        // set low opacity for not focused apps
-        const reduceInactiveAppsOpacity = this._settings.reduce_inactive_apps_opacity
-        if (!is_focus && reduceInactiveAppsOpacity)
-          texture.set_opacity(150)
+        // effects for not focused apps
+        if (!is_focus) {
+          if (this._settings.apps_inactive_effect == 1) // reduce opacity
+            texture.set_opacity(150)
+          if (this._settings.apps_inactive_effect == 2) // desaturate
+            texture.add_effect(new Clutter.DesaturateEffect())
+        }
+
+        // effects for minimized apps
+        if (!is_not_minimized) {
+          if (this._settings.apps_minimized_effect == 1) // reduce opacity
+            texture.set_opacity(150)
+          if (this._settings.apps_minimized_effect == 2) // desaturate
+            texture.add_effect(new Clutter.DesaturateEffect())
+        }
 
         // desaturate icon setting
-        const desaturateApps = this._settings.apps_all_desaturate
-        if (desaturateApps)
+        if (this._settings.apps_all_desaturate)
           texture.add_effect(new Clutter.DesaturateEffect())
 
         // styles
