@@ -49,7 +49,7 @@ class Extension {
       indicator_show_indexes: rs.get_boolean("indicator-show-indexes"),
       indicator_hide_empty: rs.get_boolean("indicator-hide-empty"),
       indicator_all_text: rs.get_string("indicator-all-text"),
-      indicator_use_custom_names: rs.get_string("indicator-use-custom-names"),
+      indicator_use_custom_names: rs.get_boolean("indicator-use-custom-names"),
 
       apps_all_desaturate: rs.get_boolean("apps-all-desaturate"),
       apps_inactive_effect: rs.get_enum("apps-inactive-effect"),
@@ -336,18 +336,14 @@ class Extension {
     // text to display
     let indicatorText
 
-    // other monitor custom text
-    if (otherMonitorText) {
+    if (otherMonitorText) { // other monitor custom text
       indicatorText = otherMonitorText
     }
-    else {
-      // custom workspace name
-      const customName = Meta.prefs_get_workspace_name(index)
-
-      if (customName !== `Workspace ${index+1}`) // if custom name != default
-        indicatorText = customName
-      else // default text: index
-        indicatorText = (index+1).toString()
+    else if (this._settings.indicator_use_custom_names) { // custom workspace name
+      indicatorText = Meta.prefs_get_workspace_name(index)
+    }
+    else { // default text: index
+      indicatorText = (index+1).toString()
     }
 
     // add label to indicator
