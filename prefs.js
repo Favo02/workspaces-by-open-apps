@@ -40,6 +40,8 @@ function fillPreferencesWindow(window) {
     title: "About",
     icon_name: "help-about-symbolic"
   })
+  page4.add(about_page())
+  page4.add(star_label())
 
   window.add(page1)
   window.add(page2)
@@ -452,6 +454,69 @@ function info_label() {
   return new Adw.PreferencesGroup({
     title: "",
     description: "Closing settings may be necessary to apply modifications",
+    halign: Gtk.Align.CENTER
+  })
+}
+
+function about_page() {
+  const group = new Adw.PreferencesGroup({
+    title: "Workspaces Indicator by Open Apps",
+    description: "About this extension"
+  })
+
+  row = new Adw.ActionRow({
+    title: "Version"
+  })
+  widget = new Gtk.Label({
+    label: Me.metadata.version,
+    valign: Gtk.Align.CENTER
+  })
+  row.add_suffix(widget)
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Source code"
+  })
+  widget = new Gtk.LinkButton({
+    label: "Favo02/workspaces-by-open-apps on GitHub",
+    uri: "https://github.com/Favo02/workspaces-by-open-apps",
+    valign: Gtk.Align.CENTER,
+  })
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Report a bug / Feature request"
+  })
+  widget = new Gtk.LinkButton({
+    label: "Open an issue on GitHub",
+    uri: "https://github.com/Favo02/workspaces-by-open-apps/issues",
+    valign: Gtk.Align.CENTER,
+  })
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "GNOME extensions store"
+  })
+  widget = new Gtk.LinkButton({
+    label: "Workspaces indicator by open apps",
+    uri: "https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/",
+    valign: Gtk.Align.CENTER,
+  })
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  return group
+}
+
+function star_label() {
+  return new Adw.PreferencesGroup({
+    title: "",
+    description: "Do not forget to leave a star if you like this extension!",
     halign: Gtk.Align.CENTER
   })
 }
