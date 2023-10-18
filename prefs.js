@@ -217,18 +217,12 @@ function page2_group1(settings) {
   })
   widget.connect(
     "color-set",
-    () => {
+    w => {
       settings.set_string(
         "indicator-color",
-        widget.get_rgba().to_string()
+        w.get_rgba().to_string()
       )
   })
-  settings.bind(
-    "indicator-show-focused-app",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
