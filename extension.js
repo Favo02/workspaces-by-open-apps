@@ -15,6 +15,20 @@ class Extension {
     this._raw_settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
     this._settings = {} // parsed settings
+    this._constants = { // useful constants
+      LEFT: 0,
+      CENTER: 1,
+      RIGHT: 2,
+      REDUCE_OPACITY: 1,
+      DESATURATE: 2,
+      OFF: 0,
+      GROUP_AND_SHOW_COUNT: 1,
+      GROUP_WITHOUT_COUNT: 2,
+      NO_LIMIT: 100,
+      LOW_OPACITY: 150,
+      ICONS_SIZE: 10,
+      TEXTURES_SIZE: 20
+    }
     this._indicators = [] // each indicator is a workspace
     
     this._connect_signals() // signals that triggers render
@@ -25,6 +39,7 @@ class Extension {
   disable() {
     this._raw_settings = {}
     this._settings = {}
+    this._constants = {}
     this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
 
     this._disconnect_signals() // disconnect signals
@@ -56,7 +71,7 @@ class Extension {
       apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
 
       icons_limit: rs.get_int("icons-limit"),
-      icons_group: rs.get_enum("icons-group"), // FIXME: bool to enum
+      icons_group: rs.get_enum("icons-group")
     }
   }
 
@@ -182,13 +197,13 @@ class Extension {
     // add to panel
     let box
     switch (this._settings.position_in_panel) {
-      case 0:
+      case this._constants.LEFT:
         box = "_leftBox"
         break
-      case 1:
+      case this._constants.CENTER:
         box = "_centerBox"
         break
-      case 2:
+      case this._constants.RIGHT:
         box = "_rightBox"
         break
     }
@@ -207,12 +222,15 @@ class Extension {
    * @param {number} index index of workspace
    */
   _render_workspace_applications(button, windows, isActive, index) {
-    const limit = this._settings.icons_limit
-    const limitIcons = isActive ? 100 : (limit === 0 ? 100 : limit)
+    let icons_limit
+    if (isActive || (this._settings.icons_limit === 0))
+      icons_limit = this._constants.NO_LIMIT
+    else
+      this._settings.icons_limit
 
     // group same application
     let occurrences = {}
-    if (this._settings.icons_group !== 0) { // icons_group NOT off (0)
+    if (this._settings.icons_group !== this._constants.OFF) { // icons_group NOT off
       // count occurences of each application
       occurrences = windows.reduce((acc, curr) => {
         const id = curr.get_pid()
@@ -250,13 +268,13 @@ class Extension {
           return
 
         // limit icons
-        if (!win.has_focus() && count >= limitIcons) {
-          if (count === limitIcons) { // render + icon
+        if (!win.has_focus() && count >= icons_limit) {
+          if (count === icons_limit) { // render + icon
             const plusIcon = new St.Icon({
               icon_name: "list-add-symbolic",
-              icon_size: 10
+              icon_size: this._constants.ICONS_SIZE
             })
-            plusIcon.set_opacity(150)
+            plusIcon.set_opacity(this._constants.LOW_OPACITY)
             button.get_child().add_child(plusIcon)
           }
           return
@@ -268,21 +286,21 @@ class Extension {
         if (!app || !win) return // app not found
 
         // create Clutter.actor
-        const texture = app.create_icon_texture(20)
+        const texture = app.create_icon_texture(this._constants.TEXTURES_SIZE)
 
         // effects for not focused apps
         if (!is_focus) {
-          if (this._settings.apps_inactive_effect === 1) // reduce opacity
-            texture.set_opacity(150)
-          if (this._settings.apps_inactive_effect === 2) // desaturate
+          if (this._settings.apps_inactive_effect === this._constants.REDUCE_OPACITY) // reduce opacity
+            texture.set_opacity(this._constants.LOW_OPACITY)
+          if (this._settings.apps_inactive_effect === this._constants.DESATURATE) // desaturate
             texture.add_effect(new Clutter.DesaturateEffect())
         }
 
         // effects for minimized apps
         if (!is_not_minimized) {
-          if (this._settings.apps_minimized_effect === 1) // reduce opacity
-            texture.set_opacity(150)
-          if (this._settings.apps_minimized_effect === 2) // desaturate
+          if (this._settings.apps_minimized_effect === this._constants.REDUCE_OPACITY) // reduce opacity
+            texture.set_opacity(this._constants.LOW_OPACITY)
+          if (this._settings.apps_minimized_effect === this._constants.DESATURATE) // desaturate
             texture.add_effect(new Clutter.DesaturateEffect())
         }
 
@@ -319,7 +337,7 @@ class Extension {
 
         icon._delegate = icon
         icon._draggable = dnd.makeDraggable(icon, {
-          dragActorOpacity: 150
+          dragActorOpacity: this._constants.LOW_OPACITY
         })
 
         // add icon texture to icon button
@@ -371,14 +389,17 @@ class Extension {
    * @param event click event
    */
   _on_click_workspace(actor, event) {
+    // this._constants are not in scope
+    const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
+
     // left click: focus workspace
-    if (event.get_button() === 1)
+    if (event.get_button() === LEFT_CLICK)
       this._workspace.activate(global.get_current_time())
 
     // middle click: do nothing
 
     // right click: rename workspace
-    if (event.get_button() === 3) {
+    if (event.get_button() === RIGHT_CLICK) {
 
       const workspaceManager = global.workspace_manager
       const workspaceIndex = this._index
@@ -427,12 +448,15 @@ class Extension {
    * @param event click event
    */
   _on_click_application(actor, event) {
+    // this._constants are not in scope
+    const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
+
     // left/right click: focus application
-    if (event.get_button() === 1 || event.get_button() === 3)
+    if (event.get_button() === LEFT_CLICK || event.get_button() === RIGHT_CLICK)
       this._window.activate(global.get_current_time())
 
     // middle click: close application
-    if (this.middleClosesApp && event.get_button() === 2)
+    if (this.middleClosesApp && event.get_button() === MIDDLE_CLICK)
       this._window.delete(global.get_current_time())
   }
 
