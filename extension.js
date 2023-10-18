@@ -15,6 +15,20 @@ class Extension {
     this._raw_settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
     this._settings = {} // parsed settings
+    this._constants = { // useful constants
+      LEFT: 0,
+      CENTER: 1,
+      RIGHT: 2,
+      REDUCE_OPACITY: 1,
+      DESATURATE: 2,
+      OFF: 0,
+      GROUP_AND_SHOW_COUNT: 1,
+      GROUP_WITHOUT_COUNT: 2,
+      NO_LIMIT: 100,
+      LOW_OPACITY: 150,
+      ICONS_SIZE: 10,
+      TEXTURES_SIZE: 20
+    }
     this._indicators = [] // each indicator is a workspace
     
     this._connect_signals() // signals that triggers render
@@ -25,6 +39,7 @@ class Extension {
   disable() {
     this._raw_settings = {}
     this._settings = {}
+    this._constants = {}
     this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
 
     this._disconnect_signals() // disconnect signals
@@ -34,23 +49,29 @@ class Extension {
   _parse_settings() {
     const rs = this._raw_settings
     this._settings = {
-      panel_position: rs.get_enum("panel-position"),
-      position: rs.get_int("position"),
-      icons_limit: rs.get_int("icons-limit"),
-      group_same_application: rs.get_boolean("group-same-application"),
-      show_focused_app_indicator: rs.get_boolean("show-focused-app-indicator"),
-      show_active_workspace_indicator: rs.get_boolean("show-active-workspace-indicator"),
-      reduce_inactive_apps_opacity: rs.get_boolean("reduce-inactive-apps-opacity"),
-      round_indicators_border: rs.get_boolean("round-indicators-border"),
-      show_workspace_index: rs.get_boolean("show-workspace-index"),
+      position_in_panel: rs.get_enum("position-in-panel"),
+      position_index: rs.get_int("position-index"),
+
       scroll_wraparound: rs.get_boolean("scroll-wraparound"),
-      inverse_scroll: rs.get_boolean("inverse-scroll"),
+      scroll_inverse: rs.get_boolean("scroll-inverse"),
       middle_click_close_app: rs.get_boolean("middle-click-close-app"),
-      desaturate_apps: rs.get_boolean("desaturate-apps"),
-      hide_empty_workspaces: rs.get_boolean("hide-empty-workspaces"),
-      hide_tooltips: rs.get_boolean("hide-tooltips"),
-      indicators_color: rs.get_string("indicators-color"),
-      apps_on_all_workspaces_indicator: rs.get_string("apps-on-all-workspaces-indicator")
+      
+      indicator_show_active_workspace: rs.get_boolean("indicator-show-active-workspace"),
+      indicator_show_focused_app: rs.get_boolean("indicator-show-focused-app"),
+      indicator_color: rs.get_string("indicator-color"),
+      indicator_round_borders: rs.get_boolean("indicator-round-borders"),
+
+      indicator_show_indexes: rs.get_boolean("indicator-show-indexes"),
+      indicator_hide_empty: rs.get_boolean("indicator-hide-empty"),
+      indicator_all_text: rs.get_string("indicator-all-text"),
+      indicator_use_custom_names: rs.get_boolean("indicator-use-custom-names"),
+
+      apps_all_desaturate: rs.get_boolean("apps-all-desaturate"),
+      apps_inactive_effect: rs.get_enum("apps-inactive-effect"),
+      apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
+
+      icons_limit: rs.get_int("icons-limit"),
+      icons_group: rs.get_enum("icons-group")
     }
   }
 
@@ -114,19 +135,19 @@ class Extension {
     if (is_other_monitor && windows.length === 0)
       return
     
-    const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() == index
+    const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() === index
 
     // hide empty workspaces
-    if (this._settings.hide_empty_workspaces && !is_active && windows.length === 0)
+    if (this._settings.indicator_hide_empty && !is_active && windows.length === 0)
       return
 
     // indicator styles
     let style_classes = "workspace"
     if (is_active) style_classes += " active"
-    if (!this._settings.show_active_workspace_indicator) style_classes += " no-indicator"
-    if (!this._settings.round_indicators_border) style_classes += " no-rounded"
+    if (!this._settings.indicator_show_active_workspace) style_classes += " no-indicator"
+    if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
 
-    const style = `border-color: ${this._settings.indicators_color}`
+    const style = `border-color: ${this._settings.indicator_color}`
 
     // create indicator
     const indicator = new St.Bin({
@@ -143,7 +164,7 @@ class Extension {
     indicator._index = index
     indicator._workspace = workspace
     indicator._scroll_wraparound = this._settings.scroll_wraparound
-    indicator._inverse_scroll = this._settings.inverse_scroll
+    indicator._inverse_scroll = this._settings.scroll_inverse
 
     // drag and drop
     indicator._delegate = indicator
@@ -165,30 +186,30 @@ class Extension {
     this._render_workspace_applications(indicator, windows, is_active, index)
 
     // create indicator label
-    if (this._settings.show_workspace_index || is_other_monitor) {
+    if (this._settings.indicator_show_indexes || is_other_monitor) {
       this._render_workspace_label(
         indicator,
         index,
-        is_other_monitor ? this._settings.apps_on_all_workspaces_indicator : null
+        is_other_monitor ? this._settings.indicator_all_text : null
       )
     }
 
     // add to panel
     let box
-    switch (this._settings.panel_position) {
-      case 0:
+    switch (this._settings.position_in_panel) {
+      case this._constants.LEFT:
         box = "_leftBox"
         break
-      case 1:
+      case this._constants.CENTER:
         box = "_centerBox"
         break
-      case 2:
+      case this._constants.RIGHT:
         box = "_rightBox"
         break
     }
 
     // index (selected by user) to insert indicator in panel
-    const insertIndex = this._settings.position + (this._indicators.length-1)
+    const insertIndex = this._settings.position_index + (this._indicators.length-1)
 
     main.panel[box].insert_child_at_index(indicator, insertIndex)
   }
@@ -201,17 +222,26 @@ class Extension {
    * @param {number} index index of workspace
    */
   _render_workspace_applications(button, windows, isActive, index) {
-    const limit = this._settings.icons_limit
-    const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
+    let icons_limit
+    if (isActive || (this._settings.icons_limit === 0))
+      icons_limit = this._constants.NO_LIMIT
+    else
+      icons_limit = this._settings.icons_limit
 
     // group same application
-    let occurrences
-    if (this._settings.group_same_application) {
+    let occurrences = {}
+    if (this._settings.icons_group !== this._constants.OFF) { // icons_group NOT off
       // count occurences of each application
       occurrences = windows.reduce((acc, curr) => {
         const id = curr.get_pid()
-        if (!acc[id]) acc[id] = 1
-        else acc[id]++
+        if (!acc[id]) {
+          acc[id] = { count: 1, focus: curr.has_focus(), not_minimized: !curr.is_hidden() }
+        }
+        else {
+          acc[id].count++
+          acc[id].focus = acc[id].focus || curr.has_focus()
+          acc[id].not_minimized = acc[id].minimized || !curr.is_hidden()
+        }
         return acc
       }, {})
 
@@ -220,32 +250,31 @@ class Extension {
         const found = acc.find(obj => obj.get_pid() === curr.get_pid())
         if (!found) acc.push(curr)
         return acc
-      }, []);
+      }, [])
 
       windows = unique_windows
     }
-
 
     windows
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id (creation order)
       .forEach((win, count) => {
 
         // current window is focused
-        const is_focus = win.has_focus() ||
-          (this._settings.group_same_application && global.display.get_focus_window()?.get_pid() == win.get_pid())
+        const is_focus = win.has_focus() || occurrences[win.get_pid()]?.focus
+        const is_not_minimized = !win.is_hidden() || occurrences[win.get_pid()]?.not_minimized
 
         // hide dialogs, popovers and tooltip duplicate windows
-        if (this._settings.hide_tooltips && (win.get_window_type() != Meta.WindowType.NORMAL))
+        if (win.get_window_type() !== Meta.WindowType.NORMAL)
           return
 
         // limit icons
-        if (!win.has_focus() && count >= limitIcons) {
-          if (count == limitIcons) { // render + icon
+        if (!win.has_focus() && count >= icons_limit) {
+          if (count === icons_limit) { // render + icon
             const plusIcon = new St.Icon({
               icon_name: "list-add-symbolic",
-              icon_size: 10
+              icon_size: this._constants.ICONS_SIZE
             })
-            plusIcon.set_opacity(150)
+            plusIcon.set_opacity(this._constants.LOW_OPACITY)
             button.get_child().add_child(plusIcon)
           }
           return
@@ -254,29 +283,38 @@ class Extension {
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
 
-        // create Clutter.actor
-        const texture = app.create_icon_texture(20)
+        if (!app || !win) return // app not found
 
-        // set low opacity for not focused apps
-        const reduceInactiveAppsOpacity = this._settings.reduce_inactive_apps_opacity
-        if (!is_focus && reduceInactiveAppsOpacity)
-          texture.set_opacity(150)
+        // create Clutter.actor
+        const texture = app.create_icon_texture(this._constants.TEXTURES_SIZE)
+
+        // effects for not focused apps
+        if (!is_focus) {
+          if (this._settings.apps_inactive_effect === this._constants.REDUCE_OPACITY) // reduce opacity
+            texture.set_opacity(this._constants.LOW_OPACITY)
+          if (this._settings.apps_inactive_effect === this._constants.DESATURATE) // desaturate
+            texture.add_effect(new Clutter.DesaturateEffect())
+        }
+
+        // effects for minimized apps
+        if (!is_not_minimized) {
+          if (this._settings.apps_minimized_effect === this._constants.REDUCE_OPACITY) // reduce opacity
+            texture.set_opacity(this._constants.LOW_OPACITY)
+          if (this._settings.apps_minimized_effect === this._constants.DESATURATE) // desaturate
+            texture.add_effect(new Clutter.DesaturateEffect())
+        }
 
         // desaturate icon setting
-        const desaturateApps = this._settings.desaturate_apps
-        if (desaturateApps)
+        if (this._settings.apps_all_desaturate)
           texture.add_effect(new Clutter.DesaturateEffect())
 
         // styles
-        const showFocusedAppIndicator = this._settings.show_focused_app_indicator
-        const roundIndicatorsBorder = this._settings.round_indicators_border
-
         let style_classes = "app"
         if (is_focus) style_classes += " active"
-        if (!showFocusedAppIndicator) style_classes += " no-indicator"
-        if (!roundIndicatorsBorder) style_classes += " no-rounded"
+        if (!this._settings.indicator_show_focused_app) style_classes += " no-indicator"
+        if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
 
-        const indicatorsColor = this._settings.indicators_color
+        const indicatorsColor = this._settings.indicator_color
         const style = `border-color: ${indicatorsColor}`
 
         const icon = new St.Bin({
@@ -299,16 +337,16 @@ class Extension {
 
         icon._delegate = icon
         icon._draggable = dnd.makeDraggable(icon, {
-          dragActorOpacity: 150
+          dragActorOpacity: this._constants.LOW_OPACITY
         })
 
         // add icon texture to icon button
         icon.get_child().add_child(texture)
 
         // add x{occurrences} label to icon button (group same application)
-        if (this._settings.group_same_application && occurrences[win.get_pid()] > 1) {
+        if ((this._settings.icons_group === 1) && (occurrences[win.get_pid()].count > 1)) {
           icon.get_child().add_child(new St.Label({
-            text: `x${occurrences[win.get_pid()]}`,
+            text: `x${occurrences[win.get_pid()].count}`,
             style_class: "text-group"
           }))
         }
@@ -328,18 +366,14 @@ class Extension {
     // text to display
     let indicatorText
 
-    // other monitor custom text
-    if (otherMonitorText) {
+    if (otherMonitorText) { // other monitor custom text
       indicatorText = otherMonitorText
     }
-    else {
-      // custom workspace name
-      const customName = Meta.prefs_get_workspace_name(index)
-
-      if (customName !== `Workspace ${index+1}`) // if custom name != default
-        indicatorText = customName
-      else // default text: index
-        indicatorText = (index+1).toString()
+    else if (this._settings.indicator_use_custom_names) { // custom workspace name
+      indicatorText = Meta.prefs_get_workspace_name(index)
+    }
+    else { // default text: index
+      indicatorText = (index+1).toString()
     }
 
     // add label to indicator
@@ -355,14 +389,17 @@ class Extension {
    * @param event click event
    */
   _on_click_workspace(actor, event) {
+    // this._constants are not in scope
+    const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
+
     // left click: focus workspace
-    if (event.get_button() == 1)
+    if (event.get_button() === LEFT_CLICK)
       this._workspace.activate(global.get_current_time())
 
     // middle click: do nothing
 
     // right click: rename workspace
-    if (event.get_button() == 3) {
+    if (event.get_button() === RIGHT_CLICK) {
 
       const workspaceManager = global.workspace_manager
       const workspaceIndex = this._index
@@ -387,9 +424,8 @@ class Extension {
       })
 
       // connect typing event: update workspace name
-      entry.connect("key-press-event", () => {
-        const text = entry.get_text()
-        Meta.prefs_change_workspace_name(workspaceIndex, text)
+      entry.connect("key-release-event", () => {
+        Meta.prefs_change_workspace_name(workspaceIndex, entry.get_text())
       })
 
       // add to indicator
@@ -411,12 +447,15 @@ class Extension {
    * @param event click event
    */
   _on_click_application(actor, event) {
+    // this._constants are not in scope
+    const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
+
     // left/right click: focus application
-    if (event.get_button() == 1 || event.get_button() == 3)
+    if (event.get_button() === LEFT_CLICK || event.get_button() === RIGHT_CLICK)
       this._window.activate(global.get_current_time())
 
     // middle click: close application
-    if (this.middleClosesApp && event.get_button() == 2)
+    if (this.middleClosesApp && event.get_button() === MIDDLE_CLICK)
       this._window.delete(global.get_current_time())
   }
 

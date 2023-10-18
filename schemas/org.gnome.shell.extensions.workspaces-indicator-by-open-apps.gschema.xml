@@ -3,117 +3,147 @@
 
   <!-- Compile with: glib-compile-schemas ./schemas/ -->
 
-  <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-panel-position">
+  <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-position-in-panel">
     <value value="0" nick="LEFT"/>
     <value value="1" nick="CENTER"/>
     <value value="2" nick="RIGHT"/>
   </enum>
 
+  <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-apps-effects">
+    <value value="0" nick="NOTHING"/>
+    <value value="1" nick="REDUCE OPACITY"/>
+    <value value="2" nick="DESATURATE"/>
+  </enum>
+
+  <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-icons-group">
+    <value value="0" nick="OFF"/>
+    <value value="1" nick="GROUP AND SHOW COUNT"/>
+    <value value="2" nick="GROUP WITHOUT COUNT"/>
+  </enum>
+
   <schema id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps"
     path="/org/gnome/shell/extensions/workspaces-indicator-by-open-apps/">
 
-    <key name="panel-position" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-panel-position">
-      <default>'LEFT'</default>
-      <summary>Box where the indicator will be inserted</summary>
-      <description>Box where the indicator will be inserted (left, center or right).</description>
+    <!-- PAGE 1 GROUP 1: POSITION -->
+
+    <key name="position-in-panel" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-position-in-panel">
+      <default>"LEFT"</default>
+      <summary>Panel position</summary>
+      <description>Panel to show the indicator in</description>
     </key>
     
-    <key type="i" name="position">
+    <key type="i" name="position-index">
       <default>0</default>
-      <summary>Position in panel (index)</summary>
-      <description>Position where the indicator will be inserted (0 = first, 1 = second, ...).</description>
+      <summary>Position index</summary>
+      <description>Number of other elements in the panel before the indicator</description>
     </key>
 
-    <key type="i" name="icons-limit">
-      <default>0</default>
-      <summary>Maximum number of icons per workspace (0 = unlimited)</summary>
-      <description>Maximum number of icons displayed in a single workspace indicator.</description>
-    </key>
-
-    <key type="b" name="group-same-application">
-      <default>false</default>
-      <summary>Group icons of same application in same workspace</summary>
-      <description>Show grouped application per workspace.</description>
-    </key>
-
-    <key type="b" name="show-focused-app-indicator">
-      <default>true</default>
-      <summary>Show focused app indicator</summary>
-      <description>Show focused app indicator with an indicator above it.</description>
-    </key>
-
-    <key type="b" name="show-active-workspace-indicator">
-      <default>true</default>
-      <summary>Show active workspace indicator</summary>
-      <description>Show active workspace indicator with an indicator below it.</description>
-    </key>
-
-    <key type="b" name="reduce-inactive-apps-opacity">
-      <default>true</default>
-      <summary>Reduce inactive apps opacity</summary>
-      <description>Reduce opacity of application not currently focused.</description>
-    </key>
-
-    <key type="b" name="round-indicators-border">
-      <default>true</default>
-      <summary>Round indicators border</summary>
-      <description>Apply a round effect to the "show focused app" and "show active workspace" indicator.</description>
-    </key>
-
-    <key type="b" name="show-workspace-index">
-      <default>true</default>
-      <summary>Show workspace index</summary>
-      <description>Adds the workspace index before the icons.</description>
-    </key>
+    <!-- PAGE 1 GROUP 2: BEHAVIOR -->
 
     <key type="b" name="scroll-wraparound">
       <default>true</default>
-      <summary>Wraparound workspaces on scroll</summary>
-      <description>Scrolling after the last workspace wraps around to first workspace (and viceversa).</description>
+      <summary>Scroll wraparound</summary>
+      <description>Scrolling past the last workspace will wrap around to the first one (and viceversa)</description>
     </key>
 
-    <key type="b" name="inverse-scroll">
+    <key type="b" name="scroll-inverse">
       <default>false</default>
-      <summary>Inverse scroll direction</summary>
-      <description>Scrolling workspaces in inverse order.</description>
+      <summary>Inverse scroll</summary>
+      <description>Invert the direction of scrolling</description>
     </key>
 
     <key type="b" name="middle-click-close-app">
       <default>true</default>
-      <summary>Middle click closes application</summary>
-      <description>Middle click closes application.</description>
+      <summary>Middle click closes app</summary>
+      <description>Clicking with the middle mouse button on an app icon will close the app</description>
     </key>
 
-    <key type="b" name="desaturate-apps">
+    <!-- PAGE 2 GROUP 1: INDICATOR APPEARANCE -->
+
+    <key type="b" name="indicator-show-active-workspace">
+      <default>true</default>
+      <summary>Active workspace indicator</summary>
+      <description>Show an indicator below the current active workspace</description>
+    </key>
+
+    <key type="b" name="indicator-show-focused-app">
+      <default>true</default>
+      <summary>Focused app indicator</summary>
+      <description>Show an indicator above the current focused app</description>
+    </key>
+
+    <key type="s" name="indicator-color">
+      <default>"rgba(255,255,255,1)"</default>
+      <summary>Indicators color</summary>
+      <description>Color of active workspace and focused app indicators</description>
+    </key>
+
+    <key type="b" name="indicator-round-borders">
+      <default>true</default>
+      <summary>Round indicators borders</summary>
+      <description>Round borders of active workspace and focused app indicators</description>
+    </key>
+
+    <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
+
+    <key type="b" name="indicator-show-indexes">
+      <default>true</default>
+      <summary>Show workspace names</summary>
+      <description>Show the workspace names before the workspace icons</description>
+    </key>
+
+    <key type="b" name="indicator-hide-empty">
       <default>false</default>
-      <summary>Desaturare applications</summary>
-      <description>Removes saturation to application icons.</description>
+      <summary>Hide empty workspaces indicator</summary>
+      <description>Hides the name of empty workspaces</description>
     </key>
 
-    <key type="b" name="hide-empty-workspaces">
+    <key type="s" name="indicator-all-text">
+      <default>"ALL"</default>
+      <summary>Apps on all workspaces indicator text</summary>
+      <description>Text indicator to show when there are apps on all workspaces</description>
+    </key>
+
+    <key type="b" name="indicator-use-custom-names">
       <default>false</default>
-      <summary>Hide empty workspaces</summary>
-      <description>Removes the indicator of empty workspaces.</description>
+      <summary>Use custom names for workspaces</summary>
+      <description>Display custom (editable by rigth click on workspace) names instead of indexes</description>
     </key>
 
-    <key type="b" name="hide-tooltips">
+    <!-- PAGE 2 GROUP 3: ICONS APPEARANCE -->
+
+    <key type="b" name="apps-all-desaturate">
       <default>false</default>
-      <summary>Hide dialogs, popovers and tooltip additional icon</summary>
-      <description>Removes icon for dialogs of running applications.</description>
+      <summary>Desaturate all apps icons</summary>
+      <description>Show only black and white apps icons</description>
     </key>
 
-    <key type="s" name="indicators-color">
-      <default>'rgba(255,255,255,1)'</default>
-      <summary>Active/Focused indicators color</summary>
-      <description>Sets the indicators color.</description>
+    <key name="apps-inactive-effect" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-apps-effects">
+      <default>"REDUCE OPACITY"</default>
+      <summary>Inactive apps effect</summary>
+      <description>Effect to apply to inactive (not focused) apps icons</description>
     </key>
 
-    <key type="s" name="apps-on-all-workspaces-indicator">
-      <default>'ALL'</default>
-      <summary>Apps on all workspaces indicator displayed name</summary>
-      <description>Name displayed for the indicator of apps on all workspaces (second monitor).</description>
+    <key name="apps-minimized-effect" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-apps-effects">
+      <default>"REDUCE OPACITY"</default>
+      <summary>Minimized apps effect</summary>
+      <description>Effect to apply to minimized apps icons</description>
     </key>
-    
+
+    <!-- PAGE 3 GROUP 1: HIDE AND IGNORE APPS -->
+
+    <key type="i" name="icons-limit">
+      <default>0</default>
+      <summary>Icons limit</summary>
+      <description>Maximum number of icons displayed in a single inactive workspace indicator. Active workspace is always unlimited. 0 = unlimited</description>
+    </key>
+
+    <key name="icons-group" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-icons-group">
+      <default>"OFF"</default>
+      <summary>Group icons of same application</summary>
+      <description>Show only one icon for each application in the workspace indicator</description>
+    </key>
+
   </schema>
   
 </schemalist>
