@@ -57,8 +57,6 @@ class Extension {
 
       icons_limit: rs.get_int("icons-limit"),
       icons_group: rs.get_enum("icons-group"), // FIXME: bool to enum
-
-      reduce_inactive_apps_opacity: true // FIXME: temporary fix
     }
   }
 
