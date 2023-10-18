@@ -15,6 +15,7 @@ function fillPreferencesWindow(window) {
   })
   page1.add(page1_group1(settings))
   page1.add(page1_group2(settings))
+  page1.add(info_label())
 
   const page2 = new Adw.PreferencesPage({
     name: "page2",
@@ -24,6 +25,7 @@ function fillPreferencesWindow(window) {
   page2.add(page2_group1(settings))
   page2.add(page2_group2(settings))
   page2.add(page2_group3(settings))
+  page2.add(info_label())
 
   const page3 = new Adw.PreferencesPage({
     name: "page3",
@@ -31,6 +33,7 @@ function fillPreferencesWindow(window) {
     icon_name: "edit-clear-all-symbolic"
   })
   page3.add(page3_group1(settings))
+  page3.add(info_label())
 
   const page4 = new Adw.PreferencesPage({
     name: "page4",
@@ -42,8 +45,6 @@ function fillPreferencesWindow(window) {
   window.add(page2)
   window.add(page3)
   window.add(page4)
-
-  // TODO: ad at end of every page "close settings to apply modifications" label
 }
 
 function page1_group1(settings) {
@@ -445,4 +446,12 @@ function page3_group1(settings) {
   row.activatable_widget = widget
   group.add(row)
   return group
+}
+
+function info_label() {
+  return new Adw.PreferencesGroup({
+    title: "",
+    description: "Closing settings may be necessary to apply modifications",
+    halign: Gtk.Align.CENTER
+  })
 }
