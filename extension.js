@@ -212,7 +212,7 @@ class Extension {
 
     // group same application
     let occurrences = {}
-    if (this._settings.icons_group) {
+    if (this._settings.icons_group !== 0) { // icons_group NOT off (0)
       // count occurences of each application
       occurrences = windows.reduce((acc, curr) => {
         const id = curr.get_pid()
@@ -326,9 +326,9 @@ class Extension {
         icon.get_child().add_child(texture)
 
         // add x{occurrences} label to icon button (group same application)
-        if (this._settings.icons_group && occurrences[win.get_pid()] > 1) {
+        if ((this._settings.icons_group == 1) && (occurrences[win.get_pid()].count > 1)) {
           icon.get_child().add_child(new St.Label({
-            text: `x${occurrences[win.get_pid()]}`,
+            text: `x${occurrences[win.get_pid()].count}`,
             style_class: "text-group"
           }))
         }
