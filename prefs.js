@@ -83,14 +83,7 @@ function page1_group1(settings) {
   widget.set_range(0, 50)
   widget.set_value(settings.get_int("position-index"))
   widget.set_increments(1, 2)
-  widget.connect(
-    "value-changed",
-    w => {
-      settings.set_int(
-        "position-index", 
-        w.get_value_as_int()
-      )
-  })
+  widget.connect("value-changed", (w) => { settings.set_int("position-index", w.get_value_as_int()) })
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -113,12 +106,7 @@ function page1_group2(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "scroll-wraparound",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("scroll-wraparound", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -130,12 +118,7 @@ function page1_group2(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "scroll-inverse",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("scroll-inverse", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -147,12 +130,7 @@ function page1_group2(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "middle-click-close-app",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("middle-click-close-app", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -175,12 +153,7 @@ function page2_group1(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "indicator-show-active-workspace",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("indicator-show-active-workspace", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -192,12 +165,7 @@ function page2_group1(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "indicator-show-focused-app",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("indicator-show-focused-app", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -215,14 +183,7 @@ function page2_group1(settings) {
     visible: true,
     valign: Gtk.Align.CENTER
   })
-  widget.connect(
-    "color-set",
-    w => {
-      settings.set_string(
-        "indicator-color",
-        w.get_rgba().to_string()
-      )
-  })
+  widget.connect("color-set", (w) => { settings.set_string("indicator-color", w.get_rgba().to_string()) })
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -234,12 +195,7 @@ function page2_group1(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "indicator-round-borders",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("indicator-round-borders", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -262,12 +218,7 @@ function page2_group2(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "indicator-show-indexes",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("indicator-show-indexes", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -279,12 +230,7 @@ function page2_group2(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "indicator-hide-empty",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("indicator-hide-empty", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -293,27 +239,14 @@ function page2_group2(settings) {
     title: "Apps on all workspaces indicator text",
     subtitle: "Text indicator to show when there are apps on all workspaces"
   })
-  const old_value = settings.get_string("indicator-all-text")
   widget = new Gtk.Entry({
     halign: Gtk.Align.END,
     valign: Gtk.Align.CENTER,
     hexpand: true,
     xalign: 0,
   })
-  widget.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-clear-symbolic")
-  widget.set_icon_activatable(Gtk.EntryIconPosition.SECONDARY, true)
-  widget.connect("icon-press", (e) => e.set_text(old_value))
-  widget.is_entry = true
-  widget.set_text(old_value)
-  widget.connect(
-    "changed",
-    e => {
-      settings.set_string(
-        "indicator-all-text",
-        e.get_text().length > 0 ? e.get_text() : old_value
-      )
-    }
-  )
+  widget.set_text(settings.get_string("indicator-all-text"))
+  widget.connect("changed", (w) => { settings.set_string("indicator-all-text", w.get_text().length > 0 ? w.get_text() : "ALL") })
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -325,12 +258,7 @@ function page2_group2(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "indicator-use-custom-names",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("indicator-use-custom-names", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -353,12 +281,7 @@ function page2_group3(settings) {
   widget = new Gtk.Switch({
     valign: Gtk.Align.CENTER
   })
-  settings.bind(
-    "apps-all-desaturate",
-    widget,
-    "active",
-    Gio.SettingsBindFlags.DEFAULT
-  )
+  settings.bind("apps-all-desaturate", widget, "active", Gio.SettingsBindFlags.DEFAULT)
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
@@ -415,14 +338,7 @@ function page3_group1(settings) {
   widget.set_range(0, 99)
   widget.set_value(settings.get_int('icons-limit'))
   widget.set_increments(1, 2)
-  widget.connect(
-    'value-changed',
-    w => {
-      settings.set_int(
-        'icons-limit', 
-        w.get_value_as_int()
-      )
-  })
+  widget.connect('value-changed', (w) => { settings.set_int('icons-limit', w.get_value_as_int()) })
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
