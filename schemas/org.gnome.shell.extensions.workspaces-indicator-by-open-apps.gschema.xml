@@ -15,6 +15,12 @@
     <value value="2" nick="DESATURATE"/>
   </enum>
 
+  <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-icons-group">
+    <value value="0" nick="OFF"/>
+    <value value="1" nick="GROUP AND SHOW COUNT"/>
+    <value value="2" nick="GROUP WITHOUT COUNT"/>
+  </enum>
+
   <schema id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps"
     path="/org/gnome/shell/extensions/workspaces-indicator-by-open-apps/">
 
@@ -124,31 +130,18 @@
       <description>Effect to apply to minimized apps icons</description>
     </key>
 
-
-
-
-
-
-
-
-
+    <!-- PAGE 3 GROUP 1: HIDE AND IGNORE APPS -->
 
     <key type="i" name="icons-limit">
       <default>0</default>
-      <summary>Maximum number of icons per workspace (0 = unlimited)</summary>
-      <description>Maximum number of icons displayed in a single workspace indicator.</description>
+      <summary>Icons limit</summary>
+      <description>Maximum number of icons displayed in a single inactive workspace indicator. Active workspace is always unlimited. 0 = unlimited</description>
     </key>
 
-    <key type="b" name="group-same-application">
-      <default>false</default>
-      <summary>Group icons of same application in same workspace</summary>
-      <description>Show grouped application per workspace.</description>
-    </key>
-
-    <key type="b" name="hide-tooltips">
-      <default>false</default>
-      <summary>Hide dialogs, popovers and tooltip additional icon</summary>
-      <description>Removes icon for dialogs of running applications.</description>
+    <key name="icons-group" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-icons-group">
+      <default>'OFF'</default>
+      <summary>Group icons of same application</summary>
+      <description>Show only one icon for each application in the workspace indicator</description>
     </key>
 
   </schema>

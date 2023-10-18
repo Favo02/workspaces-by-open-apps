@@ -30,6 +30,7 @@ function fillPreferencesWindow(window) {
     title: "Hide and ignore apps",
     icon_name: "edit-clear-all-symbolic"
   })
+  page3.add(page3_group1(settings))
 
   const page4 = new Adw.PreferencesPage({
     name: "page4",
@@ -395,5 +396,53 @@ function page2_group3(settings) {
   row.activatable_widget = widget
   group.add(row)
 
+  return group
+}
+
+function page3_group1(settings) {
+  let group, row, widget
+
+  group = new Adw.PreferencesGroup({
+    title: "Icons appearance",
+    description: ""
+  })
+
+  row = new Adw.ActionRow({
+    title: "Icons limit",
+    subtitle: "Maximum number of icons displayed in a single inactive workspace indicator. Active workspace is always unlimited. 0 = unlimited"
+  })
+  widget = new Gtk.SpinButton({
+    valign: Gtk.Align.CENTER
+  })
+  widget.set_sensitive(true)
+  widget.set_range(0, 99)
+  widget.set_value(settings.get_int('icons-limit'))
+  widget.set_increments(1, 2)
+  widget.connect(
+    'value-changed',
+    w => {
+      settings.set_int(
+        'icons-limit', 
+        w.get_value_as_int()
+      )
+  })
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Group icons of same application",
+    subtitle: "Show only one icon for each application in the workspace indicator"
+  })
+  widget = new Gtk.ComboBoxText({
+    valign: Gtk.Align.CENTER
+  })
+  widget.append("OFF", "Off")
+  widget.append("GROUP AND SHOW COUNT", "Group and show count")
+  widget.append("GROUP WITHOUT COUNT", "Group without count")
+  settings.bind("icons-group", widget, "active-id", Gio.SettingsBindFlags.DEFAULT)
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
   return group
 }

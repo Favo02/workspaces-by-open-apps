@@ -55,11 +55,8 @@ class Extension {
       apps_inactive_effect: rs.get_enum("apps-inactive-effect"),
       apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
 
-
       icons_limit: rs.get_int("icons-limit"),
-      group_same_application: rs.get_boolean("group-same-application"),
-      hide_tooltips: rs.get_boolean("hide-tooltips"),
-
+      icons_group: rs.get_enum("icons-group"), // FIXME: bool to enum
 
       reduce_inactive_apps_opacity: true // FIXME: temporary fix
     }
@@ -217,7 +214,7 @@ class Extension {
 
     // group same application
     let occurrences
-    if (this._settings.group_same_application) {
+    if (this._settings.icons_group) {
       // count occurences of each application
       occurrences = windows.reduce((acc, curr) => {
         const id = curr.get_pid()
@@ -243,10 +240,10 @@ class Extension {
 
         // current window is focused
         const is_focus = win.has_focus() ||
-          (this._settings.group_same_application && global.display.get_focus_window()?.get_pid() == win.get_pid())
+          (this._settings.icons_group && global.display.get_focus_window()?.get_pid() == win.get_pid())
 
         // hide dialogs, popovers and tooltip duplicate windows
-        if (this._settings.hide_tooltips && (win.get_window_type() != Meta.WindowType.NORMAL))
+        if (win.get_window_type() != Meta.WindowType.NORMAL)
           return
 
         // limit icons
@@ -317,7 +314,7 @@ class Extension {
         icon.get_child().add_child(texture)
 
         // add x{occurrences} label to icon button (group same application)
-        if (this._settings.group_same_application && occurrences[win.get_pid()] > 1) {
+        if (this._settings.icons_group && occurrences[win.get_pid()] > 1) {
           icon.get_child().add_child(new St.Label({
             text: `x${occurrences[win.get_pid()]}`,
             style_class: "text-group"
