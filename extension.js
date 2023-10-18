@@ -250,7 +250,7 @@ class Extension {
         const found = acc.find(obj => obj.get_pid() === curr.get_pid())
         if (!found) acc.push(curr)
         return acc
-      }, []);
+      }, [])
 
       windows = unique_windows
     }

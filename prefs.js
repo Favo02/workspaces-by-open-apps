@@ -336,9 +336,9 @@ function page3_group1(settings) {
   })
   widget.set_sensitive(true)
   widget.set_range(0, 99)
-  widget.set_value(settings.get_int('icons-limit'))
+  widget.set_value(settings.get_int("icons-limit"))
   widget.set_increments(1, 2)
-  widget.connect('value-changed', (w) => { settings.set_int('icons-limit', w.get_value_as_int()) })
+  widget.connect("value-changed", (w) => { settings.set_int("icons-limit", w.get_value_as_int()) })
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)

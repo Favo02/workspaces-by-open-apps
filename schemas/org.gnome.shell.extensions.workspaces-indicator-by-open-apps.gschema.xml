@@ -27,7 +27,7 @@
     <!-- PAGE 1 GROUP 1: POSITION -->
 
     <key name="position-in-panel" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-position-in-panel">
-      <default>'LEFT'</default>
+      <default>"LEFT"</default>
       <summary>Panel position</summary>
       <description>Panel to show the indicator in</description>
     </key>
@@ -73,7 +73,7 @@
     </key>
 
     <key type="s" name="indicator-color">
-      <default>'rgba(255,255,255,1)'</default>
+      <default>"rgba(255,255,255,1)"</default>
       <summary>Indicators color</summary>
       <description>Color of active workspace and focused app indicators</description>
     </key>
@@ -99,7 +99,7 @@
     </key>
 
     <key type="s" name="indicator-all-text">
-      <default>'ALL'</default>
+      <default>"ALL"</default>
       <summary>Apps on all workspaces indicator text</summary>
       <description>Text indicator to show when there are apps on all workspaces</description>
     </key>
@@ -119,13 +119,13 @@
     </key>
 
     <key name="apps-inactive-effect" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-apps-effects">
-      <default>'REDUCE OPACITY'</default>
+      <default>"REDUCE OPACITY"</default>
       <summary>Inactive apps effect</summary>
       <description>Effect to apply to inactive (not focused) apps icons</description>
     </key>
 
     <key name="apps-minimized-effect" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-apps-effects">
-      <default>'REDUCE OPACITY'</default>
+      <default>"REDUCE OPACITY"</default>
       <summary>Minimized apps effect</summary>
       <description>Effect to apply to minimized apps icons</description>
     </key>
@@ -139,7 +139,7 @@
     </key>
 
     <key name="icons-group" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-icons-group">
-      <default>'OFF'</default>
+      <default>"OFF"</default>
       <summary>Group icons of same application</summary>
       <description>Show only one icon for each application in the workspace indicator</description>
     </key>
