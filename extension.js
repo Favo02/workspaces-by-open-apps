@@ -222,7 +222,7 @@ class Extension {
         else {
           acc[id].count++
           acc[id].focus = acc[id].focus || curr.has_focus()
-          acc[id].not_minimized = acc[id].minimized || curr.is_hidden()
+          acc[id].not_minimized = acc[id].minimized || !curr.is_hidden()
         }
         return acc
       }, {})
