@@ -22,6 +22,7 @@ function fillPreferencesWindow(window) {
     icon_name: "applications-graphics-symbolic"
   })
   page2.add(page2_group1(settings))
+  page2.add(page2_group2(settings))
 
   const page3 = new Adw.PreferencesPage({
     name: "page3",
@@ -246,3 +247,95 @@ function page2_group1(settings) {
 
   return group
 }
+
+function page2_group2(settings) {
+  let group, row, widget
+
+  group = new Adw.PreferencesGroup({
+    title: "Workspaces appearance",
+    description: ""
+  })
+
+  row = new Adw.ActionRow({
+    title: "Show workspace names",
+    subtitle: "Show the workspace names before the workspace icons"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "indicator-show-indexes",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Hide empty workspaces indicator",
+    subtitle: "Hides the name of empty workspaces"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "indicator-hide-empty",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Apps on all workspaces indicator text",
+    subtitle: "Text indicator to show when there are apps on all workspaces"
+  })
+  const old_value = settings.get_string("indicator-all-text")
+  widget = new Gtk.Entry({
+    halign: Gtk.Align.END,
+    valign: Gtk.Align.CENTER,
+    hexpand: true,
+    xalign: 0,
+  })
+  widget.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-clear-symbolic")
+  widget.set_icon_activatable(Gtk.EntryIconPosition.SECONDARY, true)
+  widget.connect("icon-press", (e) => e.set_text(old_value))
+  widget.is_entry = true
+  widget.set_text(old_value)
+  widget.connect(
+    "changed",
+    e => {
+      settings.set_string(
+        "indicator-all-text",
+        e.get_text().length > 0 ? e.get_text() : old_value
+      )
+    }
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Use custom names for workspaces",
+    subtitle: "Display custom (editable by rigth click on workspace) names instead of indexes"
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind(
+    "indicator-use-custom-names",
+    widget,
+    "active",
+    Gio.SettingsBindFlags.DEFAULT
+  )
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  return group
+}
+

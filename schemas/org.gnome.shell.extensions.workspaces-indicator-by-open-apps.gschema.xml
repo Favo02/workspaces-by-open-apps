@@ -72,9 +72,31 @@
       <description>Round borders of active workspace and focused app indicators</description>
     </key>
 
+    <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
 
+    <key type="b" name="indicator-show-indexes">
+      <default>true</default>
+      <summary>Show workspace names</summary>
+      <description>Show the workspace names before the workspace icons</description>
+    </key>
 
+    <key type="b" name="indicator-hide-empty">
+      <default>false</default>
+      <summary>Hide empty workspaces indicator</summary>
+      <description>Hides the name of empty workspaces</description>
+    </key>
 
+    <key type="s" name="indicator-all-text">
+      <default>'ALL'</default>
+      <summary>Apps on all workspaces indicator text</summary>
+      <description>Text indicator to show when there are apps on all workspaces</description>
+    </key>
+
+    <key type="b" name="indicator-use-custom-names">
+      <default>false</default>
+      <summary>Use custom names for workspaces</summary>
+      <description>Display custom (editable by rigth click on workspace) names instead of indexes</description>
+    </key>
 
 
 
@@ -107,30 +129,10 @@
       <description>Reduce opacity of application not currently focused.</description>
     </key>
 
-    
-
-    <key type="b" name="show-workspace-index">
-      <default>true</default>
-      <summary>Show workspace index</summary>
-      <description>Adds the workspace index before the icons.</description>
-    </key>
-
-    
-
-    
-
-    
-
     <key type="b" name="desaturate-apps">
       <default>false</default>
       <summary>Desaturare applications</summary>
       <description>Removes saturation to application icons.</description>
-    </key>
-
-    <key type="b" name="hide-empty-workspaces">
-      <default>false</default>
-      <summary>Hide empty workspaces</summary>
-      <description>Removes the indicator of empty workspaces.</description>
     </key>
 
     <key type="b" name="hide-tooltips">
@@ -141,11 +143,7 @@
 
     
 
-    <key type="s" name="apps-on-all-workspaces-indicator">
-      <default>'ALL'</default>
-      <summary>Apps on all workspaces indicator displayed name</summary>
-      <description>Name displayed for the indicator of apps on all workspaces (second monitor).</description>
-    </key>
+    
     
   </schema>
   

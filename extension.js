@@ -46,14 +46,18 @@ class Extension {
       indicator_color: rs.get_string("indicator-color"),
       indicator_round_borders: rs.get_boolean("indicator-round-borders"),
 
+      indicator_show_indexes: rs.get_boolean("indicator-show-indexes"),
+      indicator_hide_empty: rs.get_boolean("indicator-hide-empty"),
+      indicator_all_text: rs.get_string("indicator-all-text"),
+      indicator_use_custom_names: rs.get_string("indicator-use-custom-names"),
+
+
+
       icons_limit: rs.get_int("icons-limit"),
       group_same_application: rs.get_boolean("group-same-application"),
       reduce_inactive_apps_opacity: rs.get_boolean("reduce-inactive-apps-opacity"),
-      show_workspace_index: rs.get_boolean("show-workspace-index"),
       desaturate_apps: rs.get_boolean("desaturate-apps"),
-      hide_empty_workspaces: rs.get_boolean("hide-empty-workspaces"),
       hide_tooltips: rs.get_boolean("hide-tooltips"),
-      apps_on_all_workspaces_indicator: rs.get_string("apps-on-all-workspaces-indicator")
     }
   }
 
@@ -120,7 +124,7 @@ class Extension {
     const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() == index
 
     // hide empty workspaces
-    if (this._settings.hide_empty_workspaces && !is_active && windows.length === 0)
+    if (this._settings.indicator_hide_empty && !is_active && windows.length === 0)
       return
 
     // indicator styles
@@ -168,11 +172,11 @@ class Extension {
     this._render_workspace_applications(indicator, windows, is_active, index)
 
     // create indicator label
-    if (this._settings.show_workspace_index || is_other_monitor) {
+    if (this._settings.indicator_show_indexes || is_other_monitor) {
       this._render_workspace_label(
         indicator,
         index,
-        is_other_monitor ? this._settings.apps_on_all_workspaces_indicator : null
+        is_other_monitor ? this._settings.indicator_all_text : null
       )
     }
 
