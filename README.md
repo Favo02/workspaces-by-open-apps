@@ -2,29 +2,50 @@
 
 **GNOME shell estension** to display a simple **workspace indicator** showing **icons of apps open** in it instead of classic numbers or dots.
 
-[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/a4139bec-db00-4de9-a49a-74e640163e7e" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/52ab2be9-ad78-4cb4-9a7a-f51fc734d2a3" alt="Preview" height="40">
 
-## Usage and Customization
+## Features
 
+- Show a simple indicator to **display workspaces** and **apps open** in it
 - Support for **drag and drop**: change an application workspace just dragging its icon
 - **Right/Left** click to focus application, **Middle click** to close
 - **Workspaces scrolling**: change active workspace scrolling hover the indicator
-- Toggle application icons **desaturation**
-- Show/Hide workspaces **index label**
-- Show/Hide active workspace and focused app **indicator**
-- Change indicator **style** and **color**
 - Support for **multiple monitor** _(for both static and dynamic workspaces)_
-- **_[NEW!]_** Hide **empty** workspaces
-- **_[NEW!]_** **Rename workspaces** directly from the extension _(switch workspace to apply new name)_
+- **Rename workspaces** directly from the extension _(activate in settings)_
 
 
-[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/83ff712a-ff47-4592-8cec-c2c34bb8552a" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+## Customization
 
-[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/d838baf9-1f70-45d0-a8ba-26975823ab95" alt="Preview" height="50">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+- Indicator **position**
+- **Scroll** direction (normal or inverse)
+- Activate/deactivate "**middle click** to close app"
+- Activate/deactivate "**workspace indicator**"
+- Activate/deactivate "**app indicator**"
+- Customize indicator **color**
+- Activate/deactivate "**round borders**"
+- Show/Hide **workspaces names**
+- Show/Hide **empty** workspaces
+- Customize apps on all workspaces **text indicator**
+- **Desaturate** all icons
+- **No effect**/**Reduce opacity**/**Desaturate** for both **minimized** and **inactive** apps
+- **Limit icons** per workspace
+- **Group icons** of same application
 
-[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/f022ed21-d150-4871-817c-c604f3c28921" alt="Preview" height="47">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
-[<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/71453236-581f-4580-81b3-4f461db508e2" alt="Preview" height="47">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/29f066c6-b2e8-411d-8430-faf4d921db27" alt="Preview" height="40">
+
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/72d6ea78-640a-4f1f-8c50-ddf5bb3baabb" alt="Preview" height="40">
+
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/49215294-423f-4850-a94f-6c62276fcd92" alt="Preview" height="40">
+
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/2f7b37fd-6d8a-422a-a0af-b66b38f1f7c0" alt="Preview" height="40">
+
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/7c505b21-db70-4cc2-9f5c-9875fb01052f" alt="Preview" height="40">
+
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/a9c13079-370b-4ed9-9c88-eabade9d9503" alt="Preview" height="40">
+
+<img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/29c21224-fcc2-4151-b7d7-ed6e11cfe0ac" alt="Preview" height="500">
+
 
 ## Deploy
 
@@ -36,16 +57,12 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 ### Alternative install
 
 - Download this folder
-- Execute `./deploy.sh` (requires sudo priviledges).
+- Execute `./clean-deploy.sh` (requires sudo priviledges)
 
 
-## TODO
+## To Do
 
-- Apply settings without closing settings window ([#14][i14])
-- Display workspace new name without switching workspace ([#26][i26])
-
-[i14]: https://github.com/Favo02/workspaces-by-open-apps/issues/14
-[i26]: https://github.com/Favo02/workspaces-by-open-apps/issues/26
+_Go to [issues page](https://github.com/Favo02/workspaces-by-open-apps/issues) to see the full list of features and bugs to fix._
 
 ## Contributions
 
@@ -78,11 +95,12 @@ When the feature is ready and stable create a new pull request.
 
 ## Credits
 
-Due to the poor (really poor) documentation to develop any gnome shell extension I used snippets of already existing extension (often deprecated and not working anymore) and merged them to create what I was looking for.
+Due to the poor documentation to develop GNOME shell extensions, I looked at the source code of existing extension (often deprecated and not working anymore):
 
-- BaBar taskbar _(and various other fthx extensions)_ (https://github.com/fthx/babar)
-- TaskIcons (https://github.com/rliang/gnome-shell-extension-task-icons)
-- Improved workspace indicator (https://github.com/MichaelAquilina/improved-workspace-indicator)
-- New workspaces shortcut (https://github.com/barnscott/newworkspaceshortcut-barnix.io)
-- AppIndicator Support (https://github.com/ubuntu/gnome-shell-extension-appindicator)
-- Top Panel Workspace Scroll (https://github.com/timbertson/gnome-shell-scroll-workspaces)
+- [BaBar taskbar](https://github.com/fthx/babar) by _@fthx_ _(and various other fthx's extensions)_
+- [TaskIcons](https://github.com/rliang/gnome-shell-extension-task-icons) by _@rliang_
+- [Improved workspace indicator](https://github.com/MichaelAquilina/improved-workspace-indicator) by _@MichaelAquilina_
+- [New workspaces shortcut](https://github.com/barnscott/newworkspaceshortcut-barnix.io) by _@barnscott_
+- [AppIndicator Support](https://github.com/ubuntu/gnome-shell-extension-appindicator) by _@ubuntu_
+- [Top Panel Workspace Scroll](https://github.com/timbertson/gnome-shell-scroll-workspaces) by _@timbertson_
+- [Focus follows forkspace](https://github.com/christopher-l/focus-follows-workspace) by _@christopher-l_
