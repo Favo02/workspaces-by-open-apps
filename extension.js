@@ -120,7 +120,7 @@ class Extension {
     if (is_other_monitor && windows.length === 0)
       return
     
-    const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() == index
+    const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() === index
 
     // hide empty workspaces
     if (this._settings.indicator_hide_empty && !is_active && windows.length === 0)
@@ -208,7 +208,7 @@ class Extension {
    */
   _render_workspace_applications(button, windows, isActive, index) {
     const limit = this._settings.icons_limit
-    const limitIcons = isActive ? 100 : (limit == 0 ? 100 : limit)
+    const limitIcons = isActive ? 100 : (limit === 0 ? 100 : limit)
 
     // group same application
     let occurrences = {}
@@ -246,12 +246,12 @@ class Extension {
         const is_not_minimized = !win.is_hidden() || occurrences[win.get_pid()]?.not_minimized
 
         // hide dialogs, popovers and tooltip duplicate windows
-        if (win.get_window_type() != Meta.WindowType.NORMAL)
+        if (win.get_window_type() !== Meta.WindowType.NORMAL)
           return
 
         // limit icons
         if (!win.has_focus() && count >= limitIcons) {
-          if (count == limitIcons) { // render + icon
+          if (count === limitIcons) { // render + icon
             const plusIcon = new St.Icon({
               icon_name: "list-add-symbolic",
               icon_size: 10
@@ -272,17 +272,17 @@ class Extension {
 
         // effects for not focused apps
         if (!is_focus) {
-          if (this._settings.apps_inactive_effect == 1) // reduce opacity
+          if (this._settings.apps_inactive_effect === 1) // reduce opacity
             texture.set_opacity(150)
-          if (this._settings.apps_inactive_effect == 2) // desaturate
+          if (this._settings.apps_inactive_effect === 2) // desaturate
             texture.add_effect(new Clutter.DesaturateEffect())
         }
 
         // effects for minimized apps
         if (!is_not_minimized) {
-          if (this._settings.apps_minimized_effect == 1) // reduce opacity
+          if (this._settings.apps_minimized_effect === 1) // reduce opacity
             texture.set_opacity(150)
-          if (this._settings.apps_minimized_effect == 2) // desaturate
+          if (this._settings.apps_minimized_effect === 2) // desaturate
             texture.add_effect(new Clutter.DesaturateEffect())
         }
 
@@ -326,7 +326,7 @@ class Extension {
         icon.get_child().add_child(texture)
 
         // add x{occurrences} label to icon button (group same application)
-        if ((this._settings.icons_group == 1) && (occurrences[win.get_pid()].count > 1)) {
+        if ((this._settings.icons_group === 1) && (occurrences[win.get_pid()].count > 1)) {
           icon.get_child().add_child(new St.Label({
             text: `x${occurrences[win.get_pid()].count}`,
             style_class: "text-group"
@@ -372,13 +372,13 @@ class Extension {
    */
   _on_click_workspace(actor, event) {
     // left click: focus workspace
-    if (event.get_button() == 1)
+    if (event.get_button() === 1)
       this._workspace.activate(global.get_current_time())
 
     // middle click: do nothing
 
     // right click: rename workspace
-    if (event.get_button() == 3) {
+    if (event.get_button() === 3) {
 
       const workspaceManager = global.workspace_manager
       const workspaceIndex = this._index
@@ -428,11 +428,11 @@ class Extension {
    */
   _on_click_application(actor, event) {
     // left/right click: focus application
-    if (event.get_button() == 1 || event.get_button() == 3)
+    if (event.get_button() === 1 || event.get_button() === 3)
       this._window.activate(global.get_current_time())
 
     // middle click: close application
-    if (this.middleClosesApp && event.get_button() == 2)
+    if (this.middleClosesApp && event.get_button() === 2)
       this._window.delete(global.get_current_time())
   }
 
