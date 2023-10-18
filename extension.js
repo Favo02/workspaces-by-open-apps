@@ -226,7 +226,7 @@ class Extension {
     if (isActive || (this._settings.icons_limit === 0))
       icons_limit = this._constants.NO_LIMIT
     else
-      this._settings.icons_limit
+      icons_limit = this._settings.icons_limit
 
     // group same application
     let occurrences = {}
