@@ -51,12 +51,12 @@ function fillPreferencesWindow(window) {
 }
 
 function page1_group1(settings) {
-  let group, row, widget
-
-  group = new Adw.PreferencesGroup({
+  const group = new Adw.PreferencesGroup({
     title: "Position",
     description: ""
   })
+
+  let row, widget
 
   row = new Adw.ActionRow({
     title: "Panel position",
@@ -93,12 +93,12 @@ function page1_group1(settings) {
 }
 
 function page1_group2(settings) {
-  let group, row, widget
-
-  group = new Adw.PreferencesGroup({
+  const group = new Adw.PreferencesGroup({
     title: "Behavior",
     description: ""
   })
+
+  let row, widget
 
   row = new Adw.ActionRow({
     title: "Scroll wraparound",
@@ -140,12 +140,12 @@ function page1_group2(settings) {
 }
 
 function page2_group1(settings) {
-  let group, row, widget
-
-  group = new Adw.PreferencesGroup({
+  const group = new Adw.PreferencesGroup({
     title: "Indicator appearance",
     description: ""
   })
+
+  let row, widget
 
   row = new Adw.ActionRow({
     title: "Active workspace indicator",
@@ -205,12 +205,12 @@ function page2_group1(settings) {
 }
 
 function page2_group2(settings) {
-  let group, row, widget
-
-  group = new Adw.PreferencesGroup({
+  const group = new Adw.PreferencesGroup({
     title: "Workspaces appearance",
     description: ""
   })
+
+  let row, widget
 
   row = new Adw.ActionRow({
     title: "Show workspace names",
@@ -268,12 +268,12 @@ function page2_group2(settings) {
 }
 
 function page2_group3(settings) {
-  let group, row, widget
-
-  group = new Adw.PreferencesGroup({
+  const group = new Adw.PreferencesGroup({
     title: "Icons appearance",
     description: ""
   })
+
+  let row, widget
 
   row = new Adw.ActionRow({
     title: "Desaturate all apps icons",
@@ -321,12 +321,12 @@ function page2_group3(settings) {
 }
 
 function page3_group1(settings) {
-  let group, row, widget
-
-  group = new Adw.PreferencesGroup({
+  const group = new Adw.PreferencesGroup({
     title: "Icons appearance",
     description: ""
   })
+
+  let row, widget
 
   row = new Adw.ActionRow({
     title: "Icons limit",
@@ -358,6 +358,7 @@ function page3_group1(settings) {
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
+
   return group
 }
 
