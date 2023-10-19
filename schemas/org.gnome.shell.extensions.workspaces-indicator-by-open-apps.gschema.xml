@@ -150,6 +150,12 @@
       <description>List of applications ignored (no icons will be shown for them)</description>
     </key>
 
+    <key type="b" name="log-apps-id">
+      <default>false</default>
+      <summary>Log displayed applications ids</summary>
+      <description>Console log the ids of the applications currently running, to find the ids of the applications to ignore. Open log with "journalctl /usr/bin/gnome-shell -f -o cat"</description>
+    </key>
+
   </schema>
   
 </schemalist>

@@ -8,6 +8,9 @@ function fillPreferencesWindow(window) {
 
   const settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
+  const label = info_label()
+
+  // page1: position and behavior
   const page1 = new Adw.PreferencesPage({
     name: "page1",
     title: "Position and Behavior",
@@ -15,8 +18,9 @@ function fillPreferencesWindow(window) {
   })
   page1.add(page1_group1(settings))
   page1.add(page1_group2(settings))
-  page1.add(info_label())
+  page1.add(label)
 
+  // page2: appearance
   const page2 = new Adw.PreferencesPage({
     name: "page2",
     title: "Appearance",
@@ -25,17 +29,37 @@ function fillPreferencesWindow(window) {
   page2.add(page2_group1(settings))
   page2.add(page2_group2(settings))
   page2.add(page2_group3(settings))
-  page2.add(info_label())
+  page2.add(label)
 
+  // page3: hide and ignore apps
   const page3 = new Adw.PreferencesPage({
     name: "page3",
     title: "Hide and ignore apps",
     icon_name: "edit-clear-all-symbolic"
   })
   page3.add(page3_group1(settings))
-  page3.add(page3_group2(settings))
-  page3.add(info_label())
+  // these groups needs to be saved to be updated (removed and readded) when a new app is ignored
+  let p3g2 = page3_group2(settings)
+  const p3g3 = page3_group3(settings)
+  page3.add(p3g2)
+  page3.add(p3g3)
+  page3.add(label)
+  settings.connect("changed::icons-ignored", () => {
+    // remove old groups (only p3g2 needs to be update but all groups below him needs to be removed)
+    page3.remove(p3g2)
+    page3.remove(p3g3)
+    page3.remove(label)
 
+    // update p3g2
+    p3g2 = page3_group2(settings)
+
+    // readd groups (they need to be added in this order, same as before)
+    page3.add(p3g2)
+    page3.add(p3g3)
+    page3.add(label)
+  })
+
+  // page4: about
   const page4 = new Adw.PreferencesPage({
     name: "page4",
     title: "About",
@@ -393,6 +417,53 @@ function page3_group2(settings) {
     row.activatable_widget = widget
     group.add(row)
   }
+
+  return group
+}
+
+function page3_group3(settings) {
+  const group = new Adw.PreferencesGroup({
+    title: "Add ignored application",
+    description: "Add an application to the list of ignored applications"
+  })
+
+  let row, widget
+
+  row = new Adw.ActionRow({
+    title: "Log displayed applications ids",
+    subtitle: "Console log the ids of the applications currently running, to find the ids of the applications to ignore. Open log with \"journalctl /usr/bin/gnome-shell -f -o cat\""
+  })
+  widget = new Gtk.Switch({
+    valign: Gtk.Align.CENTER
+  })
+  settings.bind("log-apps-id", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
+
+  row = new Adw.ActionRow({
+    title: "Add application to ignore",
+    subtitle: "Insert id of the application to ignore"
+  })
+  widget = new Gtk.Entry({
+    halign: Gtk.Align.END,
+    valign: Gtk.Align.CENTER,
+    hexpand: true,
+    xalign: 0,
+  })
+  widget.set_placeholder_text("org.gnome.example")
+  widget.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "object-select-symbolic")
+  widget.set_icon_activatable(Gtk.EntryIconPosition.SECONDARY, true)
+  widget.connect("icon-press", (w) => {
+    const ignored_apps = settings.get_strv("icons-ignored")
+    if (w.get_text().length === 0 || ignored_apps.includes(w.get_text()))
+      return
+    ignored_apps.push(w.get_text())
+    settings.set_strv("icons-ignored", ignored_apps)
+  })
+  row.add_suffix(widget)
+  row.activatable_widget = widget
+  group.add(row)
 
   return group
 }

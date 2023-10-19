@@ -72,7 +72,8 @@ class Extension {
 
       icons_limit: rs.get_int("icons-limit"),
       icons_group: rs.get_enum("icons-group"),
-      icons_ignored: rs.get_strv("icons-ignored")
+      icons_ignored: rs.get_strv("icons-ignored"),
+      log_apps_id: rs.get_boolean("log-apps-id")
     }
   }
 
@@ -291,6 +292,9 @@ class Extension {
 
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
+
+        if (this._settings.log_apps_id)
+          console.log(app.get_id())
 
         // create Clutter.actor
         const texture = app.create_icon_texture(this._constants.TEXTURES_SIZE)
