@@ -130,8 +130,15 @@ class Extension {
 
     const windows = workspace
       .list_windows()
+      // filter out ignored apps
+      .filter(win => {
+        if (!win) return false
+        const app = Shell.WindowTracker.get_default().get_window_app(win)
+        if (!app) return false
+        return !this._settings.icons_ignored.includes(app.get_id())
+      })
       // filter out windows on all workspaces (or not on all workspaces for special other monitor indicator)
-      .filter(w => is_other_monitor ? w.is_on_all_workspaces() : !w.is_on_all_workspaces())
+      .filter(win => is_other_monitor ? win.is_on_all_workspaces() : !win.is_on_all_workspaces())
 
     // hide other monitor indicator if no windows on all workspaces
     if (is_other_monitor && windows.length === 0)
@@ -229,14 +236,6 @@ class Extension {
       icons_limit = this._constants.NO_LIMIT
     else
       icons_limit = this._settings.icons_limit
-
-    // filter out ignored applications
-    windows = windows.filter(win => {
-      if (!win) return false
-      const app = Shell.WindowTracker.get_default().get_window_app(win)
-      if (!app) return false
-      return !this._settings.icons_ignored.includes(app.get_id())
-    })
 
     // group same application
     let occurrences = {}
