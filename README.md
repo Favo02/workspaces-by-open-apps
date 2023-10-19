@@ -4,6 +4,7 @@
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/52ab2be9-ad78-4cb4-9a7a-f51fc734d2a3" alt="Preview" height="40">
 
+
 ## Features
 
 - Show a simple indicator to **display workspaces** and **apps open** in it
@@ -53,16 +54,24 @@ Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="80">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
-
 ### Alternative install
 
 - Download this folder
 - Execute `./clean-deploy.sh` (requires sudo priviledges)
 
+### Useful commands
+
+- Compile settings schema: `glib-compile-schemas ./schemas/`
+- Show (all) extension(s) logs: `journalctl /usr/bin/gnome-shell -f -o cat`
+- Show settings logs: `journalctl /usr/bin/gjs -f -o cat`
+- List settings: `dconf dump  /org/gnome/shell/extensions/workspaces-indicator-by-open-apps/`
+- Edit manually setting: `dconf write /org/gnome/shell/extensions/workspaces-indicator-by-open-apps/<setting> <value>`
+
 
 ## To Do
 
 _Go to [issues page](https://github.com/Favo02/workspaces-by-open-apps/issues) to see the full list of features and bugs to fix._
+
 
 ## Contributions
 
