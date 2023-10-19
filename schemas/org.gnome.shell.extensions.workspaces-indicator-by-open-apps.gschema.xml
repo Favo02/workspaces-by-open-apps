@@ -144,6 +144,12 @@
       <description>Show only one icon for each application in the workspace indicator</description>
     </key>
 
+    <key name="icons-ignored" type="as">
+      <default>[]</default>
+      <summary>Ignored applications</summary>
+      <description>List of applications ignored (no icons will be shown for them)</description>
+    </key>
+
   </schema>
   
 </schemalist>

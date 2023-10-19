@@ -71,7 +71,8 @@ class Extension {
       apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
 
       icons_limit: rs.get_int("icons-limit"),
-      icons_group: rs.get_enum("icons-group")
+      icons_group: rs.get_enum("icons-group"),
+      icons_ignored: rs.get_strv("icons-ignored")
     }
   }
 
@@ -228,6 +229,14 @@ class Extension {
     else
       icons_limit = this._settings.icons_limit
 
+    // filter out ignored applications
+    windows = windows.filter(win => {
+      if (!win) return false
+      const app = Shell.WindowTracker.get_default().get_window_app(win)
+      if (!app) return false
+      return !this._settings.icons_ignored.includes(app.get_id())
+    })
+
     // group same application
     let occurrences = {}
     if (this._settings.icons_group !== this._constants.OFF) { // icons_group NOT off
@@ -282,8 +291,6 @@ class Extension {
 
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
-
-        if (!app || !win) return // app not found
 
         // create Clutter.actor
         const texture = app.create_icon_texture(this._constants.TEXTURES_SIZE)

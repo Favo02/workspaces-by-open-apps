@@ -33,6 +33,7 @@ function fillPreferencesWindow(window) {
     icon_name: "edit-clear-all-symbolic"
   })
   page3.add(page3_group1(settings))
+  page3.add(page3_group2(settings))
   page3.add(info_label())
 
   const page4 = new Adw.PreferencesPage({
@@ -357,6 +358,41 @@ function page3_group1(settings) {
   row.add_suffix(widget)
   row.activatable_widget = widget
   group.add(row)
+  return group
+}
+
+function page3_group2(settings) {
+  const group = new Adw.PreferencesGroup({
+    title: "Ignored applications",
+    description: "List of applications currently ignored (no icons will be shown for them)"
+  })
+
+  const ignored_apps = settings.get_strv("icons-ignored")
+
+  if (ignored_apps.length === 0) {
+    group.add(new Gtk.Label({
+      label: "No currently ignored apps"
+    }))
+  }
+
+  for (const app of ignored_apps) {
+    const row = new Adw.ActionRow({
+      title: app
+    })
+    const widget = new Gtk.Button({
+      valign: Gtk.Align.CENTER,
+      label: "Reactivate"
+    })
+    widget.connect("clicked", () => {
+      ignored_apps.splice(ignored_apps.indexOf(app), 1)
+      settings.set_strv("icons-ignored", ignored_apps)
+      row.get_parent().remove(row)
+    })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+  }
+
   return group
 }
 
