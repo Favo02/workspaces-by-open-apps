@@ -77,7 +77,7 @@ _Go to [issues page](https://github.com/Favo02/workspaces-by-open-apps/issues) t
 
 Any contribution is welcome!
 
-Submit any bug or feature request through an **issue**, or submit your code creating a **pull request**. 
+Submit any bug or feature request through an **issue**, or submit your code creating a **pull request**.
 
 
 ## Commit, Branch and Pull request convention

@@ -30,11 +30,11 @@ class Extension {
       TEXTURES_SIZE: 20
     }
     this._indicators = [] // each indicator is a workspace
-    
+
     this._connect_signals() // signals that triggers render
     this._render() // initialize indicator
   }
-  
+
   /** disable extension: destroy everything */
   disable() {
     this._raw_settings = {}
@@ -55,7 +55,7 @@ class Extension {
       scroll_wraparound: rs.get_boolean("scroll-wraparound"),
       scroll_inverse: rs.get_boolean("scroll-inverse"),
       middle_click_close_app: rs.get_boolean("middle-click-close-app"),
-      
+
       indicator_show_active_workspace: rs.get_boolean("indicator-show-active-workspace"),
       indicator_show_focused_app: rs.get_boolean("indicator-show-focused-app"),
       indicator_color: rs.get_string("indicator-color"),
@@ -122,8 +122,8 @@ class Extension {
 
   /**
    * create indicator for a single workspace
-   * @param {number} index index of workspace 
-   * @param {boolean} is_other_monitor special indicator for other monitor 
+   * @param {number} index index of workspace
+   * @param {boolean} is_other_monitor special indicator for other monitor
    */
   _render_workspace(index, is_other_monitor) {
     const workspace = global.workspace_manager.get_workspace_by_index(index)
@@ -143,7 +143,7 @@ class Extension {
     // hide other monitor indicator if no windows on all workspaces
     if (is_other_monitor && windows.length === 0)
       return
-    
+
     const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() === index
 
     // hide empty workspaces
@@ -368,9 +368,9 @@ class Extension {
 
   /**
    * create label for a workspace indicator
-   * @param button indicator to add label 
-   * @param {number} index index of workspace 
-   * @param {string} otherMonitorText custom other workspace text to display 
+   * @param button indicator to add label
+   * @param {number} index index of workspace
+   * @param {string} otherMonitorText custom other workspace text to display
    */
   _render_workspace_label(button, index, otherMonitorText) {
     // text to display
