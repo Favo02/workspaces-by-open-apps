@@ -1,18 +1,17 @@
-const { Clutter, St, Shell, Meta } = imports.gi
-const { main, dnd } = imports.ui
-
-// initialize extension
-function init() {
-  return new Extension()
-}
+import Clutter from "gi://Clutter"
+import St from "gi://St"
+import Shell from "gi://Shell"
+import Meta from "gi://Meta"
+import * as main from "resource:///org/gnome/shell/ui/main.js"
+import * as dnd from "resource:///org/gnome/shell/ui/dnd.js"
+import { Extension } from "resource:///org/gnome/shell/extensions/extension.js"
 
 // extension workspace indicator
-class Extension {
-  constructor() {}
+export default class MyExtension extends Extension {
 
   /** enable extension: initialize everything */
   enable() {
-    this._raw_settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
+    this._raw_settings = this.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
     this._settings = {} // parsed settings
     this._constants = { // useful constants
@@ -37,12 +36,14 @@ class Extension {
 
   /** disable extension: destroy everything */
   disable() {
-    this._raw_settings = {}
-    this._settings = {}
-    this._constants = {}
+    this._raw_settings = null
+    this._settings = null
+    this._constants = null
     this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
+    this._indicators = null
 
     this._disconnect_signals() // disconnect signals
+    this._signals = null
   }
 
   /** parse raw settings object into a better formatted object */
@@ -79,31 +80,44 @@ class Extension {
 
   /** connect signals that triggers a re-render of indicators */
   _connect_signals() {
-    // signals for global.workspace_manager
-    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect("notify::n-workspaces", () => this._render())
-    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect("workspace-switched", () => this._render())
-    this._workspaceReorderedSIGNAL = global.workspace_manager.connect("workspaces-reordered", () => this._render())
+    const workspace_manager = Shell.Global.get().get_workspace_manager()
+    const wm_signals = []
+    wm_signals.push(workspace_manager.connect("active-workspace-changed", () => this._render()))
+    wm_signals.push(workspace_manager.connect("showing-desktop-changed", () => this._render()))
+    wm_signals.push(workspace_manager.connect("workspace-added", () => this._render()))
+    wm_signals.push(workspace_manager.connect("workspace-removed", () => this._render()))
+    wm_signals.push(workspace_manager.connect("workspace-switched", () => this._render()))
+    wm_signals.push(workspace_manager.connect("workspaces-reordered", () => this._render()))
 
-    // signals for Shell.WindowTracker.get_default()
-    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect("tracked-windows-changed", () => this._render())
+    const window_tracker = Shell.WindowTracker.get_default()
+    const wt_signals = []
+    wt_signals.push(window_tracker.connect("tracked-windows-changed", () => this._render()))
 
-    // signals for global.display
-    this._windowsRestackedSIGNAL = global.display.connect("restacked", () => this._render())
-    this._windowLeftMonitorSIGNAL = global.display.connect("window-left-monitor", () => this._render())
-    this._windowEnteredMonitorSIGNAL = global.display.connect("window-entered-monitor", () => this._render())
+    const display = Shell.Global.get().get_display()
+    const dp_signals = []
+    dp_signals.push(display.connect("restacked", () => this._render()))
+    dp_signals.push(display.connect("window-left-monitor", () => this._render()))
+    dp_signals.push(display.connect("window-entered-monitor", () => this._render()))
+
+    this._signals = []
+    this._signals.push({ "workspace_manager": wm_signals })
+    this._signals.push({ "window_tracker": wt_signals })
+    this._signals.push({ "display": dp_signals })
   }
 
   /** disconnect signals */
   _disconnect_signals() {
-    global.workspace_manager.disconnect(this._workspaceNumberChangedSIGNAL)
-    global.workspace_manager.disconnect(this._workspaceSwitchedSIGNAL)
-    global.workspace_manager.disconnect(this._workspaceReorderedSIGNAL)
+    const workspace_manager = Shell.Global.get().get_workspace_manager()
+    for (signal in this._signals.workspace_manager)
+      workspace_manager.disconnect(signal)
 
-    Shell.WindowTracker.get_default().disconnect(this._windowsChangedSIGNAL)
+    const window_tracker = Shell.WindowTracker.get_default()
+    for (signal in this._signals.window_tracker)
+      window_tracker.disconnect(signal)
 
-    global.display.disconnect(this._windowsRestackedSIGNAL)
-    global.display.disconnect(this._windowLeftMonitorSIGNAL)
-    global.display.disconnect(this._windowEnteredMonitorSIGNAL)
+    const display = Shell.Global.get().get_display()
+    for (signal in this._signals.display)
+      display.disconnect(signal)
   }
 
   /** render indicators: destroy current indicators and rebuild */
@@ -116,7 +130,7 @@ class Extension {
     this._render_workspace(0, true)
 
     // build normal workspaces indicators
-    for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++)
+    for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++)
       this._render_workspace(i)
   }
 
@@ -126,7 +140,7 @@ class Extension {
    * @param {boolean} is_other_monitor special indicator for other monitor
    */
   _render_workspace(index, is_other_monitor) {
-    const workspace = global.workspace_manager.get_workspace_by_index(index)
+    const workspace = Shell.Global.get().get_workspace_manager().get_workspace_by_index(index)
 
     const windows = workspace
       .list_windows()
@@ -144,7 +158,7 @@ class Extension {
     if (is_other_monitor && windows.length === 0)
       return
 
-    const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() === index
+    const is_active = !is_other_monitor && Shell.Global.get().get_workspace_manager().get_active_workspace_index() === index
 
     // hide empty workspaces
     if (this._settings.indicator_hide_empty && !is_active && windows.length === 0)
@@ -180,7 +194,7 @@ class Extension {
     indicator.acceptDrop = function (source) {
       if (source._index !== this._index) {
         source._window.change_workspace_by_index(this._index, false)
-        source._window.activate(global.get_current_time())
+        source._window.activate(Shell.Global.get().get_current_time())
         return true
       }
       return false
@@ -404,19 +418,19 @@ class Extension {
 
     // left click: focus workspace
     if (event.get_button() === LEFT_CLICK)
-      this._workspace.activate(global.get_current_time())
+      this._workspace.activate(Shell.Global.get().get_current_time())
 
     // middle click: do nothing
 
     // right click: rename workspace
     if (event.get_button() === RIGHT_CLICK) {
 
-      const workspaceManager = global.workspace_manager
+      const workspaceManager = Shell.Global.get().get_workspace_manager()
       const workspaceIndex = this._index
 
       // activate workspace
       if (workspaceManager.get_active_workspace_index() !== workspaceIndex) {
-        this._workspace.activate(global.get_current_time())
+        this._workspace.activate(Shell.Global.get().get_current_time())
         return
       }
 
@@ -448,7 +462,7 @@ class Extension {
 
   /** touch on workspace handler */
   _on_touch_workspace() {
-    this._workspace.activate(global.get_current_time())
+    this._workspace.activate(Shell.Global.get().get_current_time())
   }
 
   /**
@@ -462,16 +476,16 @@ class Extension {
 
     // left/right click: focus application
     if (event.get_button() === LEFT_CLICK || event.get_button() === RIGHT_CLICK)
-      this._window.activate(global.get_current_time())
+      this._window.activate(Shell.Global.get().get_current_time())
 
     // middle click: close application
     if (this.middleClosesApp && event.get_button() === MIDDLE_CLICK)
-      this._window.delete(global.get_current_time())
+      this._window.delete(Shell.Global.get().get_current_time())
   }
 
   /** touch on application handler */
   _on_touch_application() {
-    this._window.activate(global.get_current_time())
+    this._window.activate(Shell.Global.get().get_current_time())
   }
 
   /**
@@ -499,7 +513,7 @@ class Extension {
     }
 
     // activate adjacent workspace on scroll
-    const workspaceManager = global.workspace_manager
+    const workspaceManager = Shell.Global.get().get_workspace_manager()
     let newIndex = workspaceManager.get_active_workspace_index() + direction
 
     // wrap
@@ -507,7 +521,7 @@ class Extension {
       newIndex = mod(newIndex, workspaceManager.n_workspaces)
 
     if (newIndex >= 0 && newIndex < workspaceManager.n_workspaces)
-      workspaceManager.get_workspace_by_index(newIndex).activate(global.get_current_time())
+      workspaceManager.get_workspace_by_index(newIndex).activate(Shell.Global.get().get_current_time())
 
     // modulo operator working for negative numbers
     function mod(n, m) {
