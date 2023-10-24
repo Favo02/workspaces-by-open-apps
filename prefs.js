@@ -111,7 +111,7 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("position-index"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", (w) => { settings.set_int("position-index", w.get_value_as_int()) })
+    widget.connect("value-changed", w => { settings.set_int("position-index", w.get_value_as_int()) })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -211,7 +211,7 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
       visible: true,
       valign: Gtk.Align.CENTER
     })
-    widget.connect("color-set", (w) => { settings.set_string("indicator-color", w.get_rgba().to_string()) })
+    widget.connect("color-set", w => { settings.set_string("indicator-color", w.get_rgba().to_string()) })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -274,7 +274,7 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
       xalign: 0,
     })
     widget.set_text(settings.get_string("indicator-all-text"))
-    widget.connect("changed", (w) => { settings.set_string("indicator-all-text", w.get_text().length > 0 ? w.get_text() : "ALL") })
+    widget.connect("changed", w => { settings.set_string("indicator-all-text", w.get_text().length > 0 ? w.get_text() : "ALL") })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -366,7 +366,7 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
     widget.set_range(0, 99)
     widget.set_value(settings.get_int("icons-limit"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", (w) => { settings.set_int("icons-limit", w.get_value_as_int()) })
+    widget.connect("value-changed", w => { settings.set_int("icons-limit", w.get_value_as_int()) })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -457,7 +457,7 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
     widget.set_placeholder_text("org.gnome.example")
     widget.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "object-select-symbolic")
     widget.set_icon_activatable(Gtk.EntryIconPosition.SECONDARY, true)
-    widget.connect("icon-press", (w) => {
+    widget.connect("icon-press", w => {
       const ignored_apps = settings.get_strv("icons-ignored")
       if (w.get_text().length === 0 || ignored_apps.includes(w.get_text()))
         return

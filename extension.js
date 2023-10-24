@@ -170,16 +170,14 @@ export default class MyExtension extends Extension {
     if (!this._settings.indicator_show_active_workspace) style_classes += " no-indicator"
     if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
 
-    const style = `border-color: ${this._settings.indicator_color}`
-
     // create indicator
     const indicator = new St.Bin({
       style_class: style_classes,
-      style: style,
-      reactive:    true,
-      can_focus:   true,
+      style: `border-color: ${this._settings.indicator_color}`,
+      reactive: true,
+      can_focus: true,
       track_hover: true,
-      child:       new St.BoxLayout()
+      child: new St.BoxLayout()
     })
     this._indicators.push(indicator)
 
@@ -191,6 +189,8 @@ export default class MyExtension extends Extension {
 
     // drag and drop
     indicator._delegate = indicator
+    // converting this anonymous function to a lambda will break the code,
+    // because keyword this in lambda is different keyword than this in anonymous functions
     indicator.acceptDrop = function (source) {
       if (source._index !== this._index) {
         source._window.change_workspace_by_index(this._index, false)
@@ -232,21 +232,21 @@ export default class MyExtension extends Extension {
     }
 
     // index (selected by user) to insert indicator in panel
-    const insertIndex = this._settings.position_index + (this._indicators.length-1)
+    const insert_index = this._settings.position_index + (this._indicators.length-1)
 
-    main.panel[box].insert_child_at_index(indicator, insertIndex)
+    main.panel[box].insert_child_at_index(indicator, insert_index)
   }
 
   /**
    * create icons of running applications inside a workspace indicator
    * @param button indicator to add childs (icons)
    * @param windows windows to create icons of
-   * @param {boolean} isActive if the workspace is active
+   * @param {boolean} is_active if the workspace is active
    * @param {number} index index of workspace
    */
-  _render_workspace_applications(button, windows, isActive, index) {
+  _render_workspace_applications(button, windows, is_active, index) {
     let icons_limit
-    if (isActive || (this._settings.icons_limit === 0))
+    if (is_active || (this._settings.icons_limit === 0))
       icons_limit = this._constants.NO_LIMIT
     else
       icons_limit = this._settings.icons_limit
@@ -293,12 +293,12 @@ export default class MyExtension extends Extension {
         // limit icons
         if (!win.has_focus() && count >= icons_limit) {
           if (count === icons_limit) { // render + icon
-            const plusIcon = new St.Icon({
+            const plus_icon = new St.Icon({
               icon_name: "list-add-symbolic",
               icon_size: this._constants.ICONS_SIZE
             })
-            plusIcon.set_opacity(this._constants.LOW_OPACITY)
-            button.get_child().add_child(plusIcon)
+            plus_icon.set_opacity(this._constants.LOW_OPACITY)
+            button.get_child().add_child(plus_icon)
           }
           return
         }
@@ -338,20 +338,17 @@ export default class MyExtension extends Extension {
         if (!this._settings.indicator_show_focused_app) style_classes += " no-indicator"
         if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
 
-        const indicatorsColor = this._settings.indicator_color
-        const style = `border-color: ${indicatorsColor}`
-
         const icon = new St.Bin({
           style_class: style_classes,
-          style: style,
-          reactive:    true,
-          can_focus:   true,
+          style: `border-color: ${this._settings.indicator_color}`,
+          reactive: true,
+          can_focus: true,
           track_hover: true,
           child: new St.BoxLayout()
         })
 
         // focus application on click
-        icon.middleClosesApp = this._settings.middle_click_close_app
+        icon.middle_closes_app = this._settings.middle_click_close_app
         icon.connect("button-release-event", this._on_click_application.bind(icon))
         icon.connect("touch-event", this._on_touch_application.bind(icon))
 
@@ -384,25 +381,25 @@ export default class MyExtension extends Extension {
    * create label for a workspace indicator
    * @param button indicator to add label
    * @param {number} index index of workspace
-   * @param {string} otherMonitorText custom other workspace text to display
+   * @param {string} other_monitor_text custom other workspace text to display
    */
-  _render_workspace_label(button, index, otherMonitorText) {
+  _render_workspace_label(button, index, other_monitor_text) {
     // text to display
-    let indicatorText
+    let indicator_text
 
-    if (otherMonitorText) { // other monitor custom text
-      indicatorText = otherMonitorText
+    if (other_monitor_text) { // other monitor custom text
+      indicator_text = other_monitor_text
     }
     else if (this._settings.indicator_use_custom_names) { // custom workspace name
-      indicatorText = Meta.prefs_get_workspace_name(index)
+      indicator_text = Meta.prefs_get_workspace_name(index)
     }
     else { // default text: index
-      indicatorText = (index+1).toString()
+      indicator_text = (index+1).toString()
     }
 
     // add label to indicator
     button.get_child().insert_child_at_index(new St.Label({
-      text: indicatorText,
+      text: indicator_text,
       style_class: "text"
     }), 0)
   }
@@ -424,39 +421,29 @@ export default class MyExtension extends Extension {
 
     // right click: rename workspace
     if (event.get_button() === RIGHT_CLICK) {
-
-      const workspaceManager = Shell.Global.get().get_workspace_manager()
-      const workspaceIndex = this._index
-
-      // activate workspace
-      if (workspaceManager.get_active_workspace_index() !== workspaceIndex) {
-        this._workspace.activate(Shell.Global.get().get_current_time())
-        return
-      }
-
       // if rename label exists, destroy it
-      if (this._renameWorkspace) {
-        this._renameWorkspace.destroy()
-        this._renameWorkspace = null
+      if (this._rename_workspace) {
+        this._rename_workspace.destroy()
+        this._rename_workspace = null
         return
       }
 
       // create text input
       const entry = new St.Entry({
-        text: Meta.prefs_get_workspace_name(workspaceIndex),
+        text: Meta.prefs_get_workspace_name(this._index),
         style_class: "text",
       })
 
       // connect typing event: update workspace name
       entry.connect("key-release-event", () => {
-        Meta.prefs_change_workspace_name(workspaceIndex, entry.get_text())
+        Meta.prefs_change_workspace_name(this._index, entry.get_text())
       })
 
       // add to indicator
       this.get_child().insert_child_at_index(entry, 0)
       entry.grab_key_focus()
 
-      this._renameWorkspace = entry
+      this._rename_workspace = entry
     }
   }
 
@@ -479,7 +466,7 @@ export default class MyExtension extends Extension {
       this._window.activate(Shell.Global.get().get_current_time())
 
     // middle click: close application
-    if (this.middleClosesApp && event.get_button() === MIDDLE_CLICK)
+    if (this.middle_closes_app && event.get_button() === MIDDLE_CLICK)
       this._window.delete(Shell.Global.get().get_current_time())
   }
 
@@ -513,20 +500,19 @@ export default class MyExtension extends Extension {
     }
 
     // activate adjacent workspace on scroll
-    const workspaceManager = Shell.Global.get().get_workspace_manager()
-    let newIndex = workspaceManager.get_active_workspace_index() + direction
+    const workspace_manager = Shell.Global.get().get_workspace_manager()
+    let new_index = workspace_manager.get_active_workspace_index() + direction
+
+    // modulo operator working for negative numbers
+    const mod = (n, m) => (((n % m) + m) % m)
 
     // wrap
     if (this._scroll_wraparound)
-      newIndex = mod(newIndex, workspaceManager.n_workspaces)
+      new_index = mod(new_index, workspace_manager.n_workspaces)
 
-    if (newIndex >= 0 && newIndex < workspaceManager.n_workspaces)
-      workspaceManager.get_workspace_by_index(newIndex).activate(Shell.Global.get().get_current_time())
+    if (new_index >= 0 && new_index < workspace_manager.n_workspaces)
+      workspace_manager.get_workspace_by_index(new_index).activate(Shell.Global.get().get_current_time())
 
-    // modulo operator working for negative numbers
-    function mod(n, m) {
-      return ((n % m) + m) % m
-    }
   }
 
 }
