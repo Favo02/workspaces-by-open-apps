@@ -11,8 +11,6 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
 
     const settings = this.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
-    const label = this._info_label()
-
     // page1: position and behavior
     const page1 = new Adw.PreferencesPage({
       name: "page1",
@@ -21,7 +19,7 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
     })
     page1.add(this._page1_group1(settings))
     page1.add(this._page1_group2(settings))
-    page1.add(label)
+    page1.add(this._info_label())
 
     // page2: appearance
     const page2 = new Adw.PreferencesPage({
@@ -32,7 +30,7 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
     page2.add(this._page2_group1(settings))
     page2.add(this._page2_group2(settings))
     page2.add(this._page2_group3(settings))
-    page2.add(label)
+    page2.add(this._info_label())
 
     // page3: hide and ignore apps
     const page3 = new Adw.PreferencesPage({
@@ -44,6 +42,7 @@ export default class MyExtensionPreferences extends ExtensionPreferences {
     // these groups needs to be saved to be updated (removed and readded) when a new app is ignored
     let p3g2 = this._page3_group2(settings)
     const p3g3 = this._page3_group3(settings)
+    const label = this._info_label()
     page3.add(p3g2)
     page3.add(p3g3)
     page3.add(label)
