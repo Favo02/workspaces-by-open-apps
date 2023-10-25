@@ -31,7 +31,7 @@
       <summary>Panel position</summary>
       <description>Panel to show the indicator in</description>
     </key>
-    
+
     <key type="i" name="position-index">
       <default>0</default>
       <summary>Position index</summary>
@@ -157,6 +157,6 @@
     </key>
 
   </schema>
-  
+
 </schemalist>
 

@@ -1,18 +1,17 @@
-const { Clutter, St, Shell, Meta } = imports.gi
-const { main, dnd } = imports.ui
-
-// initialize extension
-function init() {
-  return new Extension()
-}
+import Clutter from "gi://Clutter"
+import St from "gi://St"
+import Shell from "gi://Shell"
+import Meta from "gi://Meta"
+import * as main from "resource:///org/gnome/shell/ui/main.js"
+import * as dnd from "resource:///org/gnome/shell/ui/dnd.js"
+import { Extension } from "resource:///org/gnome/shell/extensions/extension.js"
 
 // extension workspace indicator
-class Extension {
-  constructor() {}
+export default class MyExtension extends Extension {
 
   /** enable extension: initialize everything */
   enable() {
-    this._raw_settings = imports.misc.extensionUtils.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
+    this._raw_settings = this.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
 
     this._settings = {} // parsed settings
     this._constants = { // useful constants
@@ -30,17 +29,18 @@ class Extension {
       TEXTURES_SIZE: 20
     }
     this._indicators = [] // each indicator is a workspace
-    
+
     this._connect_signals() // signals that triggers render
     this._render() // initialize indicator
   }
-  
+
   /** disable extension: destroy everything */
   disable() {
-    this._raw_settings = {}
-    this._settings = {}
-    this._constants = {}
+    this._raw_settings = null
+    this._settings = null
+    this._constants = null
     this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
+    this._indicators = null
 
     this._disconnect_signals() // disconnect signals
   }
@@ -55,7 +55,7 @@ class Extension {
       scroll_wraparound: rs.get_boolean("scroll-wraparound"),
       scroll_inverse: rs.get_boolean("scroll-inverse"),
       middle_click_close_app: rs.get_boolean("middle-click-close-app"),
-      
+
       indicator_show_active_workspace: rs.get_boolean("indicator-show-active-workspace"),
       indicator_show_focused_app: rs.get_boolean("indicator-show-focused-app"),
       indicator_color: rs.get_string("indicator-color"),
@@ -79,31 +79,40 @@ class Extension {
 
   /** connect signals that triggers a re-render of indicators */
   _connect_signals() {
-    // signals for global.workspace_manager
-    this._workspaceNumberChangedSIGNAL = global.workspace_manager.connect("notify::n-workspaces", () => this._render())
-    this._workspaceSwitchedSIGNAL = global.workspace_manager.connect("workspace-switched", () => this._render())
-    this._workspaceReorderedSIGNAL = global.workspace_manager.connect("workspaces-reordered", () => this._render())
+    const workspace_manager = Shell.Global.get().get_workspace_manager()
+    this._sig_wm1 = workspace_manager.connect("active-workspace-changed", () => this._render())
+    this._sig_wm2 = workspace_manager.connect("showing-desktop-changed", () => this._render())
+    this._sig_wm3 = workspace_manager.connect("workspace-added", () => this._render())
+    this._sig_wm4 = workspace_manager.connect("workspace-removed", () => this._render())
+    this._sig_wm5 = workspace_manager.connect("workspace-switched", () => this._render())
+    this._sig_wm6 = workspace_manager.connect("workspaces-reordered", () => this._render())
 
-    // signals for Shell.WindowTracker.get_default()
-    this._windowsChangedSIGNAL = Shell.WindowTracker.get_default().connect("tracked-windows-changed", () => this._render())
+    const window_tracker = Shell.WindowTracker.get_default()
+    this._sig_wt1 = window_tracker.connect("tracked-windows-changed", () => this._render())
 
-    // signals for global.display
-    this._windowsRestackedSIGNAL = global.display.connect("restacked", () => this._render())
-    this._windowLeftMonitorSIGNAL = global.display.connect("window-left-monitor", () => this._render())
-    this._windowEnteredMonitorSIGNAL = global.display.connect("window-entered-monitor", () => this._render())
+    const display = Shell.Global.get().get_display()
+    this._sig_dp1 = display.connect("restacked", () => this._render())
+    this._sig_dp2 = display.connect("window-left-monitor", () => this._render())
+    this._sig_dp3 = display.connect("window-entered-monitor", () => this._render())
   }
 
   /** disconnect signals */
   _disconnect_signals() {
-    global.workspace_manager.disconnect(this._workspaceNumberChangedSIGNAL)
-    global.workspace_manager.disconnect(this._workspaceSwitchedSIGNAL)
-    global.workspace_manager.disconnect(this._workspaceReorderedSIGNAL)
+    const workspace_manager = Shell.Global.get().get_workspace_manager()
+    workspace_manager.disconnect(this._sig_wm1)
+    workspace_manager.disconnect(this._sig_wm2)
+    workspace_manager.disconnect(this._sig_wm3)
+    workspace_manager.disconnect(this._sig_wm4)
+    workspace_manager.disconnect(this._sig_wm5)
+    workspace_manager.disconnect(this._sig_wm6)
 
-    Shell.WindowTracker.get_default().disconnect(this._windowsChangedSIGNAL)
+    const window_tracker = Shell.WindowTracker.get_default()
+    window_tracker.disconnect(this._sig_wt1)
 
-    global.display.disconnect(this._windowsRestackedSIGNAL)
-    global.display.disconnect(this._windowLeftMonitorSIGNAL)
-    global.display.disconnect(this._windowEnteredMonitorSIGNAL)
+    const display = Shell.Global.get().get_display()
+    display.disconnect(this._sig_dp1)
+    display.disconnect(this._sig_dp2)
+    display.disconnect(this._sig_dp3)
   }
 
   /** render indicators: destroy current indicators and rebuild */
@@ -116,17 +125,17 @@ class Extension {
     this._render_workspace(0, true)
 
     // build normal workspaces indicators
-    for (let i = 0; i < global.workspace_manager.get_n_workspaces(); i++)
+    for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++)
       this._render_workspace(i)
   }
 
   /**
    * create indicator for a single workspace
-   * @param {number} index index of workspace 
-   * @param {boolean} is_other_monitor special indicator for other monitor 
+   * @param {number} index index of workspace
+   * @param {boolean} is_other_monitor special indicator for other monitor
    */
   _render_workspace(index, is_other_monitor) {
-    const workspace = global.workspace_manager.get_workspace_by_index(index)
+    const workspace = Shell.Global.get().get_workspace_manager().get_workspace_by_index(index)
 
     const windows = workspace
       .list_windows()
@@ -143,8 +152,8 @@ class Extension {
     // hide other monitor indicator if no windows on all workspaces
     if (is_other_monitor && windows.length === 0)
       return
-    
-    const is_active = !is_other_monitor && global.workspace_manager.get_active_workspace_index() === index
+
+    const is_active = !is_other_monitor && Shell.Global.get().get_workspace_manager().get_active_workspace_index() === index
 
     // hide empty workspaces
     if (this._settings.indicator_hide_empty && !is_active && windows.length === 0)
@@ -156,16 +165,14 @@ class Extension {
     if (!this._settings.indicator_show_active_workspace) style_classes += " no-indicator"
     if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
 
-    const style = `border-color: ${this._settings.indicator_color}`
-
     // create indicator
     const indicator = new St.Bin({
       style_class: style_classes,
-      style: style,
-      reactive:    true,
-      can_focus:   true,
+      style: `border-color: ${this._settings.indicator_color}`,
+      reactive: true,
+      can_focus: true,
       track_hover: true,
-      child:       new St.BoxLayout()
+      child: new St.BoxLayout()
     })
     this._indicators.push(indicator)
 
@@ -177,10 +184,12 @@ class Extension {
 
     // drag and drop
     indicator._delegate = indicator
+    // converting this anonymous function to a lambda will break the code,
+    // because keyword this in lambda is different keyword than this in anonymous functions
     indicator.acceptDrop = function (source) {
       if (source._index !== this._index) {
         source._window.change_workspace_by_index(this._index, false)
-        source._window.activate(global.get_current_time())
+        source._window.activate(Shell.Global.get().get_current_time())
         return true
       }
       return false
@@ -218,21 +227,21 @@ class Extension {
     }
 
     // index (selected by user) to insert indicator in panel
-    const insertIndex = this._settings.position_index + (this._indicators.length-1)
+    const insert_index = this._settings.position_index + (this._indicators.length-1)
 
-    main.panel[box].insert_child_at_index(indicator, insertIndex)
+    main.panel[box].insert_child_at_index(indicator, insert_index)
   }
 
   /**
    * create icons of running applications inside a workspace indicator
    * @param button indicator to add childs (icons)
    * @param windows windows to create icons of
-   * @param {boolean} isActive if the workspace is active
+   * @param {boolean} is_active if the workspace is active
    * @param {number} index index of workspace
    */
-  _render_workspace_applications(button, windows, isActive, index) {
+  _render_workspace_applications(button, windows, is_active, index) {
     let icons_limit
-    if (isActive || (this._settings.icons_limit === 0))
+    if (is_active || (this._settings.icons_limit === 0))
       icons_limit = this._constants.NO_LIMIT
     else
       icons_limit = this._settings.icons_limit
@@ -279,12 +288,12 @@ class Extension {
         // limit icons
         if (!win.has_focus() && count >= icons_limit) {
           if (count === icons_limit) { // render + icon
-            const plusIcon = new St.Icon({
+            const plus_icon = new St.Icon({
               icon_name: "list-add-symbolic",
               icon_size: this._constants.ICONS_SIZE
             })
-            plusIcon.set_opacity(this._constants.LOW_OPACITY)
-            button.get_child().add_child(plusIcon)
+            plus_icon.set_opacity(this._constants.LOW_OPACITY)
+            button.get_child().add_child(plus_icon)
           }
           return
         }
@@ -324,20 +333,17 @@ class Extension {
         if (!this._settings.indicator_show_focused_app) style_classes += " no-indicator"
         if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
 
-        const indicatorsColor = this._settings.indicator_color
-        const style = `border-color: ${indicatorsColor}`
-
         const icon = new St.Bin({
           style_class: style_classes,
-          style: style,
-          reactive:    true,
-          can_focus:   true,
+          style: `border-color: ${this._settings.indicator_color}`,
+          reactive: true,
+          can_focus: true,
           track_hover: true,
           child: new St.BoxLayout()
         })
 
         // focus application on click
-        icon.middleClosesApp = this._settings.middle_click_close_app
+        icon.middle_closes_app = this._settings.middle_click_close_app
         icon.connect("button-release-event", this._on_click_application.bind(icon))
         icon.connect("touch-event", this._on_touch_application.bind(icon))
 
@@ -368,27 +374,27 @@ class Extension {
 
   /**
    * create label for a workspace indicator
-   * @param button indicator to add label 
-   * @param {number} index index of workspace 
-   * @param {string} otherMonitorText custom other workspace text to display 
+   * @param button indicator to add label
+   * @param {number} index index of workspace
+   * @param {string} other_monitor_text custom other workspace text to display
    */
-  _render_workspace_label(button, index, otherMonitorText) {
+  _render_workspace_label(button, index, other_monitor_text) {
     // text to display
-    let indicatorText
+    let indicator_text
 
-    if (otherMonitorText) { // other monitor custom text
-      indicatorText = otherMonitorText
+    if (other_monitor_text) { // other monitor custom text
+      indicator_text = other_monitor_text
     }
     else if (this._settings.indicator_use_custom_names) { // custom workspace name
-      indicatorText = Meta.prefs_get_workspace_name(index)
+      indicator_text = Meta.prefs_get_workspace_name(index)
     }
     else { // default text: index
-      indicatorText = (index+1).toString()
+      indicator_text = (index+1).toString()
     }
 
     // add label to indicator
     button.get_child().insert_child_at_index(new St.Label({
-      text: indicatorText,
+      text: indicator_text,
       style_class: "text"
     }), 0)
   }
@@ -404,51 +410,41 @@ class Extension {
 
     // left click: focus workspace
     if (event.get_button() === LEFT_CLICK)
-      this._workspace.activate(global.get_current_time())
+      this._workspace.activate(Shell.Global.get().get_current_time())
 
     // middle click: do nothing
 
     // right click: rename workspace
     if (event.get_button() === RIGHT_CLICK) {
-
-      const workspaceManager = global.workspace_manager
-      const workspaceIndex = this._index
-
-      // activate workspace
-      if (workspaceManager.get_active_workspace_index() !== workspaceIndex) {
-        this._workspace.activate(global.get_current_time())
-        return
-      }
-
       // if rename label exists, destroy it
-      if (this._renameWorkspace) {
-        this._renameWorkspace.destroy()
-        this._renameWorkspace = null
+      if (this._rename_workspace) {
+        this._rename_workspace.destroy()
+        this._rename_workspace = null
         return
       }
 
       // create text input
       const entry = new St.Entry({
-        text: Meta.prefs_get_workspace_name(workspaceIndex),
+        text: Meta.prefs_get_workspace_name(this._index),
         style_class: "text",
       })
 
       // connect typing event: update workspace name
       entry.connect("key-release-event", () => {
-        Meta.prefs_change_workspace_name(workspaceIndex, entry.get_text())
+        Meta.prefs_change_workspace_name(this._index, entry.get_text())
       })
 
       // add to indicator
       this.get_child().insert_child_at_index(entry, 0)
       entry.grab_key_focus()
 
-      this._renameWorkspace = entry
+      this._rename_workspace = entry
     }
   }
 
   /** touch on workspace handler */
   _on_touch_workspace() {
-    this._workspace.activate(global.get_current_time())
+    this._workspace.activate(Shell.Global.get().get_current_time())
   }
 
   /**
@@ -462,16 +458,16 @@ class Extension {
 
     // left/right click: focus application
     if (event.get_button() === LEFT_CLICK || event.get_button() === RIGHT_CLICK)
-      this._window.activate(global.get_current_time())
+      this._window.activate(Shell.Global.get().get_current_time())
 
     // middle click: close application
-    if (this.middleClosesApp && event.get_button() === MIDDLE_CLICK)
-      this._window.delete(global.get_current_time())
+    if (this.middle_closes_app && event.get_button() === MIDDLE_CLICK)
+      this._window.delete(Shell.Global.get().get_current_time())
   }
 
   /** touch on application handler */
   _on_touch_application() {
-    this._window.activate(global.get_current_time())
+    this._window.activate(Shell.Global.get().get_current_time())
   }
 
   /**
@@ -499,20 +495,19 @@ class Extension {
     }
 
     // activate adjacent workspace on scroll
-    const workspaceManager = global.workspace_manager
-    let newIndex = workspaceManager.get_active_workspace_index() + direction
+    const workspace_manager = Shell.Global.get().get_workspace_manager()
+    let new_index = workspace_manager.get_active_workspace_index() + direction
+
+    // modulo operator working for negative numbers
+    const mod = (n, m) => (((n % m) + m) % m)
 
     // wrap
     if (this._scroll_wraparound)
-      newIndex = mod(newIndex, workspaceManager.n_workspaces)
+      new_index = mod(new_index, workspace_manager.n_workspaces)
 
-    if (newIndex >= 0 && newIndex < workspaceManager.n_workspaces)
-      workspaceManager.get_workspace_by_index(newIndex).activate(global.get_current_time())
+    if (new_index >= 0 && new_index < workspace_manager.n_workspaces)
+      workspace_manager.get_workspace_by_index(new_index).activate(Shell.Global.get().get_current_time())
 
-    // modulo operator working for negative numbers
-    function mod(n, m) {
-      return ((n % m) + m) % m
-    }
   }
 
 }

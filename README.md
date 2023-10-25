@@ -50,7 +50,8 @@
 
 ## Deploy
 
-Available for GNOME 44: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+Available for **GNOME 45**: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)\
+_The extension for versions older than GNOME 45 is available on the store, but will not receive updates (due to breaking changes in GNOME 45)._
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="80">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
 
@@ -77,7 +78,7 @@ _Go to [issues page](https://github.com/Favo02/workspaces-by-open-apps/issues) t
 
 Any contribution is welcome!
 
-Submit any bug or feature request through an **issue**, or submit your code creating a **pull request**. 
+Submit any bug or feature request through an **issue**, or submit your code creating a **pull request**.
 
 
 ## Commit, Branch and Pull request convention
