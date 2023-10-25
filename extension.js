@@ -43,7 +43,6 @@ export default class MyExtension extends Extension {
     this._indicators = null
 
     this._disconnect_signals() // disconnect signals
-    this._signals = null
   }
 
   /** parse raw settings object into a better formatted object */
@@ -81,43 +80,39 @@ export default class MyExtension extends Extension {
   /** connect signals that triggers a re-render of indicators */
   _connect_signals() {
     const workspace_manager = Shell.Global.get().get_workspace_manager()
-    const wm_signals = []
-    wm_signals.push(workspace_manager.connect("active-workspace-changed", () => this._render()))
-    wm_signals.push(workspace_manager.connect("showing-desktop-changed", () => this._render()))
-    wm_signals.push(workspace_manager.connect("workspace-added", () => this._render()))
-    wm_signals.push(workspace_manager.connect("workspace-removed", () => this._render()))
-    wm_signals.push(workspace_manager.connect("workspace-switched", () => this._render()))
-    wm_signals.push(workspace_manager.connect("workspaces-reordered", () => this._render()))
+    this._sig_wm1 = workspace_manager.connect("active-workspace-changed", () => this._render())
+    this._sig_wm2 = workspace_manager.connect("showing-desktop-changed", () => this._render())
+    this._sig_wm3 = workspace_manager.connect("workspace-added", () => this._render())
+    this._sig_wm4 = workspace_manager.connect("workspace-removed", () => this._render())
+    this._sig_wm5 = workspace_manager.connect("workspace-switched", () => this._render())
+    this._sig_wm6 = workspace_manager.connect("workspaces-reordered", () => this._render())
 
     const window_tracker = Shell.WindowTracker.get_default()
-    const wt_signals = []
-    wt_signals.push(window_tracker.connect("tracked-windows-changed", () => this._render()))
+    this._sig_wt1 = window_tracker.connect("tracked-windows-changed", () => this._render())
 
     const display = Shell.Global.get().get_display()
-    const dp_signals = []
-    dp_signals.push(display.connect("restacked", () => this._render()))
-    dp_signals.push(display.connect("window-left-monitor", () => this._render()))
-    dp_signals.push(display.connect("window-entered-monitor", () => this._render()))
-
-    this._signals = []
-    this._signals.push({ "workspace_manager": wm_signals })
-    this._signals.push({ "window_tracker": wt_signals })
-    this._signals.push({ "display": dp_signals })
+    this._sig_dp1 = display.connect("restacked", () => this._render())
+    this._sig_dp2 = display.connect("window-left-monitor", () => this._render())
+    this._sig_dp3 = display.connect("window-entered-monitor", () => this._render())
   }
 
   /** disconnect signals */
   _disconnect_signals() {
     const workspace_manager = Shell.Global.get().get_workspace_manager()
-    for (signal in this._signals.workspace_manager)
-      workspace_manager.disconnect(signal)
+    workspace_manager.disconnect(this._sig_wm1)
+    workspace_manager.disconnect(this._sig_wm2)
+    workspace_manager.disconnect(this._sig_wm3)
+    workspace_manager.disconnect(this._sig_wm4)
+    workspace_manager.disconnect(this._sig_wm5)
+    workspace_manager.disconnect(this._sig_wm6)
 
     const window_tracker = Shell.WindowTracker.get_default()
-    for (signal in this._signals.window_tracker)
-      window_tracker.disconnect(signal)
+    window_tracker.disconnect(this._sig_wt1)
 
     const display = Shell.Global.get().get_display()
-    for (signal in this._signals.display)
-      display.disconnect(signal)
+    display.disconnect(this._sig_dp1)
+    display.disconnect(this._sig_dp2)
+    display.disconnect(this._sig_dp3)
   }
 
   /** render indicators: destroy current indicators and rebuild */
