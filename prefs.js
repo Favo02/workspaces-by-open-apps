@@ -485,7 +485,7 @@ function about_page() {
     title: "Version"
   })
   widget = new Gtk.Label({
-    label: Me.metadata.version,
+    label: Me.metadata.version.toString(),
     valign: Gtk.Align.CENTER
   })
   row.add_suffix(widget)
