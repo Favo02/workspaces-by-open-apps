@@ -490,7 +490,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       title: "Version"
     })
     widget = new Gtk.Label({
-      label: ExtensionPreferences.lookupByUUID("workspaces-by-open-apps@favo02.github.com").metadata.version,
+      label: ExtensionPreferences.lookupByUUID("workspaces-by-open-apps@favo02.github.com").metadata.version.toString(),
       valign: Gtk.Align.CENTER
     })
     row.add_suffix(widget)
