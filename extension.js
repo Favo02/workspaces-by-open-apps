@@ -3,11 +3,11 @@ const { main, dnd } = imports.ui
 
 // initialize extension
 function init() {
-  return new Extension()
+  return new WorkspacesByOpenApps()
 }
 
 // extension workspace indicator
-class Extension {
+class WorkspacesByOpenApps {
   constructor() {}
 
   /** enable extension: initialize everything */
