@@ -9,7 +9,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   fillPreferencesWindow(window) {
     window.set_search_enabled(true)
 
-    const settings = this.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
+    const settings = this.getSettings()
 
     // page1: position and behavior
     const page1 = new Adw.PreferencesPage({

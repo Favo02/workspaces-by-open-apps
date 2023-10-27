@@ -11,7 +11,7 @@ export default class WorkspacesByOpenApps extends Extension {
 
   /** enable extension: initialize everything */
   enable() {
-    this._raw_settings = this.getSettings("org.gnome.shell.extensions.workspaces-indicator-by-open-apps")
+    this._raw_settings = this.getSettings()
 
     this._settings = {} // parsed settings
     this._constants = { // useful constants
