@@ -4,7 +4,7 @@ import Gtk from "gi://Gtk"
 import Gdk from "gi://Gdk"
 import { ExtensionPreferences } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js"
 
-export default class MyExtensionPreferences extends ExtensionPreferences {
+export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
   fillPreferencesWindow(window) {
     window.set_search_enabled(true)

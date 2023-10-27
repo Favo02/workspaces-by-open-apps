@@ -7,7 +7,7 @@ import * as dnd from "resource:///org/gnome/shell/ui/dnd.js"
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js"
 
 // extension workspace indicator
-export default class MyExtension extends Extension {
+export default class WorkspacesByOpenApps extends Extension {
 
   /** enable extension: initialize everything */
   enable() {
