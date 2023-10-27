@@ -3,6 +3,6 @@
   "description": "Display a simple workspace indicator showing icons of apps open in it.\n\nFeatures:\n\n- Show a simple indicator to display workspaces and apps open in it\n- Support for drag and drop: change an application workspace just dragging its icon\n- Right/Left click to focus application, Middle click to close\n- Workspaces scrolling: change active workspace scrolling hover the indicator\n- Support for multiple monitor (for both static and dynamic workspaces)\n- Rename workspaces directly from the extension (activate in settings)\n\nCustomization:\n\n- Indicator position\n- Scroll direction (normal or inverse)\n- Activate/deactivate 'middle click to close app'\n- Activate/deactivate 'workspace indicator'\n- Activate/deactivate 'app indicator'\n- Customize indicator color\n- Activate/deactivate 'round borders'\n- Show/Hide workspaces names\n- Show/Hide empty workspaces\n- Customize apps on all workspaces text indicator\n- Desaturate all icons\n- No effect/Reduce opacity/Desaturate for both minimized and inactive apps\n- Limit icons per workspace\n- Group icons of same application\n",
   "uuid": "workspaces-by-open-apps@favo02.github.com",
   "url": "https://github.com/Favo02/workspaces-by-open-apps",
-  "version": "9",
+  "version": "11",
   "shell-version": [ "40", "41", "42", "43", "44" ]
 }
