@@ -144,7 +144,12 @@ export default class WorkspacesByOpenApps extends Extension {
         if (!win) return false
         const app = Shell.WindowTracker.get_default().get_window_app(win)
         if (!app) return false
-        return !this._settings.icons_ignored.includes(app.get_id())
+        // perform case insensitivity regex match on ignored strings
+        const matches = this._settings.icons_ignored.filter(i => {
+          const regex = new RegExp(i, 'i');
+          return regex.test(app.get_id());
+        });
+        return !this._settings.icons_ignored.includes(app.get_id()) && matches.length < 1
       })
       // filter out windows on all workspaces (or not on all workspaces for special other monitor indicator)
       .filter(win => is_other_monitor ? win.is_on_all_workspaces() : !win.is_on_all_workspaces())
