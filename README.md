@@ -31,6 +31,7 @@
 - **No effect**/**Reduce opacity**/**Desaturate** for both **minimized** and **inactive** apps
 - **Limit icons** per workspace
 - **Group icons** of same application
+- **Ignore** applications (with regex)
 
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/29f066c6-b2e8-411d-8430-faf4d921db27" alt="Preview" height="40">
@@ -50,10 +51,11 @@
 
 ## Deploy
 
-Available for **GNOME 45**: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/).\
-_Legacy version available for GNOME 40-44: [gnome-shell-40-44 branch](https://github.com/Favo02/workspaces-by-open-apps/tree/gnome-shell-40-44)._
+Available for **GNOME 45**: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/).
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="80">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
+
+_Legacy versions (GNOME shell 40-44) available on gnome extensions store and in [gnome-shell-40-44 branch](https://github.com/Favo02/workspaces-by-open-apps/tree/gnome-shell-40-44) branch. These versions will not receive new updates._
 
 ### Alternative install
 
