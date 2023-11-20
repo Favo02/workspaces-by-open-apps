@@ -139,20 +139,38 @@ export default class WorkspacesByOpenApps extends Extension {
 
     const windows = workspace
       .list_windows()
-      // filter out ignored apps
+      // filter out apps
       .filter(win => {
+        // undefined window
         if (!win) return false
+
+        // undefined app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
         if (!app) return false
-        // perform case insensitivity regex match on ignored strings
-        const matches = this._settings.icons_ignored.filter(i => {
-          const regex = new RegExp(i, 'i');
-          return regex.test(app.get_id());
-        });
-        return !this._settings.icons_ignored.includes(app.get_id()) && matches.length < 1
+
+        // ignored in settings (regex match)
+        const matches = this._settings.icons_ignored.filter(
+          ignored_string => new RegExp(ignored_string, "i").test(app.get_id())
+        )
+        if (matches.length > 0) {
+          if (this._settings.log_apps_id)
+            console.log(`IGNORED ${app.get_id()}`)
+          return false
+        }
+
+        // dialogs, popovers and tooltip
+        if (win.get_window_type() !== Meta.WindowType.NORMAL) return false
+
+        // apps on all workspaces (for normal workspace indicator)
+        if (!is_other_monitor && win.is_on_all_workspaces()) return false
+
+        // apps NOT on all workspaces (for other monitor indicator)
+        if (is_other_monitor && !win.is_on_all_workspaces()) return false
+
+        if (this._settings.log_apps_id)
+          console.log(app.get_id())
+        return true
       })
-      // filter out windows on all workspaces (or not on all workspaces for special other monitor indicator)
-      .filter(win => is_other_monitor ? win.is_on_all_workspaces() : !win.is_on_all_workspaces())
 
     // hide other monitor indicator if no windows on all workspaces
     if (is_other_monitor && windows.length === 0)
@@ -286,10 +304,6 @@ export default class WorkspacesByOpenApps extends Extension {
         const is_focus = win.has_focus() || occurrences[win.get_pid()]?.focus
         const is_not_minimized = !win.is_hidden() || occurrences[win.get_pid()]?.not_minimized
 
-        // hide dialogs, popovers and tooltip duplicate windows
-        if (win.get_window_type() !== Meta.WindowType.NORMAL)
-          return
-
         // limit icons
         if (!win.has_focus() && count >= icons_limit) {
           if (count === icons_limit) { // render + icon
@@ -305,9 +319,6 @@ export default class WorkspacesByOpenApps extends Extension {
 
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
-
-        if (this._settings.log_apps_id)
-          console.log(app.get_id())
 
         // create Clutter.actor
         const texture = app.create_icon_texture(this._constants.TEXTURES_SIZE)
