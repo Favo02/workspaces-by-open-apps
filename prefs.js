@@ -445,7 +445,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Add application to ignore",
-      subtitle: "Insert id of the application to ignore"
+      subtitle: "Insert id of the application to ignore. Regular expressions (regex) are supported"
     })
     widget = new Gtk.Entry({
       halign: Gtk.Align.END,
