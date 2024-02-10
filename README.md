@@ -23,6 +23,7 @@
 - Indicator **position**
 - **Scroll** direction (normal or inverse)
 - Activate/deactivate "**middle click** to close app"
+- Activate/deactivate "**click on active workspace to overview**"
 - Activate/deactivate "**workspace indicator**"
 - Activate/deactivate "**app indicator**"
 - Customize indicator **color**

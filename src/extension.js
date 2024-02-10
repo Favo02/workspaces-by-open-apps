@@ -205,6 +205,7 @@ export default class WorkspacesByOpenApps extends Extension {
     indicator._workspace = workspace
     indicator._scroll_wraparound = this._settings.scroll_wraparound
     indicator._inverse_scroll = this._settings.scroll_inverse
+    indicator._click_on_active_overview = this._settings.click_on_active_overview
 
     // drag and drop
     indicator._delegate = indicator
@@ -425,9 +426,17 @@ export default class WorkspacesByOpenApps extends Extension {
     // this._constants are not in scope
     const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
 
-    // left click: focus workspace
-    if (event.get_button() === LEFT_CLICK)
-      this._workspace.activate(Shell.Global.get().get_current_time())
+    // left click: focus workspace or activate overview
+    if (event.get_button() === LEFT_CLICK) {
+      const is_active = Shell.Global.get().get_workspace_manager().get_active_workspace_index() === this._index
+
+      // active and setting on: activate overview
+      if (is_active && this._click_on_active_overview)
+        main.overview.toggle()
+      // not active or setting off: focus workspace
+      else
+        this._workspace.activate(Shell.Global.get().get_current_time())
+    }
 
     // middle click: do nothing
 
