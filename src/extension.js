@@ -434,12 +434,12 @@ export default class WorkspacesByOpenApps extends Extension {
 
   /**
    * click on workspace handler
-   * @param actor actor clicked
+   * @param _ actor clicked (unused)
    * @param event click event
    */
-  _on_click_workspace(actor, event) {
+  _on_click_workspace(_, event) {
     // this._constants are not in scope
-    const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
+    const LEFT_CLICK = 1, RIGHT_CLICK = 3
 
     // left click: focus workspace or activate overview
     if (event.get_button() === LEFT_CLICK) {
@@ -492,10 +492,10 @@ export default class WorkspacesByOpenApps extends Extension {
 
   /**
    * click on application icon handler
-   * @param actor actor clicked
+   * @param _ actor clicked (unused)
    * @param event click event
    */
-  _on_click_application(actor, event) {
+  _on_click_application(_, event) {
     // this._constants are not in scope
     const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
 
@@ -522,10 +522,10 @@ export default class WorkspacesByOpenApps extends Extension {
 
   /**
    * scroll on workspace indicator handler
-   * @param actor actor scrolled on
+   * @param _ actor scrolled on (unused)
    * @param event click event
    */
-  _on_scroll_workspace(actor, event) {
+  _on_scroll_workspace(_, event) {
     // scroll direction
     let scroll_direction = event.get_scroll_direction()
 
@@ -557,7 +557,6 @@ export default class WorkspacesByOpenApps extends Extension {
 
     if (new_index >= 0 && new_index < workspace_manager.n_workspaces)
       workspace_manager.get_workspace_by_index(new_index).activate(Shell.Global.get().get_current_time())
-
   }
 
 }
