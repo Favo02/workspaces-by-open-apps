@@ -55,6 +55,7 @@ export default class WorkspacesByOpenApps extends Extension {
       scroll_wraparound: rs.get_boolean("scroll-wraparound"),
       scroll_inverse: rs.get_boolean("scroll-inverse"),
       middle_click_close_app: rs.get_boolean("middle-click-close-app"),
+      click_on_active_overview: rs.get_boolean("click-on-active-overview"),
 
       indicator_show_active_workspace: rs.get_boolean("indicator-show-active-workspace"),
       indicator_show_focused_app: rs.get_boolean("indicator-show-focused-app"),

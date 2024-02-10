@@ -58,6 +58,12 @@
       <description>Clicking with the middle mouse button on an app icon will close the app</description>
     </key>
 
+    <key type="b" name="click-on-active-overview">
+      <default>true</default>
+      <summary>Click on current workspace triggers overview</summary>
+      <description>Clicking the active workspace triggers overview</description>
+    </key>
+
     <!-- PAGE 2 GROUP 1: INDICATOR APPEARANCE -->
 
     <key type="b" name="indicator-show-active-workspace">
