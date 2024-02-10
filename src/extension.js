@@ -122,6 +122,12 @@ export default class WorkspacesByOpenApps extends Extension {
   _render() {
     this._parse_settings()
 
+    // hide activities button/new workspace indicator
+    if (this._settings.hide_activities_button)
+      main.panel.statusArea["activities"]?.hide()
+    else
+      main.panel.statusArea["activities"]?.show()
+
     this._indicators.splice(0).forEach(i => i.destroy())
 
     // build indicator for other monitor
