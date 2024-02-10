@@ -363,6 +363,7 @@ export default class WorkspacesByOpenApps extends Extension {
 
         // focus application on click
         icon.middle_closes_app = this._settings.middle_click_close_app
+        icon.click_on_focus_minimize = this._settings.click_on_focus_minimize
         icon.connect("button-release-event", this._on_click_application.bind(icon))
         icon.connect("touch-event", this._on_touch_application.bind(icon))
 
@@ -483,9 +484,16 @@ export default class WorkspacesByOpenApps extends Extension {
     // this._constants are not in scope
     const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
 
-    // left/right click: focus application
-    if (event.get_button() === LEFT_CLICK || event.get_button() === RIGHT_CLICK)
-      this._window.activate(Shell.Global.get().get_current_time())
+    // left/right click: focus or minimize application
+    if (event.get_button() === LEFT_CLICK || event.get_button() === RIGHT_CLICK) {
+
+      // focused and setting on: minimize
+      if (this._window.has_focus() && this.click_on_focus_minimize)
+        this._window.minimize(Shell.Global.get().get_current_time())
+      // not focused or setting off: focus
+      else
+        this._window.activate(Shell.Global.get().get_current_time())
+    }
 
     // middle click: close application
     if (this.middle_closes_app && event.get_button() === MIDDLE_CLICK)
