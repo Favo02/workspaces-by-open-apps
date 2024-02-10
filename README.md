@@ -1,9 +1,13 @@
 # Workspace indicator by open apps
 
+<a href="https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/"><img align="right" src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="80"></a>
+
 **GNOME shell estension** to display a simple **workspace indicator** showing **icons of apps open** in it instead of classic numbers or dots.
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/52ab2be9-ad78-4cb4-9a7a-f51fc734d2a3" alt="Preview" height="40">
 
+> [!NOTE]
+> Due to the small amount of time I can dedicate to this project, the extension may not be updated frequently. However, I will try to fix any bugs and add update to new GNOME versions as soon as possible.
 
 ## Features
 
@@ -13,7 +17,6 @@
 - **Workspaces scrolling**: change active workspace scrolling hover the indicator
 - Support for **multiple monitor** _(for both static and dynamic workspaces)_
 - **Rename workspaces** directly from the extension _(activate in settings)_
-
 
 ## Customization
 
@@ -33,7 +36,6 @@
 - **Group icons** of same application
 - **Ignore** applications (with regex)
 
-
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/29f066c6-b2e8-411d-8430-faf4d921db27" alt="Preview" height="40">
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/72d6ea78-640a-4f1f-8c50-ddf5bb3baabb" alt="Preview" height="40">
@@ -48,19 +50,17 @@
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/29c21224-fcc2-4151-b7d7-ed6e11cfe0ac" alt="Preview" height="500">
 
-
 ## Deploy
 
 Available for **GNOME 45**: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/).
 
-[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="80">](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/)
-
-_Legacy versions (GNOME shell 40-44) available on gnome extensions store and in [gnome-shell-40-44 branch](https://github.com/Favo02/workspaces-by-open-apps/tree/gnome-shell-40-44) branch. These versions will not receive new updates._
+> [!TIP]
+> _Legacy versions (GNOME shell 40-44) available on gnome extensions store. These versions will not receive new updates._
 
 ### Alternative install
 
 - Download this folder
-- Execute `./clean-deploy.sh` (requires sudo priviledges)
+- Execute `./install.sh` (requires sudo priviledges)
 
 ### Useful commands
 
@@ -70,18 +70,15 @@ _Legacy versions (GNOME shell 40-44) available on gnome extensions store and in 
 - List settings: `dconf dump  /org/gnome/shell/extensions/workspaces-indicator-by-open-apps/`
 - Edit manually setting: `dconf write /org/gnome/shell/extensions/workspaces-indicator-by-open-apps/<setting> <value>`
 
-
 ## To Do
 
 _Go to [issues page](https://github.com/Favo02/workspaces-by-open-apps/issues) to see the full list of features and bugs to fix._
-
 
 ## Contributions
 
 Any contribution is welcome!
 
 Submit any bug or feature request through an **issue**, or submit your code creating a **pull request**.
-
 
 ## Commit, Branch and Pull request convention
 
@@ -103,7 +100,6 @@ Example: `add-drag-and-drop`
 
 ### Pull request
 When the feature is ready and stable create a new pull request.
-
 
 ## Credits
 
