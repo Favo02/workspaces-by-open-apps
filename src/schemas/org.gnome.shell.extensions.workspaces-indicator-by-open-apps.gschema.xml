@@ -64,6 +64,12 @@
       <description>Clicking the active workspace triggers overview</description>
     </key>
 
+    <key type="b" name="click-on-focus-minimize">
+      <default>true</default>
+      <summary>Click on focused application to minimize</summary>
+      <description>Clicking on the current focused application will minimize it</description>
+    </key>
+
     <!-- PAGE 2 GROUP 1: INDICATOR APPEARANCE -->
 
     <key type="b" name="indicator-show-active-workspace">
