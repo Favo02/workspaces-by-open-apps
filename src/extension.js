@@ -191,16 +191,17 @@ export default class WorkspacesByOpenApps extends Extension {
     if (this._settings.indicator_hide_empty && !is_active && windows.length === 0)
       return
 
-    // indicator styles
-    let style_classes = "workspace"
-    if (is_active) style_classes += " active"
-    if (!this._settings.indicator_show_active_workspace) style_classes += " no-indicator"
-    if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
+    const css_inline_workspace = `border-color: ${this._settings.indicator_color}`
+
+    const css_classes_workspace =                         [ "wboa-workspace" ]
+    if (is_active)                                        css_classes_workspace.push("wboa-active")
+    if (!this._settings.indicator_show_active_workspace)  css_classes_workspace.push("wboa-no-indicator")
+    if (!this._settings.indicator_round_borders)          css_classes_workspace.push("wboa-no-rounded")
 
     // create indicator
     const indicator = new St.Bin({
-      style_class: style_classes,
-      style: `border-color: ${this._settings.indicator_color}`,
+      style: css_inline_workspace,
+      style_class: css_classes_workspace.join(" "),
       reactive: true,
       can_focus: true,
       track_hover: true,
@@ -353,15 +354,16 @@ export default class WorkspacesByOpenApps extends Extension {
         if (this._settings.apps_all_desaturate)
           texture.add_effect(new Clutter.DesaturateEffect())
 
-        // styles
-        let style_classes = "app"
-        if (is_focus) style_classes += " active"
-        if (!this._settings.indicator_show_focused_app) style_classes += " no-indicator"
-        if (!this._settings.indicator_round_borders) style_classes += " no-rounded"
+        const css_inline_app = `border-color: ${this._settings.indicator_color}`
+
+        const css_classes_app =                           [ "wboa-app" ]
+        if (is_focus)                                     css_classes_app.push("wboa-active")
+        if (!this._settings.indicator_show_focused_app)   css_classes_app.push("wboa-no-indicator")
+        if (!this._settings.indicator_round_borders)      css_classes_app.push("wboa-no-rounded")
 
         const icon = new St.Bin({
-          style_class: style_classes,
-          style: `border-color: ${this._settings.indicator_color}`,
+          style: css_inline_app,
+          style_class: css_classes_app.join(" "),
           reactive: true,
           can_focus: true,
           track_hover: true,
@@ -386,11 +388,13 @@ export default class WorkspacesByOpenApps extends Extension {
         // add icon texture to icon button
         icon.get_child().add_child(texture)
 
+        const css_classes_text = [ "wboa-app-group-text" ]
+
         // add x{occurrences} label to icon button (group same application)
         if ((this._settings.icons_group === 1) && (occurrences[win.get_pid()].count > 1)) {
           icon.get_child().add_child(new St.Label({
             text: `x${occurrences[win.get_pid()].count}`,
-            style_class: "text-group"
+            style_class: css_classes_text.join(" ")
           }))
         }
 
@@ -419,21 +423,23 @@ export default class WorkspacesByOpenApps extends Extension {
       indicator_text = (index+1).toString()
     }
 
+    const css_classes_label = [ "wboa-workspace-label" ]
+
     // add label to indicator
     button.get_child().insert_child_at_index(new St.Label({
       text: indicator_text,
-      style_class: "text"
+      style_class: css_classes_label.join(" ")
     }), 0)
   }
 
   /**
    * click on workspace handler
-   * @param actor actor clicked
+   * @param _ actor clicked (unused)
    * @param event click event
    */
-  _on_click_workspace(actor, event) {
+  _on_click_workspace(_, event) {
     // this._constants are not in scope
-    const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
+    const LEFT_CLICK = 1, RIGHT_CLICK = 3
 
     // left click: focus workspace or activate overview
     if (event.get_button() === LEFT_CLICK) {
@@ -458,10 +464,12 @@ export default class WorkspacesByOpenApps extends Extension {
         return
       }
 
+      const css_classes_label = [ "wboa-workspace-label" ]
+
       // create text input
       const entry = new St.Entry({
         text: Meta.prefs_get_workspace_name(this._index),
-        style_class: "text",
+        style_class: css_classes_label.join(" ")
       })
 
       // connect typing event: update workspace name
@@ -484,10 +492,10 @@ export default class WorkspacesByOpenApps extends Extension {
 
   /**
    * click on application icon handler
-   * @param actor actor clicked
+   * @param _ actor clicked (unused)
    * @param event click event
    */
-  _on_click_application(actor, event) {
+  _on_click_application(_, event) {
     // this._constants are not in scope
     const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
 
@@ -514,10 +522,10 @@ export default class WorkspacesByOpenApps extends Extension {
 
   /**
    * scroll on workspace indicator handler
-   * @param actor actor scrolled on
+   * @param _ actor scrolled on (unused)
    * @param event click event
    */
-  _on_scroll_workspace(actor, event) {
+  _on_scroll_workspace(_, event) {
     // scroll direction
     let scroll_direction = event.get_scroll_direction()
 
@@ -549,7 +557,6 @@ export default class WorkspacesByOpenApps extends Extension {
 
     if (new_index >= 0 && new_index < workspace_manager.n_workspaces)
       workspace_manager.get_workspace_by_index(new_index).activate(Shell.Global.get().get_current_time())
-
   }
 
 }
