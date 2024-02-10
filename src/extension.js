@@ -55,6 +55,8 @@ export default class WorkspacesByOpenApps extends Extension {
       scroll_wraparound: rs.get_boolean("scroll-wraparound"),
       scroll_inverse: rs.get_boolean("scroll-inverse"),
       middle_click_close_app: rs.get_boolean("middle-click-close-app"),
+      click_on_active_overview: rs.get_boolean("click-on-active-overview"),
+      click_on_focus_minimize: rs.get_boolean("click-on-focus-minimize"),
 
       indicator_show_active_workspace: rs.get_boolean("indicator-show-active-workspace"),
       indicator_show_focused_app: rs.get_boolean("indicator-show-focused-app"),
@@ -204,6 +206,7 @@ export default class WorkspacesByOpenApps extends Extension {
     indicator._workspace = workspace
     indicator._scroll_wraparound = this._settings.scroll_wraparound
     indicator._inverse_scroll = this._settings.scroll_inverse
+    indicator._click_on_active_overview = this._settings.click_on_active_overview
 
     // drag and drop
     indicator._delegate = indicator
@@ -360,6 +363,7 @@ export default class WorkspacesByOpenApps extends Extension {
 
         // focus application on click
         icon.middle_closes_app = this._settings.middle_click_close_app
+        icon.click_on_focus_minimize = this._settings.click_on_focus_minimize
         icon.connect("button-release-event", this._on_click_application.bind(icon))
         icon.connect("touch-event", this._on_touch_application.bind(icon))
 
@@ -424,9 +428,17 @@ export default class WorkspacesByOpenApps extends Extension {
     // this._constants are not in scope
     const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
 
-    // left click: focus workspace
-    if (event.get_button() === LEFT_CLICK)
-      this._workspace.activate(Shell.Global.get().get_current_time())
+    // left click: focus workspace or activate overview
+    if (event.get_button() === LEFT_CLICK) {
+      const is_active = Shell.Global.get().get_workspace_manager().get_active_workspace_index() === this._index
+
+      // active and setting on: activate overview
+      if (is_active && this._click_on_active_overview)
+        main.overview.toggle()
+      // not active or setting off: focus workspace
+      else
+        this._workspace.activate(Shell.Global.get().get_current_time())
+    }
 
     // middle click: do nothing
 
@@ -472,9 +484,16 @@ export default class WorkspacesByOpenApps extends Extension {
     // this._constants are not in scope
     const LEFT_CLICK = 1, MIDDLE_CLICK = 2, RIGHT_CLICK = 3
 
-    // left/right click: focus application
-    if (event.get_button() === LEFT_CLICK || event.get_button() === RIGHT_CLICK)
-      this._window.activate(Shell.Global.get().get_current_time())
+    // left/right click: focus or minimize application
+    if (event.get_button() === LEFT_CLICK || event.get_button() === RIGHT_CLICK) {
+
+      // focused and setting on: minimize
+      if (this._window.has_focus() && this.click_on_focus_minimize)
+        this._window.minimize(Shell.Global.get().get_current_time())
+      // not focused or setting off: focus
+      else
+        this._window.activate(Shell.Global.get().get_current_time())
+    }
 
     // middle click: close application
     if (this.middle_closes_app && event.get_button() === MIDDLE_CLICK)
