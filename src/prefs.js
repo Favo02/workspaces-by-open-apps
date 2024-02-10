@@ -115,6 +115,18 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "Hide GNOME workspace indicator",
+      subtitle: "Hide GNOME default workspace indicator (formerly \"Activities\" button)"
+    })
+    widget = new Gtk.Switch({
+      valign: Gtk.Align.CENTER
+    })
+    settings.bind("hide-activities-button", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 

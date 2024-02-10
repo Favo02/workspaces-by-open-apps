@@ -38,6 +38,12 @@
       <description>Number of other elements in the panel before the indicator</description>
     </key>
 
+    <key type="b" name="hide-activities-button">
+      <default>true</default>
+      <summary>Hide GNOME workspace indicator</summary>
+      <description>Hide GNOME default workspace indicator (formerly "Activities" button)</description>
+    </key>
+
     <!-- PAGE 1 GROUP 2: BEHAVIOR -->
 
     <key type="b" name="scroll-wraparound">

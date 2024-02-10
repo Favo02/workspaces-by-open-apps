@@ -51,6 +51,7 @@ export default class WorkspacesByOpenApps extends Extension {
     this._settings = {
       position_in_panel: rs.get_enum("position-in-panel"),
       position_index: rs.get_int("position-index"),
+      hide_activities_button: rs.get_boolean("hide-activities-button"),
 
       scroll_wraparound: rs.get_boolean("scroll-wraparound"),
       scroll_inverse: rs.get_boolean("scroll-inverse"),
@@ -120,6 +121,12 @@ export default class WorkspacesByOpenApps extends Extension {
   /** render indicators: destroy current indicators and rebuild */
   _render() {
     this._parse_settings()
+
+    // hide activities button/new workspace indicator
+    if (this._settings.hide_activities_button)
+      main.panel.statusArea["activities"]?.hide()
+    else
+      main.panel.statusArea["activities"]?.show()
 
     this._indicators.splice(0).forEach(i => i.destroy())
 
