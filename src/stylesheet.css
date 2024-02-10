@@ -1,42 +1,57 @@
-.workspace {
-  margin: 0px 5px;
+/* --- workspace --- */
+.wboa-workspace { /* workspace indicator */
+  padding: 0px;
+  margin-left: 6px;
+  margin-bottom: 2px;
 }
-
-.workspace.active {
+.wboa-workspace.wboa-active { /* active workspace */
   border-radius: 5px;
   border-bottom: 2px solid white;
+  margin-bottom: 0px;
+}
+.wboa-workspace.wboa-active.wboa-no-indicator {
+  border: none !important;
+  margin-bottom: 2px;
 }
 
-.text {
-  padding: 5px;
+/* --- workspace label --- */
+.wboa-workspace-label { /* label text (number or name) */
+  padding: 0px;
+  margin: 7px 3px;
   color: rgb(110, 110, 110);
   font-size: 12px;
 }
-
-.text-group {
-  padding: 7px 3px 5px 0px;
-  color: rgba(110, 110, 110, 0.58);
-  font-size: 12px;
-}
-
-.workspace.active .text,
-.workspace.active-no-indicator .text {
+.wboa-active .wboa-workspace-label { /* active workspace label */
   color: white;
 }
 
-.app.active {
-  border-top: 2px solid white;
+/* --- app --- */
+.wboa-app { /* app icon */
+  padding: 0px;
+  margin-top: 2px;
+}
+.wboa-app.wboa-active { /* active app */
   border-radius: 5px;
+  border-top: 2px solid white;
+  margin-top: 0px;
 }
-
-.app.active .text-group {
-  padding: 5px 3px 5px 0px;
-}
-
-.no-indicator {
+.wboa-app.wboa-active.wboa-no-indicator {
   border: none !important;
+  margin-top: 2px;
 }
 
-.no-rounded {
+/* --- apps group --- */
+.wboa-app-group-text { /* group text (x2, x3, ...) */
+  padding: 0px;
+  margin: 5px 3px 5px 0px;
+  color: rgba(110, 110, 110, 0.58);
+  font-size: 12px;
+}
+.wboa-active .wboa-app-group-text { /* active group */
+  color: white;
+}
+
+/* --- common --- */
+.wboa-no-rounded {
   border-radius: 0px !important;
 }
