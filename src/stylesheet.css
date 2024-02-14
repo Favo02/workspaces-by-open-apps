@@ -17,7 +17,7 @@
 /* --- workspace label --- */
 .wboa-workspace-label { /* label text (number or name) */
   padding: 0px;
-  margin: 7px 3px;
+  margin: 6px 3px;
   color: rgb(110, 110, 110);
   font-size: 12px;
 }
