@@ -8,6 +8,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
   fillPreferencesWindow(window) {
     window.set_search_enabled(true)
+    window.set_default_size(1000, 800)
 
     const settings = this.getSettings()
 
