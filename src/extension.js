@@ -135,7 +135,7 @@ export default class WorkspacesByOpenApps extends Extension {
 
     // build normal workspaces indicators
     for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++)
-      this._render_workspace(i)
+      this._render_workspace(i, false)
   }
 
   /**
@@ -157,27 +157,27 @@ export default class WorkspacesByOpenApps extends Extension {
         const app = Shell.WindowTracker.get_default().get_window_app(win)
         if (!app) return false
 
-        // ignored in settings (regex match)
-        const matches = this._settings.icons_ignored.filter(
-          ignored_string => new RegExp(ignored_string, "i").test(app.get_id())
-        )
-        if (matches.length > 0) {
-          if (this._settings.log_apps_id)
-            console.log(`IGNORED ${app.get_id()}`)
-          return false
-        }
-
-        // dialogs, popovers and tooltip
-        if (win.get_window_type() !== Meta.WindowType.NORMAL) return false
-
         // apps on all workspaces (for normal workspace indicator)
         if (!is_other_monitor && win.is_on_all_workspaces()) return false
 
         // apps NOT on all workspaces (for other monitor indicator)
         if (is_other_monitor && !win.is_on_all_workspaces()) return false
 
+        // ignored in settings (regex match)
+        const matches = this._settings.icons_ignored.filter(ignored => new RegExp(ignored, "i").test(app.get_id()))
+        if (matches.length > 0) {
+          // debug log ignored app id
+          if (this._settings.log_apps_id) console.log(`IGNORED ${app.get_id()}`)
+          return false
+        }
+
+        // dialogs, popovers and tooltip (only if not focused)
+        if (!win.has_focus() && win.is_skip_taskbar()) return false
+
+        // debug log app id
         if (this._settings.log_apps_id)
           console.log(app.get_id())
+
         return true
       })
 
