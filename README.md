@@ -13,15 +13,16 @@
 
 - Show a simple indicator to **display workspaces** and **apps open** in it
 - Support for **drag and drop**: change an application workspace just dragging its icon
-- **Right/Left** click to focus application, **Middle click** to close
+- **Right/Left** click to focus/minimize application, **Middle click** to close
 - **Workspaces scrolling**: change active workspace scrolling hover the indicator
 - Support for **multiple monitor** _(for both static and dynamic workspaces)_
 - **Rename workspaces** directly from the extension _(activate in settings)_
+- Hide/show **GNOME default workspace indicator** (former activities button)
 
 ## Customization
 
 - Indicator **position**
-- **Scroll** direction (normal or inverse)
+- Mouse **scroll** direction (normal or inverse)
 - Activate/deactivate "**middle click** to close app"
 - Activate/deactivate "**click on active workspace to overview**"
 - Activate/deactivate "**click on focused application to minimize**"
