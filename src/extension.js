@@ -274,30 +274,28 @@ export default class WorkspacesByOpenApps extends Extension {
    * @param {number} index index of workspace
    */
   _render_workspace_applications(button, windows, is_active, index) {
-    let icons_limit
-    if (is_active || (this._settings.icons_limit === 0))
-      icons_limit = this._constants.NO_LIMIT
-    else
-      icons_limit = this._settings.icons_limit
-
-    // group same application
+    // group same application (if setting is on)
     let occurrences = {}
-    if (this._settings.icons_group !== this._constants.OFF) { // icons_group NOT off
+    if (this._settings.icons_group !== this._constants.OFF) {
       // count occurences of each application
-      occurrences = windows.reduce((acc, curr) => {
-        const id = curr.get_pid()
+      occurrences = windows.reduce((acc, cur) => {
+        const id = cur.get_pid()
         if (!acc[id]) {
-          acc[id] = { count: 1, focus: curr.has_focus(), not_minimized: !curr.is_hidden() }
+          acc[id] = {
+            count: 1,
+            focus: cur.has_focus(),
+            not_minimized: !cur.is_hidden()
+          }
         }
         else {
           acc[id].count++
-          acc[id].focus = acc[id].focus || curr.has_focus()
-          acc[id].not_minimized = acc[id].minimized || !curr.is_hidden()
+          acc[id].focus ||= cur.has_focus()
+          acc[id].not_minimized ||= !cur.is_hidden()
         }
         return acc
       }, {})
 
-      // filter out duplicates
+      // remove duplicates
       const unique_windows = windows.reduce((acc, curr) => {
         const found = acc.find(obj => obj.get_pid() === curr.get_pid())
         if (!found) acc.push(curr)
@@ -307,26 +305,15 @@ export default class WorkspacesByOpenApps extends Extension {
       windows = unique_windows
     }
 
+    const icons_limit = (is_active || this._settings.icons_limit === 0)
+      ? this._constants.NO_LIMIT
+      : this._settings.icons_limit
+
     windows
-      .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id (creation order)
-      .forEach((win, count) => {
-
-        // current window is focused
-        const is_focus = win.has_focus() || occurrences[win.get_pid()]?.focus
-        const is_not_minimized = !win.is_hidden() || occurrences[win.get_pid()]?.not_minimized
-
-        // limit icons
-        if (!win.has_focus() && count >= icons_limit) {
-          if (count === icons_limit) { // render + icon
-            const plus_icon = new St.Icon({
-              icon_name: "list-add-symbolic",
-              icon_size: this._constants.ICONS_SIZE
-            })
-            plus_icon.set_opacity(this._constants.LOW_OPACITY)
-            button.get_child().add_child(plus_icon)
-          }
-          return
-        }
+      .sort((w1, w2) => w1.has_focus() ? -1 : w2.has_focus() ? 1 : w1.get_id() - w2.get_id()) // sort by focus and id
+      .slice(0, icons_limit) // limit icons
+      .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id only
+      .forEach(win => {
 
         // convert from Meta.window to Shell.app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
@@ -335,6 +322,7 @@ export default class WorkspacesByOpenApps extends Extension {
         const texture = app.create_icon_texture(this._constants.TEXTURES_SIZE)
 
         // effects for not focused apps
+        const is_focus = win.has_focus() || occurrences[win.get_pid()]?.focus
         if (!is_focus) {
           if (this._settings.apps_inactive_effect === this._constants.REDUCE_OPACITY) // reduce opacity
             texture.set_opacity(this._constants.LOW_OPACITY)
@@ -343,6 +331,7 @@ export default class WorkspacesByOpenApps extends Extension {
         }
 
         // effects for minimized apps
+        const is_not_minimized = !win.is_hidden() || occurrences[win.get_pid()]?.not_minimized
         if (!is_not_minimized) {
           if (this._settings.apps_minimized_effect === this._constants.REDUCE_OPACITY) // reduce opacity
             texture.set_opacity(this._constants.LOW_OPACITY)
@@ -401,6 +390,16 @@ export default class WorkspacesByOpenApps extends Extension {
         // add app icon to buttons
         button.get_child().add_child(icon)
       })
+
+    // render + icon (for icon limit)
+    if (windows.length > icons_limit) {
+      const plus_icon = new St.Icon({
+        icon_name: "list-add-symbolic",
+        icon_size: this._constants.ICONS_SIZE
+      })
+      plus_icon.set_opacity(this._constants.LOW_OPACITY)
+      button.get_child().add_child(plus_icon)
+    }
   }
 
   /**
