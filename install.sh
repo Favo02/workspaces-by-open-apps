@@ -1,6 +1,12 @@
 #!/bin/bash
 
 BASE_PATH="$(dirname "$(realpath "$0")")"
+
+# If XDG_DATA_HOME is not set, guess its path
+if [[ -z "$XDG_DATA_HOME" ]]; then
+    XDG_DATA_HOME="$HOME/.local/share"
+fi
+
 ALL_EXTENSIONS_PATH="$XDG_DATA_HOME/gnome-shell/extensions"
 EXTENSION_NAME="workspaces-by-open-apps@favo02.github.com"
 EXTENSION_PATH="$ALL_EXTENSIONS_PATH/$EXTENSION_NAME"
