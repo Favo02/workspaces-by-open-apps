@@ -56,17 +56,17 @@
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/29c21224-fcc2-4151-b7d7-ed6e11cfe0ac" alt="Preview" height="500">
 
-## Deploy
+## Installation
 
 Available for **GNOME 45**: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/).
 
 > [!TIP]
 > _Legacy versions (GNOME shell 40-44) available on gnome extensions store. These versions will not receive new updates._
 
-### Alternative install
+### Manual installation
 
-- Download this folder
-- Execute `./install.sh` (requires sudo priviledges)
+- Download the extension folder _(this repository)_
+- Execute `./install.sh` _(requires sudo priviledges)_
 
 ### Useful commands
 
