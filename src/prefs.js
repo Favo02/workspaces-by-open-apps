@@ -490,6 +490,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       hexpand: true,
       xalign: 0,
     })
+    widget.set_width_chars(25)
     widget.set_placeholder_text("org.gnome.example")
     widget.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "object-select-symbolic")
     widget.set_icon_activatable(Gtk.EntryIconPosition.SECONDARY, true)

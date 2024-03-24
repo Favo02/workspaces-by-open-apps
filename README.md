@@ -58,7 +58,7 @@
 
 ## Installation
 
-Available for **GNOME 45**: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/).
+Available for **GNOME 45 and 46**: [gnome shell extensions store](https://extensions.gnome.org/extension/5967/workspaces-indicator-by-open-apps/).
 
 > [!TIP]
 > _Legacy versions (GNOME shell 40-44) available on gnome extensions store. These versions will not receive new updates._
