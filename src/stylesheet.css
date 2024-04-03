@@ -27,8 +27,11 @@
 
 /* --- app --- */
 .wboa-app { /* app icon */
-  padding: 0px;
+  padding-top: 4px;
   margin-top: 2px;
+}
+.wboa-app:hover, .wboa-app:focus {
+  padding-top: 0px;
 }
 .wboa-app.wboa-active { /* active app */
   border-radius: 5px;
