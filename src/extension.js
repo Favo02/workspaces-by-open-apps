@@ -24,7 +24,7 @@ export default class WorkspacesByOpenApps extends Extension {
       GROUP_AND_SHOW_COUNT: 1,
       GROUP_WITHOUT_COUNT: 2,
       NO_LIMIT: 100,
-      LOW_OPACITY: 150,
+      LOW_OPACITY: 175,
       ICONS_SIZE: 10,
       TEXTURES_SIZE: 20
     }
