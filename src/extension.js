@@ -205,7 +205,12 @@ export default class WorkspacesByOpenApps extends Extension {
       reactive: true,
       can_focus: true,
       track_hover: true,
-      child: new St.BoxLayout()
+      child: new St.BoxLayout({
+        style_class: "panel-button",
+        reactive: true,
+        can_focus: true,
+        track_hover: true
+      })
     })
     this._indicators.push(indicator)
 
