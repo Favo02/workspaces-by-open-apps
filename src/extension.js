@@ -36,13 +36,13 @@ export default class WorkspacesByOpenApps extends Extension {
 
   /** disable extension: destroy everything */
   disable() {
+    this._disconnect_signals() // disconnect signals
+    
     this._raw_settings = null
     this._settings = null
     this._constants = null
     this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
     this._indicators = null
-
-    this._disconnect_signals() // disconnect signals
   }
 
   /** parse raw settings object into a better formatted object */
@@ -97,6 +97,8 @@ export default class WorkspacesByOpenApps extends Extension {
     this._sig_dp1 = display.connect("restacked", () => this._render())
     this._sig_dp2 = display.connect("window-left-monitor", () => this._render())
     this._sig_dp3 = display.connect("window-entered-monitor", () => this._render())
+    
+    this._sig_sett = this._raw_settings.connect("changed", () => this._render())
   }
 
   /** disconnect signals */
@@ -116,6 +118,8 @@ export default class WorkspacesByOpenApps extends Extension {
     display.disconnect(this._sig_dp1)
     display.disconnect(this._sig_dp2)
     display.disconnect(this._sig_dp3)
+    
+    this._raw_settings.disconnect(this._sig_sett)
   }
 
   /** render indicators: destroy current indicators and rebuild */
