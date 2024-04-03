@@ -38,6 +38,8 @@ export default class WorkspacesByOpenApps extends Extension {
   disable() {
     this._disconnect_signals() // disconnect signals
     
+    main.panel.statusArea["activities"]?.show() // restore activities
+    
     this._raw_settings = null
     this._settings = null
     this._constants = null
