@@ -6,9 +6,6 @@
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/52ab2be9-ad78-4cb4-9a7a-f51fc734d2a3" alt="Preview" height="40">
 
-> [!NOTE]
-> Due to the small amount of time I can dedicate to this project, the extension may not be updated frequently. However, I will try to fix any bugs and add update to new GNOME versions as soon as possible.
-
 ## Features
 
 - Show a simple indicator to **display workspaces** and **apps open** in it
@@ -78,43 +75,12 @@ Available for **GNOME 45 and 46**: [gnome shell extensions store](https://extens
 
 ## To Do
 
-_Go to [issues page](https://github.com/Favo02/workspaces-by-open-apps/issues) to see the full list of features and bugs to fix._
+_See [issues](https://github.com/Favo02/workspaces-by-open-apps/issues) page._
 
 ## Contributions
 
-Any contribution is welcome!
-
-Submit any bug or feature request through an **issue**, or submit your code creating a **pull request**.
-
-## Commit, Branch and Pull request convention
-
-### Commit
-
-Commit message convention: `<type>(<scope>): <summary>`
-
-Type: `build`, `feat`, `fix`, `refactor`, `docs`\
-Scope: `extension`, `settings`, `css`\
-Summary: short summary in present tense, not capitalized, no period at the end
-
-Example: `feat(extension): add drag and drop`
-
-### Branch
-Create a new branch for new features. Branch name should be self explanatory.\
-*It is possible to not to create the new branch for single-commit fixes or small modifications.*
-
-Example: `add-drag-and-drop`
-
-### Pull request
-When the feature is ready and stable create a new pull request.
+_See [CONTRIBUTING.md](CONTRIBUTING.md) file._
 
 ## Credits
 
-Due to the poor documentation to develop GNOME shell extensions, I looked at the source code of existing extension (often deprecated and not working anymore):
-
-- [BaBar taskbar](https://github.com/fthx/babar) by _@fthx_ _(and various other fthx's extensions)_
-- [TaskIcons](https://github.com/rliang/gnome-shell-extension-task-icons) by _@rliang_
-- [Improved workspace indicator](https://github.com/MichaelAquilina/improved-workspace-indicator) by _@MichaelAquilina_
-- [New workspaces shortcut](https://github.com/barnscott/newworkspaceshortcut-barnix.io) by _@barnscott_
-- [AppIndicator Support](https://github.com/ubuntu/gnome-shell-extension-appindicator) by _@ubuntu_
-- [Top Panel Workspace Scroll](https://github.com/timbertson/gnome-shell-scroll-workspaces) by _@timbertson_
-- [Focus follows forkspace](https://github.com/christopher-l/focus-follows-workspace) by _@christopher-l_
+_See [CREDITS.md](CREDITS.md) file._
