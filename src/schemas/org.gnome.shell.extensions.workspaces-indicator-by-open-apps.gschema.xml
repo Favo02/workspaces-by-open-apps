@@ -46,6 +46,12 @@
 
     <!-- PAGE 1 GROUP 2: BEHAVIOR -->
 
+    <key type="b" name="scroll-enable">
+      <default>true</default>
+      <summary>Enable scroll</summary>
+      <description>Change workspace by scrolling the mouse wheel (or touchpad gesture) over the indicator</description>
+    </key>
+
     <key type="b" name="scroll-wraparound">
       <default>true</default>
       <summary>Scroll wraparound</summary>
