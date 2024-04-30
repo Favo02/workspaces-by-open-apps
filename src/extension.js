@@ -55,6 +55,7 @@ export default class WorkspacesByOpenApps extends Extension {
       position_index: rs.get_int("position-index"),
       hide_activities_button: rs.get_boolean("hide-activities-button"),
 
+      scroll_enable: rs.get_boolean("scroll-enable"),
       scroll_wraparound: rs.get_boolean("scroll-wraparound"),
       scroll_inverse: rs.get_boolean("scroll-inverse"),
       middle_click_close_app: rs.get_boolean("middle-click-close-app"),
@@ -243,7 +244,9 @@ export default class WorkspacesByOpenApps extends Extension {
     // connect click, touch, scroll signals
     indicator.connect("button-release-event", this._on_click_workspace.bind(indicator))
     indicator.connect("touch-event", this._on_touch_workspace.bind(indicator))
-    indicator.connect("scroll-event", this._on_scroll_workspace.bind(indicator))
+    if (this._settings.scroll_enable) {
+      indicator.connect("scroll-event", this._on_scroll_workspace.bind(indicator))
+    }
 
     // create apps icons
     this._render_workspace_applications(indicator, windows, is_active, index)

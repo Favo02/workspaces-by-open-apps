@@ -140,6 +140,18 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     let row, widget
 
     row = new Adw.ActionRow({
+      title: "Enable scroll",
+      subtitle: "Change workspace by scrolling the mouse wheel (or touchpad gesture) over the indicator"
+    })
+    widget = new Gtk.Switch({
+      valign: Gtk.Align.CENTER
+    })
+    settings.bind("scroll-enable", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
       title: "Scroll wraparound",
       subtitle: "Scrolling past the last workspace will wrap around to the first one (and viceversa)"
     })
