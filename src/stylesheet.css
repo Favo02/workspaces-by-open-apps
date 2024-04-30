@@ -1,25 +1,39 @@
+/*
+  please document margin and padding values,
+  the hardest thing to get right in css
+ */
+
 /* --- workspace --- */
 .wboa-workspace { /* workspace indicator */
-  padding: 0px;
-  margin-left: 6px;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  /* space horizontally indicators */
+  margin-left: 3px;
+  /* simulate presence of border */
   margin-bottom: 2px;
 }
 .wboa-workspace.wboa-active { /* active workspace */
   border-radius: 5px;
   border-bottom: 2px solid white;
+  /* disable border simulation */
   margin-bottom: 0px;
 }
 .wboa-workspace.wboa-active.wboa-no-indicator {
   border: none !important;
+  /* simulate presence of border */
   margin-bottom: 2px;
 }
 
 /* --- workspace label --- */
 .wboa-workspace-label { /* label text (number or name) */
-  padding: 0px;
-  margin: 6px 3px;
   color: rgb(110, 110, 110);
   font-size: 12px;
+  /* center vertically */
+  margin-top: 5px;
+  /* space horizontally from icons */
+  margin-right: 2px;
+  margin-left: 2px;
 }
 .wboa-active .wboa-workspace-label { /* active workspace label */
   color: white;
@@ -27,31 +41,43 @@
 
 /* --- app --- */
 .wboa-app { /* app icon */
-  padding-top: 4px;
+  /* center vertically */
   margin-top: 2px;
+  /* simulate presence of border */
+  margin-top: 2px;
+  /* hover effect */
+  padding-top: 2px;
 }
 .wboa-app:hover, .wboa-app:focus {
+  /* hover effect */
   padding-top: 0px;
 }
 .wboa-app.wboa-active { /* active app */
   border-radius: 5px;
   border-top: 2px solid white;
+  /* disable border simulation */
   margin-top: 0px;
 }
 .wboa-app.wboa-active.wboa-no-indicator {
   border: none !important;
+  /* simulate presence of border */
   margin-top: 2px;
 }
 
 /* --- apps group --- */
 .wboa-app-group-text { /* group text (x2, x3, ...) */
-  padding: 0px;
-  margin: 5px 3px 5px 0px;
   color: rgba(110, 110, 110, 0.58);
   font-size: 12px;
+  /* center vertically */
+  margin-top: 2px;
 }
 .wboa-active .wboa-app-group-text { /* active group */
   color: white;
+}
+.wboa-app:focus .wboa-app-group-text,
+.wboa-app:hover .wboa-app-group-text { /* focused group */
+  /* disable hover effect for group label */
+  margin-top: 4px;
 }
 
 /* --- common --- */
