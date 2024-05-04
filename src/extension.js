@@ -9,12 +9,55 @@ import { Extension } from "resource:///org/gnome/shell/extensions/extension.js"
 // extension workspace indicator
 export default class WorkspacesByOpenApps extends Extension {
 
-  /** enable extension: initialize everything */
+  /**
+   * enable extension: initialize everything, connect signals and trigger first render
+   * */
   enable() {
-    this._raw_settings = this.getSettings()
+    // initialize constants and settings
+    this._init_constants()
+    this._update_settings(this.getSettings(), false) // no re-render
 
-    this._settings = {} // parsed settings
-    this._constants = { // useful constants
+    // create container and add to panel
+    this._container = new St.BoxLayout()
+
+    // insert indicator in panel
+    let box
+    switch (this._settings.position_in_panel) {
+      case this._constants.LEFT:
+        box = "_leftBox"
+        break
+      case this._constants.CENTER:
+        box = "_centerBox"
+        break
+      case this._constants.RIGHT:
+        box = "_rightBox"
+        break
+    }
+    main.panel[box].insert_child_at_index(this._container, this._settings.position_index)
+
+    // connect signals and first render
+    this._connect_signals()
+    this._render()
+  }
+
+  /**
+   * disable extension: destroy everything and disconnect signals
+   * */
+  disable() {
+    this._disconnect_signals() // disconnect signals
+
+    main.panel.statusArea["activities"]?.show() // restore activities
+
+    this._constants = null
+    this._settings = null
+    this._container.destroy()
+  }
+
+  /**
+   * initialize constants (this._constants)
+   */
+  _init_constants() {
+    this._constants = {
       LEFT: 0,
       CENTER: 1,
       RIGHT: 2,
@@ -28,28 +71,14 @@ export default class WorkspacesByOpenApps extends Extension {
       ICONS_SIZE: 10,
       TEXTURES_SIZE: 20
     }
-    this._indicators = [] // each indicator is a workspace
-
-    this._connect_signals() // signals that triggers render
-    this._render() // initialize indicator
   }
 
-  /** disable extension: destroy everything */
-  disable() {
-    this._disconnect_signals() // disconnect signals
-
-    main.panel.statusArea["activities"]?.show() // restore activities
-
-    this._raw_settings = null
-    this._settings = null
-    this._constants = null
-    this._indicators.splice(0).forEach(i => i.destroy()) // destroy current indicators
-    this._indicators = null
-  }
-
-  /** parse raw settings object into a better formatted object */
-  _parse_settings() {
-    const rs = this._raw_settings
+  /**
+   * update settings: update this._settings, hide/show activities button and re-render
+   * @param {Gio.Settings} rs raw settings
+   * @param {boolean} render if re-render is needed
+   */
+  _update_settings(rs, render) {
     this._settings = {
       position_in_panel: rs.get_enum("position-in-panel"),
       position_index: rs.get_int("position-index"),
@@ -81,9 +110,20 @@ export default class WorkspacesByOpenApps extends Extension {
       icons_ignored: rs.get_strv("icons-ignored"),
       log_apps_id: rs.get_boolean("log-apps-id")
     }
+
+    // hide activities button
+    if (this._settings.hide_activities_button)
+      main.panel.statusArea["activities"]?.hide()
+    else
+      main.panel.statusArea["activities"]?.show()
+
+    if (render)
+      this._render()
   }
 
-  /** connect signals that triggers a re-render of indicators */
+  /**
+   * connect signals that triggers a re-render of indicators
+   * */
   _connect_signals() {
     const workspace_manager = Shell.Global.get().get_workspace_manager()
     this._sig_wm1 = workspace_manager.connect("active-workspace-changed", () => this._render())
@@ -101,10 +141,13 @@ export default class WorkspacesByOpenApps extends Extension {
     this._sig_dp2 = display.connect("window-left-monitor", () => this._render())
     this._sig_dp3 = display.connect("window-entered-monitor", () => this._render())
 
-    this._sig_sett = this._raw_settings.connect("changed", () => this._render())
+    const raw_settings = this.getSettings()
+    this._sig_sett = raw_settings.connect("changed", () => this._update_settings(raw_settings, true))
   }
 
-  /** disconnect signals */
+  /**
+   * disconnect signals
+   * */
   _disconnect_signals() {
     const workspace_manager = Shell.Global.get().get_workspace_manager()
     workspace_manager.disconnect(this._sig_wm1)
@@ -122,33 +165,34 @@ export default class WorkspacesByOpenApps extends Extension {
     display.disconnect(this._sig_dp2)
     display.disconnect(this._sig_dp3)
 
-    this._raw_settings.disconnect(this._sig_sett)
+    const raw_settings = this.getSettings()
+    raw_settings.disconnect(this._sig_sett)
   }
 
-  /** render indicators: destroy current indicators and rebuild */
+  /**
+   * render indicators: destroy current indicators and rebuild
+   * */
   _render() {
-    this._parse_settings()
-
-    // hide activities button/new workspace indicator
-    if (this._settings.hide_activities_button)
-      main.panel.statusArea["activities"]?.hide()
-    else
-      main.panel.statusArea["activities"]?.show()
-
-    this._indicators.splice(0).forEach(i => i.destroy())
+    this._container.destroy_all_children()
 
     // build indicator for other monitor
-    this._render_workspace(0, true)
+    let other_monitor = this._render_workspace(0, true)
+    if (other_monitor)
+      this._container.add_child(other_monitor)
 
     // build normal workspaces indicators
-    for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++)
-      this._render_workspace(i, false)
+    for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++) {
+      let workspace = this._render_workspace(i, false)
+      if (workspace)
+        this._container.add_child(workspace)
+    }
   }
 
   /**
    * create indicator for a single workspace
    * @param {number} index index of workspace
    * @param {boolean} is_other_monitor special indicator for other monitor
+   * @returns {St.Bin} workspace indicator
    */
   _render_workspace(index, is_other_monitor) {
     const workspace = Shell.Global.get().get_workspace_manager().get_workspace_by_index(index)
@@ -219,7 +263,6 @@ export default class WorkspacesByOpenApps extends Extension {
         track_hover: true
       })
     })
-    this._indicators.push(indicator)
 
     // indicator properties
     indicator._index = index
@@ -260,24 +303,7 @@ export default class WorkspacesByOpenApps extends Extension {
       )
     }
 
-    // add to panel
-    let box
-    switch (this._settings.position_in_panel) {
-      case this._constants.LEFT:
-        box = "_leftBox"
-        break
-      case this._constants.CENTER:
-        box = "_centerBox"
-        break
-      case this._constants.RIGHT:
-        box = "_rightBox"
-        break
-    }
-
-    // index (selected by user) to insert indicator in panel
-    const insert_index = this._settings.position_index + (this._indicators.length-1)
-
-    main.panel[box].insert_child_at_index(indicator, insert_index)
+    return indicator
   }
 
   /**
