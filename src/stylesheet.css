@@ -8,20 +8,22 @@
   display: flex;
   justify-items: center;
   align-items: center;
+  border: none;
   /* space horizontally indicators */
   margin-left: 3px;
-  /* simulate presence of border */
+  margin-right: 3px;
+  /* simulate presence of active indicator */
   margin-bottom: 2px;
 }
 .wboa-workspace.wboa-active { /* active workspace */
   border-radius: 5px;
   border-bottom: 2px solid white;
-  /* disable border simulation */
+  /* disable simulation of presence of active indicator */
   margin-bottom: 0px;
 }
 .wboa-workspace.wboa-active.wboa-no-indicator {
   border: none !important;
-  /* simulate presence of border */
+  /* simulate presence of active indicator */
   margin-bottom: 2px;
 }
 
@@ -29,11 +31,10 @@
 .wboa-workspace-label { /* label text (number or name) */
   color: rgb(110, 110, 110);
   font-size: 12px;
-  /* center vertically */
-  margin-top: 5px;
   /* space horizontally from icons */
-  margin-right: 2px;
-  margin-left: 2px;
+  margin: 0px 2px;
+  /* center vertically */
+  padding-top: 4px;
 }
 .wboa-active .wboa-workspace-label { /* active workspace label */
   color: white;
@@ -41,9 +42,9 @@
 
 /* --- app --- */
 .wboa-app { /* app icon */
-  /* center vertically */
-  margin-top: 2px;
-  /* simulate presence of border */
+  /* space horizontally apps */
+  margin-right: 3px;
+  /* simulate presence of active indicator */
   margin-top: 2px;
   /* hover effect */
   padding-top: 2px;
@@ -55,12 +56,12 @@
 .wboa-app.wboa-active { /* active app */
   border-radius: 5px;
   border-top: 2px solid white;
-  /* disable border simulation */
+  /* disable simulation of presence of active indicator */
   margin-top: 0px;
 }
 .wboa-app.wboa-active.wboa-no-indicator {
   border: none !important;
-  /* simulate presence of border */
+  /* simulate presence of active indicator */
   margin-top: 2px;
 }
 
@@ -68,19 +69,15 @@
 .wboa-app-group-text { /* group text (x2, x3, ...) */
   color: rgba(110, 110, 110, 0.58);
   font-size: 12px;
-  /* center vertically */
-  margin-top: 2px;
 }
 .wboa-active .wboa-app-group-text { /* active group */
   color: white;
-}
-.wboa-app:focus .wboa-app-group-text,
-.wboa-app:hover .wboa-app-group-text { /* focused group */
-  /* disable hover effect for group label */
-  margin-top: 4px;
 }
 
 /* --- common --- */
 .wboa-no-rounded {
   border-radius: 0px !important;
+}
+.panel-button {
+  border-radius: 15px;
 }

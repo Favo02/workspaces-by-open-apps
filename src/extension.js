@@ -251,13 +251,13 @@ export default class WorkspacesByOpenApps extends Extension {
 
     // create indicator
     const indicator = new St.Bin({
-      style: css_inline_workspace,
-      style_class: css_classes_workspace.join(" "),
+      style_class: "panel-button",
       reactive: true,
       can_focus: true,
       track_hover: true,
       child: new St.BoxLayout({
-        style_class: "panel-button",
+        style: css_inline_workspace,
+        style_class: css_classes_workspace.join(" "),
         reactive: true,
         can_focus: true,
         track_hover: true
@@ -359,29 +359,29 @@ export default class WorkspacesByOpenApps extends Extension {
         const app = Shell.WindowTracker.get_default().get_window_app(win)
 
         // create Clutter.actor
-        const texture = app.create_icon_texture(this._constants.TEXTURES_SIZE)
+        const app_icon = app.create_icon_texture(this._constants.TEXTURES_SIZE)
 
         // effects for not focused apps
         const is_focus = win.has_focus() || occurrences[win.get_pid()]?.focus
         if (!is_focus) {
           if (this._settings.apps_inactive_effect === this._constants.REDUCE_OPACITY) // reduce opacity
-            texture.set_opacity(this._constants.LOW_OPACITY)
+            app_icon.set_opacity(this._constants.LOW_OPACITY)
           if (this._settings.apps_inactive_effect === this._constants.DESATURATE) // desaturate
-            texture.add_effect(new Clutter.DesaturateEffect())
+            app_icon.add_effect(new Clutter.DesaturateEffect())
         }
 
         // effects for minimized apps
         const is_not_minimized = !win.is_hidden() || occurrences[win.get_pid()]?.not_minimized
         if (!is_not_minimized) {
           if (this._settings.apps_minimized_effect === this._constants.REDUCE_OPACITY) // reduce opacity
-            texture.set_opacity(this._constants.LOW_OPACITY)
+            app_icon.set_opacity(this._constants.LOW_OPACITY)
           if (this._settings.apps_minimized_effect === this._constants.DESATURATE) // desaturate
-            texture.add_effect(new Clutter.DesaturateEffect())
+            app_icon.add_effect(new Clutter.DesaturateEffect())
         }
 
         // desaturate icon setting
         if (this._settings.apps_all_desaturate)
-          texture.add_effect(new Clutter.DesaturateEffect())
+          app_icon.add_effect(new Clutter.DesaturateEffect())
 
         const css_inline_app = `border-color: ${this._settings.indicator_color}`
 
@@ -390,45 +390,45 @@ export default class WorkspacesByOpenApps extends Extension {
         if (!this._settings.indicator_show_focused_app)   css_classes_app.push("wboa-no-indicator")
         if (!this._settings.indicator_round_borders)      css_classes_app.push("wboa-no-rounded")
 
-        const icon = new St.Bin({
+        const app_container = new St.BoxLayout({
           style: css_inline_app,
           style_class: css_classes_app.join(" "),
           reactive: true,
           can_focus: true,
-          track_hover: true,
-          child: new St.BoxLayout()
+          track_hover: true
         })
 
         // focus application on click
-        icon.middle_closes_app = this._settings.middle_click_close_app
-        icon.click_on_focus_minimize = this._settings.click_on_focus_minimize
-        icon.connect("button-release-event", this._on_click_application.bind(icon))
-        icon.connect("touch-event", this._on_touch_application.bind(icon))
+        app_container.middle_closes_app = this._settings.middle_click_close_app
+        app_container.click_on_focus_minimize = this._settings.click_on_focus_minimize
+        app_container.connect("button-release-event", this._on_click_application.bind(app_container))
+        app_container.connect("touch-event", this._on_touch_application.bind(app_container))
 
         // drag and drop
-        icon._index = index
-        icon._window = win
+        app_container._index = index
+        app_container._window = win
 
-        icon._delegate = icon
-        icon._draggable = dnd.makeDraggable(icon, {
+        app_container._delegate = app_container
+        app_container._draggable = dnd.makeDraggable(app_container, {
           dragActorOpacity: this._constants.LOW_OPACITY
         })
 
         // add icon texture to icon button
-        icon.get_child().add_child(texture)
+        app_container.add_child(app_icon)
 
         const css_classes_text = [ "wboa-app-group-text" ]
 
         // add x{occurrences} label to icon button (group same application)
         if ((this._settings.icons_group === 1) && (occurrences[win.get_pid()].count > 1)) {
-          icon.get_child().add_child(new St.Label({
-            text: `x${occurrences[win.get_pid()].count}`,
-            style_class: css_classes_text.join(" ")
+          app_container.add_child(new St.Label({
+            style_class: css_classes_text.join(" "),
+            y_align: Clutter.ActorAlign.CENTER,
+            text: `x${occurrences[win.get_pid()].count}`
           }))
         }
 
         // add app icon to buttons
-        button.get_child().add_child(icon)
+        button.get_child().add_child(app_container)
       })
 
     // render + icon (for icon limit)
@@ -466,8 +466,9 @@ export default class WorkspacesByOpenApps extends Extension {
 
     // add label to indicator
     button.get_child().insert_child_at_index(new St.Label({
-      text: indicator_text,
-      style_class: css_classes_label.join(" ")
+      style_class: css_classes_label.join(" "),
+      y_align: Clutter.ActorAlign.CENTER,
+      text: indicator_text
     }), 0)
   }
 
