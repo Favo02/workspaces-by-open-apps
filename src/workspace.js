@@ -7,6 +7,9 @@ import * as main from "resource:///org/gnome/shell/ui/main.js"
 import * as dnd from "resource:///org/gnome/shell/ui/dnd.js"
 import CONSTANTS from "./constants.js"
 
+/**
+ * indicator for a single workspace
+ */
 export default class Workspace extends St.Bin {
   static {
     GObject.registerClass(this)
@@ -31,43 +34,28 @@ export default class Workspace extends St.Bin {
     this._index = index
     this._workspace = workspace
 
-    // drag and drop
-    this._delegate = this
-    // converting this anonymous function to a lambda will break the code,
-    // because keyword this in lambda is different keyword than this in anonymous functions
-    this.acceptDrop = function (source) {
-      if (source._index !== this._index) {
-        source._window.change_workspace_by_index(this._index, false)
-        source._window.activate(Shell.Global.get().get_current_time())
-        return true
-      }
-      return false
-    }
+    // setup signals
+    this._setup_signals()
 
-    // connect click, touch, scroll signals
-    this.connect("button-release-event", this._on_click_workspace.bind(this))
-    this.connect("touch-event", this._on_touch_workspace.bind(this))
-    if (this._settings.scroll_enable) {
-      this.connect("scroll-event", this._on_scroll_workspace.bind(this))
+    // setup drag and drop
+    this._setup_drag_and_drop()
+
+    // render label
+    if (this._settings.indicator_show_indexes || is_other_monitor) {
+      this._render_label(index, is_other_monitor)
     }
 
     // create apps icons
-    this._render_workspace_applications(this, windows, is_active, index)
-
-    // create indicator label
-    if (this._settings.indicator_show_indexes || is_other_monitor) {
-      this._render_workspace_label(this, index, is_other_monitor ? this._settings.indicator_all_text : null)
-    }
+    this._render_workspace_applications(windows, is_active, index)
   }
 
   /**
    * create icons of running applications inside a workspace indicator
-   * @param button indicator to add childs (icons)
    * @param windows windows to create icons of
    * @param {boolean} is_active if the workspace is active
    * @param {number} index index of workspace
    */
-  _render_workspace_applications(button, windows, is_active, index) {
+  _render_workspace_applications(windows, is_active, index) {
     // group same application (if setting is on)
     let occurrences = {}
     if (this._settings.icons_group !== CONSTANTS.OFF) {
@@ -182,7 +170,7 @@ export default class Workspace extends St.Bin {
         }
 
         // add app icon to buttons
-        button.get_child().add_child(app_container)
+        this.get_child().add_child(app_container)
       })
 
     // render + icon (for icon limit)
@@ -192,34 +180,64 @@ export default class Workspace extends St.Bin {
         icon_size: CONSTANTS.ICONS_SIZE
       })
       plus_icon.set_opacity(CONSTANTS.LOW_OPACITY)
-      button.get_child().add_child(plus_icon)
+      this.get_child().add_child(plus_icon)
+    }
+  }
+
+  /**
+   * setup drag and drop for workspace and application indicators
+   */
+  _setup_drag_and_drop() {
+    this._delegate = this
+    // converting this anonymous function to a lambda will break the code,
+    // because keyword this in lambda is different keyword than this in anonymous functions
+    this.acceptDrop = function (source) {
+      if (source._index !== this._index) {
+        source._window.change_workspace_by_index(this._index, false)
+        source._window.activate(Shell.Global.get().get_current_time())
+        return true
+      }
+      return false
+    }
+  }
+
+  /**
+   * setup signals: click, touch, scroll
+   */
+  _setup_signals() {
+    this.connect("button-release-event", this._on_click_workspace.bind(this))
+    this.connect("touch-event", this._on_touch_workspace.bind(this))
+    if (this._settings.scroll_enable) {
+      this.connect("scroll-event", this._on_scroll_workspace.bind(this))
     }
   }
 
   /**
    * create label for a workspace indicator
-   * @param button indicator to add label
    * @param {number} index index of workspace
-   * @param {string} other_monitor_text custom other workspace text to display
+   * @param {boolean} other_monitor if the workspace is for other monitor
    */
-  _render_workspace_label(button, index, other_monitor_text) {
+  _render_label(index, other_monitor) {
     // text to display
     let indicator_text
 
-    if (other_monitor_text) { // other monitor custom text
-      indicator_text = other_monitor_text
+    // other monitor custom text
+    if (other_monitor) {
+      indicator_text = this._settings.indicator_all_text
     }
-    else if (this._settings.indicator_use_custom_names) { // custom workspace name
+    // custom workspace name
+    else if (this._settings.indicator_use_custom_names) {
       indicator_text = Meta.prefs_get_workspace_name(index)
     }
-    else { // default text: index
+    // default text: index
+    else {
       indicator_text = (index+1).toString()
     }
 
     const css_classes_label = [ "wboa-workspace-label" ]
 
     // add label to indicator
-    button.get_child().insert_child_at_index(new St.Label({
+    this.get_child().insert_child_at_index(new St.Label({
       style_class: css_classes_label.join(" "),
       y_align: Clutter.ActorAlign.CENTER,
       text: indicator_text
