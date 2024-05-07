@@ -4,8 +4,8 @@ import Shell from "gi://Shell"
 import Meta from "gi://Meta"
 import GObject from "gi://GObject"
 import * as main from "resource:///org/gnome/shell/ui/main.js"
-import * as dnd from "resource:///org/gnome/shell/ui/dnd.js"
 import CONSTANTS from "./constants.js"
+import Application from "./application.js"
 
 /**
  * indicator for a single workspace
@@ -95,16 +95,16 @@ export default class Workspace extends St.Bin {
       .sort((w1, w2) => w1.has_focus() ? -1 : w2.has_focus() ? 1 : w1.get_id() - w2.get_id()) // sort by focus and id
       .slice(0, icons_limit) // limit icons
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id only
-      .forEach(win => {
+      .forEach(window => {
 
         // convert from Meta.window to Shell.app
-        const app = Shell.WindowTracker.get_default().get_window_app(win)
+        const app = Shell.WindowTracker.get_default().get_window_app(window)
 
         // create Clutter.actor
         const app_icon = app.create_icon_texture(CONSTANTS.TEXTURES_SIZE)
 
         // effects for not focused apps
-        const is_focus = win.has_focus() || occurrences[win.get_pid()]?.focus
+        const is_focus = window.has_focus() || occurrences[window.get_pid()]?.focus
         if (!is_focus) {
           if (this._settings.apps_inactive_effect === CONSTANTS.REDUCE_OPACITY) // reduce opacity
             app_icon.set_opacity(CONSTANTS.LOW_OPACITY)
@@ -113,7 +113,7 @@ export default class Workspace extends St.Bin {
         }
 
         // effects for minimized apps
-        const is_not_minimized = !win.is_hidden() || occurrences[win.get_pid()]?.not_minimized
+        const is_not_minimized = !window.is_hidden() || occurrences[window.get_pid()]?.not_minimized
         if (!is_not_minimized) {
           if (this._settings.apps_minimized_effect === CONSTANTS.REDUCE_OPACITY) // reduce opacity
             app_icon.set_opacity(CONSTANTS.LOW_OPACITY)
@@ -132,42 +132,7 @@ export default class Workspace extends St.Bin {
         if (!this._settings.indicator_show_focused_app)   css_classes_app.push("wboa-no-indicator")
         if (!this._settings.indicator_round_borders)      css_classes_app.push("wboa-no-rounded")
 
-        const app_container = new St.BoxLayout({
-          style: css_inline_app,
-          style_class: css_classes_app.join(" "),
-          reactive: true,
-          can_focus: true,
-          track_hover: true
-        })
-
-        // focus application on click
-        app_container.middle_closes_app = this._settings.middle_click_close_app
-        app_container.click_on_focus_minimize = this._settings.click_on_focus_minimize
-        app_container.connect("button-release-event", this._on_click_application.bind(app_container))
-        app_container.connect("touch-event", this._on_touch_application.bind(app_container))
-
-        // drag and drop
-        app_container._index = index
-        app_container._window = win
-
-        app_container._delegate = app_container
-        app_container._draggable = dnd.makeDraggable(app_container, {
-          dragActorOpacity: CONSTANTS.LOW_OPACITY
-        })
-
-        // add icon texture to icon button
-        app_container.add_child(app_icon)
-
-        const css_classes_text = [ "wboa-app-group-text" ]
-
-        // add x{occurrences} label to icon button (group same application)
-        if ((this._settings.icons_group === 1) && (occurrences[win.get_pid()].count > 1)) {
-          app_container.add_child(new St.Label({
-            style_class: css_classes_text.join(" "),
-            y_align: Clutter.ActorAlign.CENTER,
-            text: `x${occurrences[win.get_pid()].count}`
-          }))
-        }
+        const app_container = new Application(this._settings, index, window, occurrences, app_icon, css_inline_app, css_classes_app)
 
         // add app icon to buttons
         this.get_child().add_child(app_container)
@@ -297,33 +262,6 @@ export default class Workspace extends St.Bin {
   /** touch on workspace handler */
   _on_touch_workspace() {
     this._workspace.activate(Shell.Global.get().get_current_time())
-  }
-
-  /**
-   * click on application icon handler
-   * @param _ actor clicked (unused)
-   * @param event click event
-   */
-  _on_click_application(_, event) {
-    // left/right click: focus or minimize application
-    if (event.get_button() === CONSTANTS.LEFT_CLICK || event.get_button() === CONSTANTS.RIGHT_CLICK) {
-
-      // focused and setting on: minimize
-      if (this._window.has_focus() && this.click_on_focus_minimize)
-        this._window.minimize(Shell.Global.get().get_current_time())
-      // not focused or setting off: focus
-      else
-        this._window.activate(Shell.Global.get().get_current_time())
-    }
-
-    // middle click: close application
-    if (this.middle_closes_app && event.get_button() === CONSTANTS.MIDDLE_CLICK)
-      this._window.delete(Shell.Global.get().get_current_time())
-  }
-
-  /** touch on application handler */
-  _on_touch_application() {
-    this._window.activate(Shell.Global.get().get_current_time())
   }
 
   /**
