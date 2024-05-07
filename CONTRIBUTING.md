@@ -22,6 +22,7 @@ Please make sure to follow the existing code style and conventions when making c
 - use snake case for variable and function names (`my_variable`, `my_function()`)
 - the name of each _"private"_ function should start with an underscore (`_my_function()`)
 - add a comment before each function explaining its purpose (JSDoc style)
+- limit the use of ternary operators (`?`) to the minimum
 
 ## Pull requests
 

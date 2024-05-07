@@ -140,15 +140,17 @@ export default class WorkspacesByOpenApps extends Extension {
     this._container.destroy_all_children()
 
     // build indicator for other monitor
-    let other_monitor = this._render_workspace(0, true)
-    if (other_monitor)
+    const other_monitor = this._render_workspace(0, true)
+    if (other_monitor) {
       this._container.add_child(other_monitor)
+    }
 
     // build normal workspaces indicators
     for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++) {
-      let workspace = this._render_workspace(i, false)
-      if (workspace)
+      const workspace = this._render_workspace(i, false)
+      if (workspace) {
         this._container.add_child(workspace)
+      }
     }
   }
 
@@ -182,7 +184,9 @@ export default class WorkspacesByOpenApps extends Extension {
         const matches = this._settings.icons_ignored.filter(ignored => new RegExp(ignored, "i").test(app.get_id()))
         if (matches.length > 0) {
           // debug log ignored app id
-          if (this._settings.log_apps_id) console.log(`IGNORED ${app.get_id()}`)
+          if (this._settings.log_apps_id) {
+            console.log(`IGNORED ${app.get_id()}`)
+          }
           return false
         }
 
@@ -190,28 +194,27 @@ export default class WorkspacesByOpenApps extends Extension {
         if (!win.has_focus() && win.is_skip_taskbar()) return false
 
         // debug log app id
-        if (this._settings.log_apps_id)
+        if (this._settings.log_apps_id) {
           console.log(app.get_id())
+        }
 
         return true
       })
 
     // hide other monitor indicator if no windows on all workspaces
-    if (is_other_monitor && windows.length === 0)
-      return
+    if (is_other_monitor && windows.length === 0) return
 
     const is_active = !is_other_monitor && Shell.Global.get().get_workspace_manager().get_active_workspace_index() === index
 
     // hide empty workspaces
-    if (this._settings.indicator_hide_empty && !is_active && windows.length === 0)
-      return
+    if (this._settings.indicator_hide_empty && !is_active && windows.length === 0) return
 
     const css_inline_workspace = `border-color: ${this._settings.indicator_color}`
 
-    const css_classes_workspace =                         [ "wboa-workspace" ]
-    if (is_active)                                        css_classes_workspace.push("wboa-active")
-    if (!this._settings.indicator_show_active_workspace)  css_classes_workspace.push("wboa-no-indicator")
-    if (!this._settings.indicator_round_borders)          css_classes_workspace.push("wboa-no-rounded")
+    const css_classes_workspace = [ "wboa-workspace" ]
+    if (is_active) css_classes_workspace.push("wboa-active")
+    if (!this._settings.indicator_show_active_workspace) css_classes_workspace.push("wboa-no-indicator")
+    if (!this._settings.indicator_round_borders) css_classes_workspace.push("wboa-no-rounded")
 
     return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_inline_workspace, css_classes_workspace)
   }
