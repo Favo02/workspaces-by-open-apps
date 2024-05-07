@@ -46,95 +46,43 @@ export default class Workspace extends St.Bin {
     }
 
     // create apps icons
-    this._render_workspace_applications(windows, is_active, index)
+    this._render_applications(windows, is_active)
   }
 
   /**
    * create icons of running applications inside a workspace indicator
    * @param windows windows to create icons of
    * @param {boolean} is_active if the workspace is active
-   * @param {number} index index of workspace
    */
-  _render_workspace_applications(windows, is_active, index) {
-    // group same application (if setting is on)
-    let occurrences = {}
+  _render_applications(windows, is_active) {
+
+    // count occurrences of each application
+    const occurrences = this._count_application_occurrences(windows)
+
+    // remove duplicates (if application grouping is on)
     if (this._settings.icons_group !== CONSTANTS.OFF) {
-      // count occurences of each application
-      occurrences = windows.reduce((acc, cur) => {
-        const id = cur.get_pid()
-        if (!acc[id]) {
-          acc[id] = {
-            count: 1,
-            focus: cur.has_focus(),
-            not_minimized: !cur.is_hidden()
-          }
-        }
-        else {
-          acc[id].count++
-          acc[id].focus ||= cur.has_focus()
-          acc[id].not_minimized ||= !cur.is_hidden()
-        }
-        return acc
-      }, {})
-
-      // remove duplicates
-      const unique_windows = windows.reduce((acc, curr) => {
-        const found = acc.find(obj => obj.get_pid() === curr.get_pid())
-        if (!found) acc.push(curr)
-        return acc
-      }, [])
-
-      windows = unique_windows
+      windows = this._remove_duplicates(windows)
     }
 
-    const icons_limit = (is_active || this._settings.icons_limit === 0)
-      ? CONSTANTS.NO_LIMIT
-      : this._settings.icons_limit
+    // limit icons (if application limit is on)
+    let icons_limit
+    if (is_active || this._settings.icons_limit === 0) {
+      icons_limit = CONSTANTS.NO_LIMIT
+    } else {
+      icons_limit = this._settings.icons_limit
+    }
 
     windows
-      .sort((w1, w2) => w1.has_focus() ? -1 : w2.has_focus() ? 1 : w1.get_id() - w2.get_id()) // sort by focus and id
+      .sort((w1, w2) => { // sort by focus and id
+        if (w1.has_focus()) return -1
+        if (w2.has_focus()) return 1
+        return w1.get_id() - w2.get_id()
+      })
       .slice(0, icons_limit) // limit icons
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id only
       .forEach(window => {
-
-        // convert from Meta.window to Shell.app
-        const app = Shell.WindowTracker.get_default().get_window_app(window)
-
-        // create Clutter.actor
-        const app_icon = app.create_icon_texture(CONSTANTS.TEXTURES_SIZE)
-
-        // effects for not focused apps
-        const is_focus = window.has_focus() || occurrences[window.get_pid()]?.focus
-        if (!is_focus) {
-          if (this._settings.apps_inactive_effect === CONSTANTS.REDUCE_OPACITY) // reduce opacity
-            app_icon.set_opacity(CONSTANTS.LOW_OPACITY)
-          if (this._settings.apps_inactive_effect === CONSTANTS.DESATURATE) // desaturate
-            app_icon.add_effect(new Clutter.DesaturateEffect())
-        }
-
-        // effects for minimized apps
-        const is_not_minimized = !window.is_hidden() || occurrences[window.get_pid()]?.not_minimized
-        if (!is_not_minimized) {
-          if (this._settings.apps_minimized_effect === CONSTANTS.REDUCE_OPACITY) // reduce opacity
-            app_icon.set_opacity(CONSTANTS.LOW_OPACITY)
-          if (this._settings.apps_minimized_effect === CONSTANTS.DESATURATE) // desaturate
-            app_icon.add_effect(new Clutter.DesaturateEffect())
-        }
-
-        // desaturate icon setting
-        if (this._settings.apps_all_desaturate)
-          app_icon.add_effect(new Clutter.DesaturateEffect())
-
-        const css_inline_app = `border-color: ${this._settings.indicator_color}`
-
-        const css_classes_app =                           [ "wboa-app" ]
-        if (is_focus)                                     css_classes_app.push("wboa-active")
-        if (!this._settings.indicator_show_focused_app)   css_classes_app.push("wboa-no-indicator")
-        if (!this._settings.indicator_round_borders)      css_classes_app.push("wboa-no-rounded")
-
-        const app_container = new Application(this._settings, index, window, occurrences, app_icon, css_inline_app, css_classes_app)
-
-        // add app icon to buttons
+        // create app indicator and add to workspace
+        const app_container = this._create_application(window, occurrences)
         this.get_child().add_child(app_container)
       })
 
@@ -147,6 +95,106 @@ export default class Workspace extends St.Bin {
       plus_icon.set_opacity(CONSTANTS.LOW_OPACITY)
       this.get_child().add_child(plus_icon)
     }
+  }
+
+  /**
+   * count the occourrence, focus and minimization of each application in the workspace
+   * if settings {icons_group} is OFF, return empty map
+   * @param {Meta.Window[]} windows windows in workspace
+   * @returns {Map} occurrences, focus and minimization of each application or empty map
+   */
+  _count_application_occurrences(windows) {
+    // count occurrences of each application
+    const occurrences = new Map()
+
+    if (this._settings.icons_group !== CONSTANTS.OFF) {
+      for (const window of windows) {
+        const id = window.get_pid()
+        const get_or_default = occurrences.get(id) ?? { count: 0, focus: false, not_minimized: false }
+
+        occurrences.set(id, {
+          count: get_or_default.count + 1,
+          focus: get_or_default.focus || window.has_focus(),
+          not_minimized: get_or_default.not_minimized || !window.is_hidden()
+        })
+      }
+    }
+
+    return occurrences
+  }
+
+  /**
+   * remove duplicate windows based on window pid
+   * @param {Meta.Window[]} windows windows to remove duplicates from
+   * @returns {Meta.Window[]} windows without duplicates
+   */
+  _remove_duplicates(windows) {
+    const seen = new Set()
+    return windows.filter(win => {
+      if (seen.has(win.get_pid())) return false
+      seen.add(win.get_pid())
+      return true
+    })
+  }
+
+  /**
+   * create an application icon, applying effects (focus, desaturation, grouping, ...) based on settings
+   * @param {Meta.Window} window to create icon of
+   * @param {Map} occurrences occurrences of each application
+   * @returns {Application} application icon
+   */
+  _create_application(window, occurrences) {
+    // convert from Meta.window to Shell.app
+    const app = Shell.WindowTracker.get_default().get_window_app(window)
+
+    // create Clutter.actor
+    const app_icon = app.create_icon_texture(CONSTANTS.TEXTURES_SIZE)
+
+    // effects for not focused apps
+    const is_focus = window.has_focus() || occurrences.get(window.get_pid())?.focus
+    if (!is_focus) {
+      // reduce opacity
+      if (this._settings.apps_inactive_effect === CONSTANTS.REDUCE_OPACITY) {
+        app_icon.set_opacity(CONSTANTS.LOW_OPACITY)
+      }
+      // desaturate
+      if (this._settings.apps_inactive_effect === CONSTANTS.DESATURATE) {
+        app_icon.add_effect(new Clutter.DesaturateEffect())
+      }
+    }
+
+    // effects for minimized apps
+    const is_not_minimized = !window.is_hidden() || occurrences.get(window.get_pid())?.not_minimized
+    if (!is_not_minimized) {
+      // reduce opacity
+      if (this._settings.apps_minimized_effect === CONSTANTS.REDUCE_OPACITY) {
+        app_icon.set_opacity(CONSTANTS.LOW_OPACITY)
+      }
+      // desaturate
+      if (this._settings.apps_minimized_effect === CONSTANTS.DESATURATE) {
+        app_icon.add_effect(new Clutter.DesaturateEffect())
+      }
+    }
+
+    // desaturation effect for all apps (setting)
+    if (this._settings.apps_all_desaturate) {
+      app_icon.add_effect(new Clutter.DesaturateEffect())
+    }
+
+    const css_inline_app = `border-color: ${this._settings.indicator_color}`
+
+    const css_classes_app = [ "wboa-app" ]
+    if (is_focus) {
+      css_classes_app.push("wboa-active")
+    }
+    if (!this._settings.indicator_show_focused_app) {
+      css_classes_app.push("wboa-no-indicator")
+    }
+    if (!this._settings.indicator_round_borders) {
+      css_classes_app.push("wboa-no-rounded")
+    }
+
+    return new Application(this._settings, this._index, window, occurrences, app_icon, css_inline_app, css_classes_app)
   }
 
   /**
@@ -220,11 +268,13 @@ export default class Workspace extends St.Bin {
       const is_active = Shell.Global.get().get_workspace_manager().get_active_workspace_index() === this._index
 
       // active and setting on: activate overview
-      if (is_active && this._settings._click_on_active_overview)
+      if (is_active && this._settings._click_on_active_overview) {
         main.overview.toggle()
+      }
       // not active or setting off: focus workspace
-      else
+      else {
         this._workspace.activate(Shell.Global.get().get_current_time())
+      }
     }
 
     // middle click: do nothing
@@ -274,7 +324,7 @@ export default class Workspace extends St.Bin {
     let scroll_direction = event.get_scroll_direction()
 
     // convert 2D direction to left/right
-    let direction = 0
+    let direction
     switch (scroll_direction) {
       case Clutter.ScrollDirection.LEFT:
       case Clutter.ScrollDirection.UP:
@@ -296,11 +346,13 @@ export default class Workspace extends St.Bin {
     const mod = (n, m) => (((n % m) + m) % m)
 
     // wrap
-    if (this._settings._scroll_wraparound)
+    if (this._settings._scroll_wraparound) {
       new_index = mod(new_index, workspace_manager.n_workspaces)
+    }
 
-    if (new_index >= 0 && new_index < workspace_manager.n_workspaces)
+    if (new_index >= 0 && new_index < workspace_manager.n_workspaces) {
       workspace_manager.get_workspace_by_index(new_index).activate(Shell.Global.get().get_current_time())
+    }
   }
 
 }
