@@ -10,8 +10,8 @@
   align-items: center;
   border: none;
   /* space horizontally indicators */
-  margin-left: 3px;
-  margin-right: 3px;
+  margin-left: 2px;
+  margin-right: 2px;
   /* simulate presence of active indicator */
   margin-bottom: 2px;
 }
@@ -42,8 +42,6 @@
 
 /* --- app --- */
 .wboa-app { /* app icon */
-  /* space horizontally apps */
-  margin-right: 3px;
   /* simulate presence of active indicator */
   margin-top: 2px;
   /* hover effect */
@@ -69,6 +67,8 @@
 .wboa-app-group-text { /* group text (x2, x3, ...) */
   color: rgba(110, 110, 110, 0.58);
   font-size: 12px;
+  /* space horizontally app groups */
+  margin-right: 2px;
 }
 .wboa-active .wboa-app-group-text { /* active group */
   color: white;
