@@ -81,8 +81,12 @@ export default class WorkspacesByOpenApps extends Extension {
     else
       main.panel.statusArea["activities"]?.show()
 
-    if (render)
-      this._render()
+    if (render) {
+      // disabling and enabling the extension is needed for settings that change
+      // the indicator position, such as position_in_panel and position_index
+      this.disable()
+      this.enable()
+    }
   }
 
   /**
