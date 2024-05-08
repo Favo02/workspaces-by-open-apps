@@ -322,7 +322,13 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       xalign: 0,
     })
     widget.set_text(settings.get_string("indicator-all-text"))
-    widget.connect("changed", w => { settings.set_string("indicator-all-text", w.get_text().length > 0 ? w.get_text() : "ALL") })
+    widget.connect("changed", w => {
+      if (w.get_text().length > 0) {
+        settings.set_string("indicator-all-text", w.get_text())
+      } else {
+        settings.set_string("indicator-all-text", "ALL")
+      }
+    })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
