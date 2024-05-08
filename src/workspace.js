@@ -268,7 +268,7 @@ export default class Workspace extends St.Bin {
       const is_active = Shell.Global.get().get_workspace_manager().get_active_workspace_index() === this._index
 
       // active and setting on: activate overview
-      if (is_active && this._settings._click_on_active_overview) {
+      if (is_active && this._settings.click_on_active_overview) {
         main.overview.toggle()
       }
       // not active or setting off: focus workspace
@@ -328,11 +328,11 @@ export default class Workspace extends St.Bin {
     switch (scroll_direction) {
       case Clutter.ScrollDirection.LEFT:
       case Clutter.ScrollDirection.UP:
-        direction = this._settings._inverse_scroll ? -1 : 1
+        direction = this._settings.inverse_scroll ? -1 : 1
         break
       case Clutter.ScrollDirection.RIGHT:
       case Clutter.ScrollDirection.DOWN:
-        direction = this._settings._inverse_scroll ? 1 : -1
+        direction = this._settings.inverse_scroll ? 1 : -1
         break
       default:
         return Clutter.EVENT_PROPAGATE
@@ -346,7 +346,7 @@ export default class Workspace extends St.Bin {
     const mod = (n, m) => (((n % m) + m) % m)
 
     // wrap
-    if (this._settings._scroll_wraparound) {
+    if (this._settings.scroll_wraparound) {
       new_index = mod(new_index, workspace_manager.n_workspaces)
     }
 
