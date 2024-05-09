@@ -183,7 +183,12 @@ export default class Workspace extends St.Bin {
 
     const css_inline_app = `border-color: ${this._settings.indicator_color}`
 
-    const css_classes_app = [ "wboa-app", "wboa-top" ]
+    const css_classes_app = [ "wboa-app" ]
+    if (this._settings.indicator_swap_position) {
+      css_classes_app.push("wboa-bottom")
+    } else {
+      css_classes_app.push("wboa-top")
+    }
     if (is_focus) css_classes_app.push("wboa-active")
     if (!this._settings.indicator_show_focused_app) css_classes_app.push("wboa-no-indicator")
     if (this._settings.indicator_round_borders) css_classes_app.push("wboa-rounded")
