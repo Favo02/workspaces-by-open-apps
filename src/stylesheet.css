@@ -11,7 +11,7 @@
   workspace: indicator spacing
   workspace > label (direct child): workspace label color and spacing
 
-  app: app icon hover effect
+  app (:hover and :focus): app icon hover effect
   app > label (direct child): app group label color and spacing
 
   rounded: round borders (5px)
@@ -57,12 +57,13 @@
 
 /* --- app icon --- */
 .wboa-app {
-  /* hover effect */
-  padding-top: 2px;
+  /* vertical spacing */
+  margin-top: 1px;
+  margin-bottom: 1px;
 }
 .wboa-app:hover, .wboa-app:focus {
   /* hover effect */
-  padding-top: 0px;
+  margin-top: -2px;
 }
 
 /* --- apps group label (x2, x3, ...) --- */
