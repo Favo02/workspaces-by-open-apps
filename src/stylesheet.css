@@ -50,6 +50,10 @@
   margin-right: 2px;
   margin-left: 2px;
 }
+.wboa-workspace.wboa-bottom > .wboa-label {
+  /* fix vertical offset when workspace indicator position is bottom */
+  padding-top: 4px;
+}
 
 /* --- app icon --- */
 .wboa-app {
@@ -68,7 +72,7 @@
   margin-right: 2px;
 }
 
-/* COMMON */
+/* --- COMMON --- */
 
 /* round indicator borders */
 .wboa-rounded {
