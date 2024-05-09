@@ -3,47 +3,56 @@
   the hardest thing to get right in css
  */
 
-/* --- workspace --- */
-.wboa-workspace { /* workspace indicator */
-  display: flex;
-  justify-items: center;
-  align-items: center;
+/* list of available classes (all prefixed with wboa-)
+
+  label: font size of labels
+  active > label (direct child): toggle color of labels
+
+  workspace: indicator spacing
+  workspace > label (direct child): workspace label color and spacing
+
+  app: app icon hover effect
+  app > label (direct child): app group label color and spacing
+
+  rounded: round borders (5px)
+  panel-rounded: round borders (15px)
+  no-rounded: do not round borders
+
+  top: space for placing indicator at top
+  top active (same element): indicator at top
+  top no-indicator (same element): always disable indicator at top (add space for placing)
+
+  bottom: space for placing indicator at bottom
+  bottom active (same element): indicator at bottom
+  bottom no-indicator (same element): always disable indicator at bottom (add space for placing)
+*/
+
+/* --- labels (workspace name and apps count) --- */
+.wboa-label {
+  font-size: 12px;
+}
+.wboa-active > .wboa-label {
+  color: rgba(255, 255, 255, 1) !important;
+}
+
+/* --- workspace indicator --- */
+.wboa-workspace {
   border: none;
   /* space horizontally indicators */
   margin-left: 2px;
   margin-right: 2px;
-  /* simulate presence of active indicator */
-  margin-bottom: 2px;
-}
-.wboa-workspace.wboa-active { /* active workspace */
-  border-radius: 5px;
-  border-bottom: 2px solid white;
-  /* disable simulation of presence of active indicator */
-  margin-bottom: 0px;
-}
-.wboa-workspace.wboa-active.wboa-no-indicator {
-  border: none !important;
-  /* simulate presence of active indicator */
-  margin-bottom: 2px;
 }
 
 /* --- workspace label --- */
-.wboa-workspace-label { /* label text (number or name) */
-  color: rgb(110, 110, 110);
-  font-size: 12px;
+.wboa-workspace > .wboa-label {
+  color: rgba(255, 255, 255, 0.5);
   /* space horizontally from icons */
-  margin: 0px 2px;
-  /* center vertically */
-  padding-top: 4px;
-}
-.wboa-active .wboa-workspace-label { /* active workspace label */
-  color: white;
+  margin-right: 2px;
+  margin-left: 2px;
 }
 
-/* --- app --- */
-.wboa-app { /* app icon */
-  /* simulate presence of active indicator */
-  margin-top: 2px;
+/* --- app icon --- */
+.wboa-app {
   /* hover effect */
   padding-top: 2px;
 }
@@ -51,33 +60,59 @@
   /* hover effect */
   padding-top: 0px;
 }
-.wboa-app.wboa-active { /* active app */
+
+/* --- apps group label (x2, x3, ...) --- */
+.wboa-app > .wboa-label {
+  color: rgba(255, 255, 255, 0.4);
+  /* space horizontally app groups */
+  margin-right: 2px;
+}
+
+/* COMMON */
+
+/* round indicator borders */
+.wboa-rounded {
   border-radius: 5px;
+}
+/* round panel button borders */
+.wboa-panel-rounded {
+  border-radius: 15px !important;
+}
+/* do not round indicator borders */
+.wboa-no-rounded {
+  border-radius: 0px !important;
+}
+
+/* --- TOP indicators --- */
+.wboa-top {
+  border: none;
+  /* simulate presence of active indicator */
+  margin-top: 2px;
+}
+.wboa-top.wboa-active {
   border-top: 2px solid white;
   /* disable simulation of presence of active indicator */
   margin-top: 0px;
 }
-.wboa-app.wboa-active.wboa-no-indicator {
+.wboa-top.wboa-no-indicator {
   border: none !important;
   /* simulate presence of active indicator */
   margin-top: 2px;
 }
 
-/* --- apps group --- */
-.wboa-app-group-text { /* group text (x2, x3, ...) */
-  color: rgba(110, 110, 110, 0.58);
-  font-size: 12px;
-  /* space horizontally app groups */
-  margin-right: 2px;
+/* --- BOTTOM indicators --- */
+.wboa-bottom {
+  border: none;
+  /* simulate presence of active indicator */
+  margin-bottom: 2px;
 }
-.wboa-active .wboa-app-group-text { /* active group */
-  color: white;
+.wboa-bottom.wboa-active {
+  border-bottom: 2px solid white;
+  /* disable simulation of presence of active indicator */
+  margin-bottom: 0px;
 }
-
-/* --- common --- */
-.wboa-no-rounded {
-  border-radius: 0px !important;
-}
-.panel-button {
-  border-radius: 15px;
+.wboa-bottom.wboa-no-indicator {
+  border: none !important;
+  /* simulate presence of active indicator */
+  margin-bottom: 2px;
 }
