@@ -22,9 +22,9 @@ fi
 echo "Removing the extension directory..."
 
 # Remove current extension version
-sudo rm -rf "$EXTENSION_PATH"
+rm -rf "$EXTENSION_PATH"
 
-# If 'sudo' or 'rm' failed, exit
+# If 'rm' failed, exit
 if [ $? -ne 0 ]; then
     echo "Removal of the extension directory failed. Exiting."
     exit 1
