@@ -39,6 +39,9 @@
 > [!TIP]
 > Customize CSS editing `stylesheet.css` file. Add more classes simply searching `css_*` variables in `extension.js`.
 
+> [!WARNING]
+> Centering vertically the labels independently from the font used is problematic. Tweak `.wboa-label` classes in `stylesheet.css` to adjust it.
+
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/29f066c6-b2e8-411d-8430-faf4d921db27" alt="Preview" height="40">
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/72d6ea78-640a-4f1f-8c50-ddf5bb3baabb" alt="Preview" height="40">

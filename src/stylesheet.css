@@ -50,17 +50,12 @@
   margin-right: 2px;
   margin-left: 2px;
 }
-.wboa-workspace.wboa-bottom > .wboa-label {
+.wboa-workspace.wboa-top > .wboa-label {
   /* fix vertical offset when workspace indicator position is bottom */
-  padding-top: 4px;
+  padding-bottom: 3px;
 }
 
 /* --- app icon --- */
-.wboa-app {
-  /* vertical spacing */
-  margin-top: 1px;
-  margin-bottom: 1px;
-}
 .wboa-app:hover, .wboa-app:focus {
   /* hover effect */
   margin-top: -2px;
