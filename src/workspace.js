@@ -15,9 +15,9 @@ export default class Workspace extends St.Bin {
     GObject.registerClass(this)
   }
 
-  constructor(settings, workspace, windows, index, is_active, is_other_monitor, css_inline_workspace, css_classes_workspace) {
+  constructor(settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace) {
     super({
-      style_class: "panel-button",
+      style_class: css_classes_panel.join(" "),
       reactive: true,
       can_focus: true,
       track_hover: true,
@@ -184,15 +184,14 @@ export default class Workspace extends St.Bin {
     const css_inline_app = `border-color: ${this._settings.indicator_color}`
 
     const css_classes_app = [ "wboa-app" ]
-    if (is_focus) {
-      css_classes_app.push("wboa-active")
+    if (this._settings.indicator_swap_position) {
+      css_classes_app.push("wboa-bottom")
+    } else {
+      css_classes_app.push("wboa-top")
     }
-    if (!this._settings.indicator_show_focused_app) {
-      css_classes_app.push("wboa-no-indicator")
-    }
-    if (!this._settings.indicator_round_borders) {
-      css_classes_app.push("wboa-no-rounded")
-    }
+    if (is_focus) css_classes_app.push("wboa-active")
+    if (!this._settings.indicator_show_focused_app) css_classes_app.push("wboa-no-indicator")
+    if (this._settings.indicator_round_borders) css_classes_app.push("wboa-rounded")
 
     return new Application(this._settings, this._index, window, occurrences, app_icon, css_inline_app, css_classes_app)
   }
@@ -247,7 +246,7 @@ export default class Workspace extends St.Bin {
       indicator_text = (index+1).toString()
     }
 
-    const css_classes_label = [ "wboa-workspace-label" ]
+    const css_classes_label = [ "wboa-label" ]
 
     // add label to indicator
     this.get_child().insert_child_at_index(new St.Label({
@@ -288,7 +287,7 @@ export default class Workspace extends St.Bin {
         return
       }
 
-      const css_classes_label = [ "wboa-workspace-label" ]
+      const css_classes_label = [ "wboa-label" ]
 
       // create text input
       const entry = new St.Entry({

@@ -59,6 +59,7 @@ export default class WorkspacesByOpenApps extends Extension {
       indicator_show_focused_app: rs.get_boolean("indicator-show-focused-app"),
       indicator_color: rs.get_string("indicator-color"),
       indicator_round_borders: rs.get_boolean("indicator-round-borders"),
+      indicator_swap_position: rs.get_boolean("indicator-swap-position"),
 
       indicator_show_indexes: rs.get_boolean("indicator-show-indexes"),
       indicator_hide_empty: rs.get_boolean("indicator-hide-empty"),
@@ -216,11 +217,19 @@ export default class WorkspacesByOpenApps extends Extension {
     const css_inline_workspace = `border-color: ${this._settings.indicator_color}`
 
     const css_classes_workspace = [ "wboa-workspace" ]
+    if (this._settings.indicator_swap_position) {
+      css_classes_workspace.push("wboa-top")
+    } else {
+      css_classes_workspace.push("wboa-bottom")
+    }
     if (is_active) css_classes_workspace.push("wboa-active")
     if (!this._settings.indicator_show_active_workspace) css_classes_workspace.push("wboa-no-indicator")
-    if (!this._settings.indicator_round_borders) css_classes_workspace.push("wboa-no-rounded")
+    if (this._settings.indicator_round_borders) css_classes_workspace.push("wboa-rounded")
 
-    return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_inline_workspace, css_classes_workspace)
+    const css_classes_panel = [ "panel-button", "wboa-panel-rounded" ]
+    if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")
+
+    return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace)
   }
 
 }

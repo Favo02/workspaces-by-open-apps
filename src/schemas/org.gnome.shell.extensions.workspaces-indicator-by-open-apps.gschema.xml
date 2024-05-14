@@ -108,6 +108,12 @@
       <description>Round borders of active workspace and focused app indicators</description>
     </key>
 
+    <key type="b" name="indicator-swap-position">
+      <default>false</default>
+      <summary>Swap indicators position</summary>
+      <description>Move active app indicator to bottom and active workspace to top</description>
+    </key>
+
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
 
     <key type="b" name="indicator-show-indexes">
