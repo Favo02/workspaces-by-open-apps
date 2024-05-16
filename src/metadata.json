@@ -4,6 +4,6 @@
   "uuid": "workspaces-by-open-apps@favo02.github.com",
   "settings-schema": "org.gnome.shell.extensions.workspaces-indicator-by-open-apps",
   "url": "https://github.com/Favo02/workspaces-by-open-apps",
-  "version": "17",
+  "version": "18",
   "shell-version": [ "45", "46" ]
 }

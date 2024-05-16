@@ -35,6 +35,7 @@ export default class WorkspacesByOpenApps extends Extension {
 
     this._settings = null
     this._container.destroy()
+    this._container = null
   }
 
   /**
