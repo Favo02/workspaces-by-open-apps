@@ -28,9 +28,7 @@
 */
 
 /* --- labels (workspace name and apps count) --- */
-.wboa-label {
-  font-size: 12px;
-}
+/* label size managed by size-workspace-label setting */
 .wboa-active > .wboa-label {
   color: rgba(255, 255, 255, 1) !important;
 }
@@ -56,6 +54,7 @@
 }
 
 /* --- app icon --- */
+/* app icon size managed by size-app-icon setting */
 .wboa-app:hover, .wboa-app:focus {
   /* hover effect */
   margin-top: -2px;

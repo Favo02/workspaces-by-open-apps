@@ -60,9 +60,13 @@ export default class Application extends St.BoxLayout {
    * @param {Map} occurrences
    */
   _render_occurrences_label(occurrences, window) {
+
+    const css_style_text = `font-size: ${this._settings.size_labels}px`
     const css_classes_text = [ "wboa-label" ]
+
     if ((this._settings.icons_group === 1) && (occurrences.get(window.get_pid()).count > 1)) {
       this.add_child(new St.Label({
+        style: css_style_text,
         style_class: css_classes_text.join(" "),
         y_align: Clutter.ActorAlign.CENTER,
         text: `x${occurrences.get(window.get_pid()).count}`

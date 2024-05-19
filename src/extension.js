@@ -74,7 +74,10 @@ export default class WorkspacesByOpenApps extends Extension {
       icons_limit: rs.get_int("icons-limit"),
       icons_group: rs.get_enum("icons-group"),
       icons_ignored: rs.get_strv("icons-ignored"),
-      log_apps_id: rs.get_boolean("log-apps-id")
+      log_apps_id: rs.get_boolean("log-apps-id"),
+
+      size_app_icon: rs.get_int("size-app-icon"),
+      size_labels: rs.get_int("size-labels"),
     }
 
     // hide activities button
