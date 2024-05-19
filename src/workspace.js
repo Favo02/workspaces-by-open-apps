@@ -327,11 +327,11 @@ export default class Workspace extends St.Bin {
     switch (scroll_direction) {
       case Clutter.ScrollDirection.LEFT:
       case Clutter.ScrollDirection.UP:
-        direction = this._settings.inverse_scroll ? -1 : 1
+        direction = this._settings.scroll_inverse ? -1 : 1
         break
       case Clutter.ScrollDirection.RIGHT:
       case Clutter.ScrollDirection.DOWN:
-        direction = this._settings.inverse_scroll ? 1 : -1
+        direction = this._settings.scroll_inverse ? 1 : -1
         break
       default:
         return Clutter.EVENT_PROPAGATE
