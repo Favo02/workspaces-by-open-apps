@@ -78,6 +78,9 @@ export default class WorkspacesByOpenApps extends Extension {
 
       size_app_icon: rs.get_int("size-app-icon"),
       size_labels: rs.get_int("size-labels"),
+
+      spacing_workspace_left: rs.get_int("spacing-workspace-left"),
+      spacing_workspace_right: rs.get_int("spacing-workspace-right"),
     }
 
     // hide activities button
@@ -218,7 +221,11 @@ export default class WorkspacesByOpenApps extends Extension {
     // hide empty workspaces
     if (this._settings.indicator_hide_empty && !is_active && windows.length === 0) return
 
-    const css_inline_workspace = `border-color: ${this._settings.indicator_color}`
+    const css_inline_workspace = `
+      border-color: ${this._settings.indicator_color};
+      margin-left: ${this._settings.spacing_workspace_left}px;
+      margin-right: ${this._settings.spacing_workspace_right}px;
+      `
 
     const css_classes_workspace = [ "wboa-workspace" ]
     if (this._settings.indicator_swap_position) {

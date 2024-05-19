@@ -34,11 +34,9 @@
 }
 
 /* --- workspace indicator --- */
+/* workspace horizontal spacing is managed by spacing-workspace-{left, right} setttings */
 .wboa-workspace {
   border: none;
-  /* space horizontally indicators */
-  margin-left: 2px;
-  margin-right: 2px;
 }
 
 /* --- workspace label --- */

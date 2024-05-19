@@ -454,6 +454,38 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "Workspace spacing left",
+      subtitle: "Left spacing for a workspace indicator. Default: 2"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-workspace-left"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-workspace-left", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Workspace spacing right",
+      subtitle: "Right spacing for a workspace indicator. Default: 2"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-workspace-right"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-workspace-right", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 
