@@ -210,6 +210,18 @@
       <description>Bottom spacing for a workspace label. Default: 0</description>
     </key>
 
+    <key type="i" name="spacing-app-left">
+      <default>0</default>
+      <summary>App icon spacing left</summary>
+      <description>Left spacing for an application icon. Default: 0</description>
+    </key>
+
+    <key type="i" name="spacing-app-right">
+      <default>0</default>
+      <summary>App icon spacing right</summary>
+      <description>Right spacing for an application icon. Default: 0</description>
+    </key>
+
     <!-- PAGE 3 GROUP 1: HIDE AND IGNORE APPS -->
 
     <key type="i" name="icons-limit">

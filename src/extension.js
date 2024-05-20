@@ -86,6 +86,9 @@ export default class WorkspacesByOpenApps extends Extension {
       spacing_label_right: rs.get_int("spacing-label-right"),
       spacing_label_top: rs.get_int("spacing-label-top"),
       spacing_label_bottom: rs.get_int("spacing-label-bottom"),
+
+      spacing_app_left: rs.get_int("spacing-app-left"),
+      spacing_app_right: rs.get_int("spacing-app-right")
     }
 
     // hide activities button

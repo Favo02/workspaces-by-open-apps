@@ -550,6 +550,38 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "App icon spacing left",
+      subtitle: "Left spacing for an application icon. Default: 0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-app-left"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-app-left", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "App icon spacing right",
+      subtitle: "Right spacing for an application icon. Default: 0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-app-right"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-app-right", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 

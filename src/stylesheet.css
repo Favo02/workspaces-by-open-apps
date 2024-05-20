@@ -40,13 +40,14 @@
 }
 
 /* --- workspace label --- */
-/* workspace label spacing managed by spacing-label-{left, right, top, bottom} setting */
+/* workspace label spacing managed by spacing-label-{left, right, top, bottom} settings */
 .wboa-workspace > .wboa-label {
   color: rgba(255, 255, 255, 0.5);
 }
 
 /* --- app icon --- */
 /* app icon size managed by size-app-icon setting */
+/* app icon spacing managed by spacing-app-{left, right} settings */
 .wboa-app:hover, .wboa-app:focus {
   /* hover effect */
   margin-top: -2px;
