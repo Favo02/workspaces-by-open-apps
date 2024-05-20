@@ -90,7 +90,7 @@ export default class Workspace extends St.Bin {
     if (windows.length > icons_limit) {
       const plus_icon = new St.Icon({
         icon_name: "list-add-symbolic",
-        icon_size: CONSTANTS.ICONS_SIZE
+        icon_size: this._settings.size_app_icon / 2
       })
       plus_icon.set_opacity(CONSTANTS.LOW_OPACITY)
       this.get_child().add_child(plus_icon)
@@ -148,7 +148,7 @@ export default class Workspace extends St.Bin {
     const app = Shell.WindowTracker.get_default().get_window_app(window)
 
     // create Clutter.actor
-    const app_icon = app.create_icon_texture(CONSTANTS.TEXTURES_SIZE)
+    const app_icon = app.create_icon_texture(this._settings.size_app_icon)
 
     // effects for not focused apps
     const is_focus = window.has_focus() || occurrences.get(window.get_pid())?.focus
@@ -181,7 +181,11 @@ export default class Workspace extends St.Bin {
       app_icon.add_effect(new Clutter.DesaturateEffect())
     }
 
-    const css_inline_app = `border-color: ${this._settings.indicator_color}`
+    const css_inline_app = `
+      border-color: ${this._settings.indicator_color};
+      margin-left: ${this._settings.spacing_app_left}px;
+      margin-right: ${this._settings.spacing_app_right}px;
+    `
 
     const css_classes_app = [ "wboa-app" ]
     if (this._settings.indicator_swap_position) {
@@ -246,10 +250,18 @@ export default class Workspace extends St.Bin {
       indicator_text = (index+1).toString()
     }
 
+    const css_style_label = `
+      font-size: ${this._settings.size_labels}px;
+      margin-left: ${this._settings.spacing_label_left}px;
+      margin-right: ${this._settings.spacing_label_right}px;
+      margin-top: ${this._settings.spacing_label_top}px;
+      margin-bottom: ${this._settings.spacing_label_bottom}px;
+    `
     const css_classes_label = [ "wboa-label" ]
 
     // add label to indicator
     this.get_child().insert_child_at_index(new St.Label({
+      style: css_style_label,
       style_class: css_classes_label.join(" "),
       y_align: Clutter.ActorAlign.CENTER,
       text: indicator_text

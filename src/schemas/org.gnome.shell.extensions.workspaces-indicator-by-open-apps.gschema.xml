@@ -111,7 +111,7 @@
     <key type="b" name="indicator-swap-position">
       <default>false</default>
       <summary>Swap indicators position</summary>
-      <description>Move active app indicator to bottom and active workspace to top</description>
+      <description>Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below.</description>
     </key>
 
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
@@ -158,6 +158,68 @@
       <default>"REDUCE OPACITY"</default>
       <summary>Minimized apps effect</summary>
       <description>Effect to apply to minimized apps icons</description>
+    </key>
+
+    <!-- PAGE 2 GROUP 4: SIZES AND SPACING -->
+
+    <key type="i" name="size-app-icon">
+      <default>20</default>
+      <summary>Application icon size</summary>
+      <description>Size of a signle application icon. The icon is limited by the panel height (edit panel height with extensions like Just Perfection). Default: 20</description>
+    </key>
+
+    <key type="i" name="size-labels">
+      <default>12</default>
+      <summary>Labels font size</summary>
+      <description>Font sizes for all labels (workspace name, apps groups). Default: 12</description>
+    </key>
+
+    <key type="i" name="spacing-workspace-left">
+      <default>2</default>
+      <summary>Workspace spacing left</summary>
+      <description>Left spacing for a workspace indicator. Default: 2</description>
+    </key>
+
+    <key type="i" name="spacing-workspace-right">
+      <default>2</default>
+      <summary>Workspace spacing right</summary>
+      <description>Right spacing for a workspace indicator. Default: 2</description>
+    </key>
+
+    <key type="i" name="spacing-label-left">
+      <default>2</default>
+      <summary>Label spacing left</summary>
+      <description>Left spacing for a workspace label. Default: 2</description>
+    </key>
+
+    <key type="i" name="spacing-label-right">
+      <default>2</default>
+      <summary>Label spacing right</summary>
+      <description>Right spacing for a workspace label. Default: 2</description>
+    </key>
+
+    <key type="i" name="spacing-label-top">
+      <default>0</default>
+      <summary>Label spacing top</summary>
+      <description>Top spacing for a workspace label. Default: 0</description>
+    </key>
+
+    <key type="i" name="spacing-label-bottom">
+      <default>0</default>
+      <summary>Label spacing bottom</summary>
+      <description>Bottom spacing for a workspace label. Default: 0</description>
+    </key>
+
+    <key type="i" name="spacing-app-left">
+      <default>0</default>
+      <summary>App icon spacing left</summary>
+      <description>Left spacing for an application icon. Default: 0</description>
+    </key>
+
+    <key type="i" name="spacing-app-right">
+      <default>0</default>
+      <summary>App icon spacing right</summary>
+      <description>Right spacing for an application icon. Default: 0</description>
     </key>
 
     <!-- PAGE 3 GROUP 1: HIDE AND IGNORE APPS -->

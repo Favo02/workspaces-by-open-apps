@@ -28,34 +28,26 @@
 */
 
 /* --- labels (workspace name and apps count) --- */
-.wboa-label {
-  font-size: 12px;
-}
+/* label size managed by size-workspace-label setting */
 .wboa-active > .wboa-label {
   color: rgba(255, 255, 255, 1) !important;
 }
 
 /* --- workspace indicator --- */
+/* workspace horizontal spacing is managed by spacing-workspace-{left, right} setttings */
 .wboa-workspace {
   border: none;
-  /* space horizontally indicators */
-  margin-left: 2px;
-  margin-right: 2px;
 }
 
 /* --- workspace label --- */
+/* workspace label spacing managed by spacing-label-{left, right, top, bottom} settings */
 .wboa-workspace > .wboa-label {
   color: rgba(255, 255, 255, 0.5);
-  /* space horizontally from icons */
-  margin-right: 2px;
-  margin-left: 2px;
-}
-.wboa-workspace.wboa-top > .wboa-label {
-  /* fix vertical offset when workspace indicator position is bottom */
-  padding-bottom: 3px;
 }
 
 /* --- app icon --- */
+/* app icon size managed by size-app-icon setting */
+/* app icon spacing managed by spacing-app-{left, right} settings */
 .wboa-app:hover, .wboa-app:focus {
   /* hover effect */
   margin-top: -2px;

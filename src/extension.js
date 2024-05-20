@@ -74,7 +74,21 @@ export default class WorkspacesByOpenApps extends Extension {
       icons_limit: rs.get_int("icons-limit"),
       icons_group: rs.get_enum("icons-group"),
       icons_ignored: rs.get_strv("icons-ignored"),
-      log_apps_id: rs.get_boolean("log-apps-id")
+      log_apps_id: rs.get_boolean("log-apps-id"),
+
+      size_app_icon: rs.get_int("size-app-icon"),
+      size_labels: rs.get_int("size-labels"),
+
+      spacing_workspace_left: rs.get_int("spacing-workspace-left"),
+      spacing_workspace_right: rs.get_int("spacing-workspace-right"),
+
+      spacing_label_left: rs.get_int("spacing-label-left"),
+      spacing_label_right: rs.get_int("spacing-label-right"),
+      spacing_label_top: rs.get_int("spacing-label-top"),
+      spacing_label_bottom: rs.get_int("spacing-label-bottom"),
+
+      spacing_app_left: rs.get_int("spacing-app-left"),
+      spacing_app_right: rs.get_int("spacing-app-right")
     }
 
     // hide activities button
@@ -215,7 +229,11 @@ export default class WorkspacesByOpenApps extends Extension {
     // hide empty workspaces
     if (this._settings.indicator_hide_empty && !is_active && windows.length === 0) return
 
-    const css_inline_workspace = `border-color: ${this._settings.indicator_color}`
+    const css_inline_workspace = `
+      border-color: ${this._settings.indicator_color};
+      margin-left: ${this._settings.spacing_workspace_left}px;
+      margin-right: ${this._settings.spacing_workspace_right}px;
+      `
 
     const css_classes_workspace = [ "wboa-workspace" ]
     if (this._settings.indicator_swap_position) {

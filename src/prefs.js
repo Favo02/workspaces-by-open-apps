@@ -31,6 +31,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     page2.add(this._page2_group1(settings))
     page2.add(this._page2_group2(settings))
     page2.add(this._page2_group3(settings))
+    page2.add(this._page2_group4(settings))
     page2.add(this._info_label())
 
     // page3: hide and ignore apps
@@ -278,7 +279,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Swap indicators position",
-      subtitle: "Move active app indicator to bottom and active workspace to top"
+      subtitle: "Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below."
     })
     widget = new Gtk.Switch({
       valign: Gtk.Align.CENTER
@@ -406,6 +407,177 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.append("REDUCE OPACITY", "Reduce opacity")
     widget.append("DESATURATE", "Desaturate")
     settings.bind("apps-minimized-effect", widget, "active-id", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    return group
+  }
+
+  _page2_group4(settings) {
+    const group = new Adw.PreferencesGroup({
+      title: "Size and spacing",
+      description: ""
+    })
+
+    let row, widget
+
+    row = new Adw.ActionRow({
+      title: "Application icon size",
+      subtitle: "Size of a signle application icon. The icon is limited by the panel height (edit panel height with extensions like Just Perfection). Default: 20"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(1, 50)
+    widget.set_value(settings.get_int("size-app-icon"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("size-app-icon", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Labels font size",
+      subtitle: "Font sizes for all labels (workspace name, apps groups). Default: 12"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(1, 50)
+    widget.set_value(settings.get_int("size-labels"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("size-labels", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Workspace spacing left",
+      subtitle: "Left spacing for a workspace indicator. Default: 2"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-workspace-left"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-workspace-left", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Workspace spacing right",
+      subtitle: "Right spacing for a workspace indicator. Default: 2"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-workspace-right"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-workspace-right", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Label spacing left",
+      subtitle: "Left spacing for a workspace label. Default: 2"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-label-left"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-label-left", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Label spacing right",
+      subtitle: "Right spacing for a workspace label. Default: 2"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-label-right"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-label-right", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Label spacing top",
+      subtitle: "Top spacing for a workspace label. Default: 0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-label-top"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-label-top", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Label spacing bottom",
+      subtitle: "Bottom spacing for a workspace label. Default: 0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-label-bottom"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-label-bottom", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "App icon spacing left",
+      subtitle: "Left spacing for an application icon. Default: 0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-app-left"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-app-left", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "App icon spacing right",
+      subtitle: "Right spacing for an application icon. Default: 0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-app-right"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-app-right", w.get_value_as_int()) })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
