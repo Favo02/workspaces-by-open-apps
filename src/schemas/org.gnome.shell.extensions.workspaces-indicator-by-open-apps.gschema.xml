@@ -111,7 +111,7 @@
     <key type="b" name="indicator-swap-position">
       <default>false</default>
       <summary>Swap indicators position</summary>
-      <description>Move active app indicator to bottom and active workspace to top</description>
+      <description>Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below.</description>
     </key>
 
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
@@ -196,6 +196,18 @@
       <default>2</default>
       <summary>Label spacing right</summary>
       <description>Right spacing for a workspace label. Default: 2</description>
+    </key>
+
+    <key type="i" name="spacing-label-top">
+      <default>0</default>
+      <summary>Label spacing top</summary>
+      <description>Top spacing for a workspace label. Default: 0</description>
+    </key>
+
+    <key type="i" name="spacing-label-bottom">
+      <default>0</default>
+      <summary>Label spacing bottom</summary>
+      <description>Bottom spacing for a workspace label. Default: 0</description>
     </key>
 
     <!-- PAGE 3 GROUP 1: HIDE AND IGNORE APPS -->

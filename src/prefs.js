@@ -279,7 +279,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Swap indicators position",
-      subtitle: "Move active app indicator to bottom and active workspace to top"
+      subtitle: "Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below."
     })
     widget = new Gtk.Switch({
       valign: Gtk.Align.CENTER
@@ -514,6 +514,38 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_value(settings.get_int("spacing-label-right"))
     widget.set_increments(1, 2)
     widget.connect("value-changed", w => { settings.set_int("spacing-label-right", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Label spacing top",
+      subtitle: "Top spacing for a workspace label. Default: 0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-label-top"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-label-top", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Label spacing bottom",
+      subtitle: "Bottom spacing for a workspace label. Default: 0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-label-bottom"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-label-bottom", w.get_value_as_int()) })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)

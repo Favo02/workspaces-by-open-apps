@@ -250,6 +250,8 @@ export default class Workspace extends St.Bin {
       font-size: ${this._settings.size_labels}px;
       margin-left: ${this._settings.spacing_label_left}px;
       margin-right: ${this._settings.spacing_label_right}px;
+      margin-top: ${this._settings.spacing_label_top}px;
+      margin-bottom: ${this._settings.spacing_label_bottom}px;
     `
     const css_classes_label = [ "wboa-label" ]
 

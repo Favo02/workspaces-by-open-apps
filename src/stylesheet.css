@@ -40,13 +40,9 @@
 }
 
 /* --- workspace label --- */
-/* workspace label spacing managed by spacing-workspace-label-{left, right} setting */
+/* workspace label spacing managed by spacing-label-{left, right, top, bottom} setting */
 .wboa-workspace > .wboa-label {
   color: rgba(255, 255, 255, 0.5);
-}
-.wboa-workspace.wboa-top > .wboa-label {
-  /* fix vertical offset when workspace indicator position is bottom */
-  padding-bottom: 3px;
 }
 
 /* --- app icon --- */
