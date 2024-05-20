@@ -35,6 +35,7 @@
 - **Limit icons** per workspace
 - **Group icons** of same application
 - **Ignore** applications (with regex)
+- **Spacing** and **Size** of applications icons and labels
 
 > [!TIP]
 > Customize CSS editing `stylesheet.css` file. Add more classes simply searching `css_*` variables in `extension.js`.
