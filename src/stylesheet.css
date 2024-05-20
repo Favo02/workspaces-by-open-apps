@@ -40,11 +40,9 @@
 }
 
 /* --- workspace label --- */
+/* workspace label spacing managed by spacing-workspace-label-{left, right} setting */
 .wboa-workspace > .wboa-label {
   color: rgba(255, 255, 255, 0.5);
-  /* space horizontally from icons */
-  margin-right: 2px;
-  margin-left: 2px;
 }
 .wboa-workspace.wboa-top > .wboa-label {
   /* fix vertical offset when workspace indicator position is bottom */

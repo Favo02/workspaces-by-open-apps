@@ -186,6 +186,18 @@
       <description>Right spacing for a workspace indicator. Default: 2</description>
     </key>
 
+    <key type="i" name="spacing-label-left">
+      <default>2</default>
+      <summary>Label spacing left</summary>
+      <description>Left spacing for a workspace label. Default: 2</description>
+    </key>
+
+    <key type="i" name="spacing-label-right">
+      <default>2</default>
+      <summary>Label spacing right</summary>
+      <description>Right spacing for a workspace label. Default: 2</description>
+    </key>
+
     <!-- PAGE 3 GROUP 1: HIDE AND IGNORE APPS -->
 
     <key type="i" name="icons-limit">

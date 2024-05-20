@@ -486,6 +486,38 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "Label spacing left",
+      subtitle: "Left spacing for a workspace label. Default: 2"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-label-left"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-label-left", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Label spacing right",
+      subtitle: "Right spacing for a workspace label. Default: 2"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 50)
+    widget.set_value(settings.get_int("spacing-label-right"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("spacing-label-right", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 

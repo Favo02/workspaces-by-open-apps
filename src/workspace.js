@@ -246,7 +246,11 @@ export default class Workspace extends St.Bin {
       indicator_text = (index+1).toString()
     }
 
-    const css_style_label = `font-size: ${this._settings.size_labels}px`
+    const css_style_label = `
+      font-size: ${this._settings.size_labels}px;
+      margin-left: ${this._settings.spacing_label_left}px;
+      margin-right: ${this._settings.spacing_label_right}px;
+    `
     const css_classes_label = [ "wboa-label" ]
 
     // add label to indicator
