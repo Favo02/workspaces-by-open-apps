@@ -424,7 +424,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Application icon size",
-      subtitle: "Size of a signle application icon. The icon is limited by the panel height (edit panel height with extensions like Just Perfection). Default: 20"
+      subtitle: "Size of a single application icon. The icon is limited by the panel height (edit panel height with extensions like Just Perfection). Default: 20"
     })
     widget = new Gtk.SpinButton({
       valign: Gtk.Align.CENTER
