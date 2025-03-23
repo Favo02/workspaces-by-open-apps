@@ -109,7 +109,7 @@ export default class Workspace extends St.Bin {
 
     if (this._settings.icons_group !== CONSTANTS.OFF) {
       for (const window of windows) {
-        const id = window.get_pid()
+        const id = window.app_id
         const get_or_default = occurrences.get(id) ?? { count: 0, focus: false, not_minimized: false }
 
         occurrences.set(id, {
@@ -131,8 +131,8 @@ export default class Workspace extends St.Bin {
   _remove_duplicates(windows) {
     const seen = new Set()
     return windows.filter(win => {
-      if (seen.has(win.get_pid())) return false
-      seen.add(win.get_pid())
+      if (seen.has(win.app_id)) return false
+      seen.add(win.app_id)
       return true
     })
   }
@@ -151,7 +151,7 @@ export default class Workspace extends St.Bin {
     const app_icon = app.create_icon_texture(this._settings.size_app_icon)
 
     // effects for not focused apps
-    const is_focus = window.has_focus() || occurrences.get(window.get_pid())?.focus
+    const is_focus = window.has_focus() || occurrences.get(window.app_id)?.focus
     if (!is_focus) {
       // reduce opacity
       if (this._settings.apps_inactive_effect === CONSTANTS.REDUCE_OPACITY) {
@@ -164,7 +164,7 @@ export default class Workspace extends St.Bin {
     }
 
     // effects for minimized apps
-    const is_not_minimized = !window.is_hidden() || occurrences.get(window.get_pid())?.not_minimized
+    const is_not_minimized = !window.is_hidden() || occurrences.get(window.app_id)?.not_minimized
     if (!is_not_minimized) {
       // reduce opacity
       if (this._settings.apps_minimized_effect === CONSTANTS.REDUCE_OPACITY) {
@@ -187,7 +187,7 @@ export default class Workspace extends St.Bin {
       margin-right: ${this._settings.spacing_app_right}px;
     `
 
-    const css_classes_app = [ "wboa-app" ]
+    const css_classes_app = ["wboa-app"]
     if (this._settings.indicator_swap_position) {
       css_classes_app.push("wboa-bottom")
     } else {
@@ -247,7 +247,7 @@ export default class Workspace extends St.Bin {
     }
     // default text: index
     else {
-      indicator_text = (index+1).toString()
+      indicator_text = (index + 1).toString()
     }
 
     const css_style_label = `
@@ -257,7 +257,7 @@ export default class Workspace extends St.Bin {
       margin-top: ${this._settings.spacing_label_top}px;
       margin-bottom: ${this._settings.spacing_label_bottom}px;
     `
-    const css_classes_label = [ "wboa-label" ]
+    const css_classes_label = ["wboa-label"]
 
     // add label to indicator
     this.get_child().insert_child_at_index(new St.Label({
@@ -299,7 +299,7 @@ export default class Workspace extends St.Bin {
         return
       }
 
-      const css_classes_label = [ "wboa-label" ]
+      const css_classes_label = ["wboa-label"]
 
       // create text input
       const entry = new St.Entry({

@@ -194,6 +194,9 @@ export default class WorkspacesByOpenApps extends Extension {
         const app = Shell.WindowTracker.get_default().get_window_app(win)
         if (!app) return false
 
+        // store app id on window
+        win.app_id = app.get_id()
+
         // apps on all workspaces (for normal workspace indicator)
         if (!is_other_monitor && win.is_on_all_workspaces()) return false
 
@@ -235,7 +238,7 @@ export default class WorkspacesByOpenApps extends Extension {
       margin-right: ${this._settings.spacing_workspace_right}px;
       `
 
-    const css_classes_workspace = [ "wboa-workspace" ]
+    const css_classes_workspace = ["wboa-workspace"]
     if (this._settings.indicator_swap_position) {
       css_classes_workspace.push("wboa-top")
     } else {
@@ -245,7 +248,7 @@ export default class WorkspacesByOpenApps extends Extension {
     if (!this._settings.indicator_show_active_workspace) css_classes_workspace.push("wboa-no-indicator")
     if (this._settings.indicator_round_borders) css_classes_workspace.push("wboa-rounded")
 
-    const css_classes_panel = [ "panel-button", "wboa-panel-rounded" ]
+    const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
     if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")
 
     return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace)

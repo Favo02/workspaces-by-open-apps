@@ -64,12 +64,12 @@ export default class Application extends St.BoxLayout {
     const css_style_text = `font-size: ${this._settings.size_labels}px`
     const css_classes_text = [ "wboa-label" ]
 
-    if ((this._settings.icons_group === 1) && (occurrences.get(window.get_pid()).count > 1)) {
+    if ((this._settings.icons_group === 1) && (occurrences.get(window.app_id).count > 1)) {
       this.add_child(new St.Label({
         style: css_style_text,
         style_class: css_classes_text.join(" "),
         y_align: Clutter.ActorAlign.CENTER,
-        text: `x${occurrences.get(window.get_pid()).count}`
+        text: `x${occurrences.get(window.app_id).count}`
       }))
     }
   }
