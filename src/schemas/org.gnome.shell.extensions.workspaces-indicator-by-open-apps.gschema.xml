@@ -142,6 +142,12 @@
 
     <!-- PAGE 2 GROUP 3: ICONS APPEARANCE -->
 
+    <key type="b" name="apps-symbolic-icons">
+      <default>false</default>
+      <summary>Use symbolic icons</summary>
+      <description>Use symbolic icons for apps</description>
+    </key>
+
     <key type="b" name="apps-all-desaturate">
       <default>false</default>
       <summary>Desaturate all apps icons</summary>

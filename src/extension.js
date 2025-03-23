@@ -67,6 +67,7 @@ export default class WorkspacesByOpenApps extends Extension {
       indicator_all_text: rs.get_string("indicator-all-text"),
       indicator_use_custom_names: rs.get_boolean("indicator-use-custom-names"),
 
+      apps_symbolic_icons: rs.get_boolean("apps-symbolic-icons"),
       apps_all_desaturate: rs.get_boolean("apps-all-desaturate"),
       apps_inactive_effect: rs.get_enum("apps-inactive-effect"),
       apps_minimized_effect: rs.get_enum("apps-minimized-effect"),

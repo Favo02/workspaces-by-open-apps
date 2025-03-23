@@ -52,6 +52,10 @@
   /* hover effect */
   margin-top: -2px;
 }
+/* symbolic icon */
+.wboa-symbolic-icons {
+  -st-icon-style: symbolic;
+}
 
 /* --- apps group label (x2, x3, ...) --- */
 .wboa-app > .wboa-label {

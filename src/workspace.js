@@ -196,6 +196,7 @@ export default class Workspace extends St.Bin {
     if (is_focus) css_classes_app.push("wboa-active")
     if (!this._settings.indicator_show_focused_app) css_classes_app.push("wboa-no-indicator")
     if (this._settings.indicator_round_borders) css_classes_app.push("wboa-rounded")
+    if (this._settings.apps_symbolic_icons) css_classes_app.push("wboa-symbolic-icons")
 
     return new Application(this._settings, this._index, window, occurrences, app_icon, css_inline_app, css_classes_app)
   }
