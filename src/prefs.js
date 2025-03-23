@@ -370,6 +370,18 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     let row, widget
 
     row = new Adw.ActionRow({
+      title: "Use symbolic icons",
+      subtitle: "Use symbolic icons for apps"
+    })
+    widget = new Gtk.Switch({
+      valign: Gtk.Align.CENTER
+    })
+    settings.bind("apps-symbolic-icons", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
       title: "Desaturate all apps icons",
       subtitle: "Show only black and white apps icons"
     })
