@@ -5,5 +5,5 @@
   "settings-schema": "org.gnome.shell.extensions.workspaces-indicator-by-open-apps",
   "url": "https://github.com/Favo02/workspaces-by-open-apps",
   "version": "20",
-  "shell-version": [ "45", "46", "47" ]
+  "shell-version": [ "45", "46", "47", "48" ]
 }
