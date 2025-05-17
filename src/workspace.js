@@ -33,6 +33,7 @@ export default class Workspace extends St.Bin {
     this._settings = settings
     this._index = index
     this._workspace = workspace
+    this._is_active = is_active
 
     // setup signals
     this._setup_signals()
@@ -251,12 +252,35 @@ export default class Workspace extends St.Bin {
       indicator_text = (index + 1).toString()
     }
 
+    // dynamicly create style instead of using hardcoded css
+    let panel = main.panel
+    let color_rgba = null
+    let alpha = this._is_active ? 1 : 0.5
+    if (panel && panel.get_theme_node) {
+      try {
+        let gdkColor = panel.get_theme_node().get_foreground_color()
+        if (gdkColor) {
+          // gdkColor is Clutter.Color or Gdk.RGBA, both have r,g,b,a in 0-255 or 0-1
+          let r = Math.round((gdkColor.red !== undefined ? gdkColor.red : gdkColor.r) * (gdkColor.red !== undefined ? 1 : 255))
+          let g = Math.round((gdkColor.green !== undefined ? gdkColor.green : gdkColor.g) * (gdkColor.green !== undefined ? 1 : 255))
+          let b = Math.round((gdkColor.blue !== undefined ? gdkColor.blue : gdkColor.b) * (gdkColor.blue !== undefined ? 1 : 255))
+          let a = (gdkColor.alpha !== undefined ? gdkColor.alpha : (gdkColor.a !== undefined ? 1 : 1))
+          if (a > 1) a = a / 255
+          color_rgba = `rgba(${r},${g},${b},${alpha})`
+        }
+      } catch (e) {
+        // do nothing but log error
+        log(`[wboa] label color_rgba error: ${e}`)
+      }
+    }
+
     const css_style_label = `
       font-size: ${this._settings.size_labels}px;
       margin-left: ${this._settings.spacing_label_left}px;
       margin-right: ${this._settings.spacing_label_right}px;
       margin-top: ${this._settings.spacing_label_top}px;
       margin-bottom: ${this._settings.spacing_label_bottom}px;
+      ${color_rgba ? `color: ${color_rgba};` : ''}
     `
     const css_classes_label = ["wboa-label"]
 

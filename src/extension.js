@@ -245,7 +245,6 @@ export default class WorkspacesByOpenApps extends Extension {
     } else {
       css_classes_workspace.push("wboa-bottom")
     }
-    if (is_active) css_classes_workspace.push("wboa-active")
     if (!this._settings.indicator_show_active_workspace) css_classes_workspace.push("wboa-no-indicator")
     if (this._settings.indicator_round_borders) css_classes_workspace.push("wboa-rounded")
 
