@@ -29,9 +29,6 @@
 
 /* --- labels (workspace name and apps count) --- */
 /* label size managed by size-workspace-label setting */
-.wboa-active > .wboa-label {
-  color: rgba(255, 255, 255, 1) !important;
-}
 
 /* --- workspace indicator --- */
 /* workspace horizontal spacing is managed by spacing-workspace-{left, right} setttings */
@@ -41,9 +38,6 @@
 
 /* --- workspace label --- */
 /* workspace label spacing managed by spacing-label-{left, right, top, bottom} settings */
-.wboa-workspace > .wboa-label {
-  color: rgba(255, 255, 255, 0.5);
-}
 
 /* --- app icon --- */
 /* app icon size managed by size-app-icon setting */
@@ -59,7 +53,6 @@
 
 /* --- apps group label (x2, x3, ...) --- */
 .wboa-app > .wboa-label {
-  color: rgba(255, 255, 255, 0.4);
   /* space horizontally app groups */
   margin-right: 2px;
 }
@@ -85,13 +78,10 @@
   /* simulate presence of active indicator */
   margin-top: 2px;
 }
-.wboa-top.wboa-active {
-  border-top: 2px solid white;
-  /* disable simulation of presence of active indicator */
-  margin-top: 0px;
-}
+
 .wboa-top.wboa-no-indicator {
   border: none !important;
+  color: unset;
   /* simulate presence of active indicator */
   margin-top: 2px;
 }
@@ -102,13 +92,10 @@
   /* simulate presence of active indicator */
   margin-bottom: 2px;
 }
-.wboa-bottom.wboa-active {
-  border-bottom: 2px solid white;
-  /* disable simulation of presence of active indicator */
-  margin-bottom: 0px;
-}
+
 .wboa-bottom.wboa-no-indicator {
   border: none !important;
+  color: unset;
   /* simulate presence of active indicator */
   margin-bottom: 2px;
 }
