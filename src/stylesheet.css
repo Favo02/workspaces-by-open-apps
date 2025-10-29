@@ -34,7 +34,7 @@
 }
 
 /* themed label color: removes forced color to allow theme color */
-.wboa-active > .wboa-label.wboa-label-themed {
+.wboa-label.wboa-label-themed {
   color: inherit !important;
 }
 
