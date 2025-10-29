@@ -20,7 +20,6 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     })
     page1.add(this._page1_group1(settings))
     page1.add(this._page1_group2(settings))
-    page1.add(this._page1_group3(settings))
     page1.add(this._info_label())
 
     // page2: appearance
@@ -216,48 +215,6 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     return group
   }
 
-  _page1_group3(settings) {
-    const group = new Adw.PreferencesGroup({
-      title: "Keyboard Shortcuts",
-      description: ""
-    })
-
-    let row, widget
-
-    row = new Adw.ActionRow({
-      title: "Rename active workspace",
-      subtitle: "Keyboard shortcut to rename the currently active workspace"
-    })
-    widget = new Gtk.Entry({
-      halign: Gtk.Align.END,
-      valign: Gtk.Align.CENTER,
-      hexpand: true,
-      xalign: 0.5,
-      width_chars: 20,
-      placeholder_text: "<Super><Shift>r",
-    })
-    widget.set_text(settings.get_strv("rename-workspace-shortcut")[0] || "")
-    widget.connect("changed", w => {
-      const shortcut = w.get_text().trim()
-      // Only save if non-empty and contains typical keybinding patterns
-      if (shortcut.length > 0) {
-        settings.set_strv("rename-workspace-shortcut", [shortcut])
-        widget.remove_css_class("error")
-      } else if (shortcut.length > 0) {
-        // Show error state but don't save invalid shortcut
-        widget.add_css_class("error")
-      } else {
-        // Empty input: remove error state
-        widget.remove_css_class("error")
-      }
-    })
-    row.add_suffix(widget)
-    row.activatable_widget = widget
-    group.add(row)
-
-    return group
-  }
-
   _page2_group1(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Indicator appearance",
@@ -397,6 +354,37 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       valign: Gtk.Align.CENTER
     })
     settings.bind("indicator-use-custom-names", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Rename active workspace shortcut",
+      subtitle: "Keyboard shortcut to rename the currently active workspace. If 'Use custom names for workspaces' is off, workspace renaming has no effect."
+    })
+    widget = new Gtk.Entry({
+      halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
+      hexpand: true,
+      xalign: 0.5,
+      width_chars: 20,
+      placeholder_text: "<Super><Shift>r",
+    })
+    widget.set_text(settings.get_strv("rename-workspace-shortcut")[0] || "")
+    widget.connect("changed", w => {
+      const shortcut = w.get_text().trim()
+      // Only save if non-empty and contains typical keybinding patterns
+      if (shortcut.length > 0) {
+        settings.set_strv("rename-workspace-shortcut", [shortcut])
+        widget.remove_css_class("error")
+      } else if (shortcut.length > 0) {
+        // Show error state but don't save invalid shortcut
+        widget.add_css_class("error")
+      } else {
+        // Empty input: remove error state
+        widget.remove_css_class("error")
+      }
+    })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
