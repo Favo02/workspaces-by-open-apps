@@ -254,6 +254,14 @@
       <description>Console log the ids of the applications currently running, to find the ids of the applications to ignore. Open log with "journalctl /usr/bin/gnome-shell -f -o cat"</description>
     </key>
 
+    <!-- KEYBOARD SHORTCUTS -->
+
+    <key type="as" name="rename-workspace-shortcut">
+      <default>['&lt;Super&gt;&lt;Shift&gt;r']</default>
+      <summary>Rename active workspace shortcut</summary>
+      <description>Keyboard shortcut to open the rename dialog for the active workspace</description>
+    </key>
+
   </schema>
 
 </schemalist>

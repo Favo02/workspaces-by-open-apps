@@ -20,6 +20,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     })
     page1.add(this._page1_group1(settings))
     page1.add(this._page1_group2(settings))
+    page1.add(this._page1_group3(settings))
     page1.add(this._info_label())
 
     // page2: appearance
@@ -208,6 +209,40 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       valign: Gtk.Align.CENTER
     })
     settings.bind("click-on-focus-minimize", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    return group
+  }
+
+  _page1_group3(settings) {
+    const group = new Adw.PreferencesGroup({
+      title: "Keyboard Shortcuts",
+      description: ""
+    })
+
+    let row, widget
+
+    row = new Adw.ActionRow({
+      title: "Rename active workspace",
+      subtitle: "Keyboard shortcut to rename the currently active workspace"
+    })
+    widget = new Gtk.Entry({
+      halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
+      hexpand: true,
+      xalign: 0.5,
+      width_chars: 20,
+      placeholder_text: "<Super><Shift>r",
+    })
+    widget.set_text(settings.get_strv("rename-workspace-shortcut")[0] || "")
+    widget.connect("changed", w => {
+      const shortcut = w.get_text()
+      if (shortcut.length > 0) {
+        settings.set_strv("rename-workspace-shortcut", [shortcut])
+      }
+    })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
