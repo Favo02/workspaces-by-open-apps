@@ -294,7 +294,10 @@ export default class Workspace extends St.Bin {
 
     // right click: rename workspace
     if (event.get_button() === CONSTANTS.RIGHT_CLICK) {
-      this._show_rename_menu()
+      // only allow renaming if custom names are enabled
+      if (this._settings.indicator_use_custom_names) {
+        this._show_rename_menu()
+      }
     }
   }
 
@@ -302,6 +305,11 @@ export default class Workspace extends St.Bin {
    * show popup menu for renaming workspace
    */
   _show_rename_menu() {
+    // only allow renaming if custom names are enabled
+    if (!this._settings.indicator_use_custom_names) {
+      return
+    }
+
     // close existing menu if any
     if (this._rename_menu) {
       this._rename_menu.close(true)

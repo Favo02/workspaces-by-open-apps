@@ -183,6 +183,11 @@ export default class WorkspacesByOpenApps extends Extension {
    * handler for rename workspace keyboard shortcut
    */
   _on_rename_shortcut() {
+    // only allow renaming if custom names are enabled
+    if (!this._settings.indicator_use_custom_names) {
+      return
+    }
+
     const workspace_manager = Shell.Global.get().get_workspace_manager()
     const active_index = workspace_manager.get_active_workspace_index()
 
