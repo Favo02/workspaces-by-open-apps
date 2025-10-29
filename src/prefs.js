@@ -279,7 +279,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Swap indicators position",
-      subtitle: "Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below."
+      subtitle: "Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below"
     })
     widget = new Gtk.Switch({
       valign: Gtk.Align.CENTER
@@ -348,12 +348,43 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Use custom names for workspaces",
-      subtitle: "Display custom (editable by rigth click on workspace) names instead of indexes"
+      subtitle: "Display custom names instead of indexes. Enabling this settings activates the rename workspace UI (right click on workspace/keyboard shortcut)"
     })
     widget = new Gtk.Switch({
       valign: Gtk.Align.CENTER
     })
     settings.bind("indicator-use-custom-names", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Rename active workspace shortcut",
+      subtitle: "Keyboard shortcut to rename the currently active workspace. If 'Use custom names for workspaces' is off, workspace renaming is disabled"
+    })
+    widget = new Gtk.Entry({
+      halign: Gtk.Align.END,
+      valign: Gtk.Align.CENTER,
+      hexpand: true,
+      xalign: 0.5,
+      width_chars: 20,
+      placeholder_text: "<Super><Shift>r",
+    })
+    widget.set_text(settings.get_strv("rename-workspace-shortcut")[0] || "")
+    widget.connect("changed", w => {
+      const shortcut = w.get_text().trim()
+      // Only save if non-empty and contains typical keybinding patterns
+      if (shortcut.length > 0) {
+        settings.set_strv("rename-workspace-shortcut", [shortcut])
+        widget.remove_css_class("error")
+      } else if (shortcut.length > 0) {
+        // Show error state but don't save invalid shortcut
+        widget.add_css_class("error")
+      } else {
+        // Empty input: remove error state
+        widget.remove_css_class("error")
+      }
+    })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)

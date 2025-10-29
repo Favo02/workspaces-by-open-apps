@@ -112,3 +112,9 @@
   /* simulate presence of active indicator */
   margin-bottom: 2px;
 }
+
+/* --- Rename workspace entry --- */
+.rename-workspace-entry {
+  min-width: 150px;
+  padding: 4px 8px;
+}

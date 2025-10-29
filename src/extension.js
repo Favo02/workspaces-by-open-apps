@@ -1,5 +1,6 @@
 import St from "gi://St"
 import Shell from "gi://Shell"
+import Meta from "gi://Meta"
 import * as main from "resource:///org/gnome/shell/ui/main.js"
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js"
 import CONSTANTS from "./constants.js"
@@ -20,6 +21,9 @@ export default class WorkspacesByOpenApps extends Extension {
     const box = CONSTANTS.PANEL_BOX[this._settings.position_in_panel]
     main.panel[box].insert_child_at_index(this._container, this._settings.position_index)
 
+    // setup keyboard shortcuts
+    this._setup_keybindings()
+
     // connect signals and first render
     this._connect_signals()
     this._render()
@@ -30,6 +34,7 @@ export default class WorkspacesByOpenApps extends Extension {
    * */
   disable() {
     this._disconnect_signals() // disconnect signals
+    this._remove_keybindings() // remove keyboard shortcuts
 
     main.panel.statusArea["activities"]?.show() // restore activities
 
@@ -152,6 +157,48 @@ export default class WorkspacesByOpenApps extends Extension {
 
     const raw_settings = this.getSettings()
     raw_settings.disconnect(this._sig_sett)
+  }
+
+  /**
+   * setup keyboard shortcuts
+   */
+  _setup_keybindings() {
+    main.wm.addKeybinding(
+      'rename-workspace-shortcut',
+      this.getSettings(),
+      Meta.KeyBindingFlags.NONE,
+      Shell.ActionMode.NORMAL,
+      this._on_rename_shortcut.bind(this)
+    )
+  }
+
+  /**
+   * remove keyboard shortcuts
+   */
+  _remove_keybindings() {
+    main.wm.removeKeybinding('rename-workspace-shortcut')
+  }
+
+  /**
+   * handler for rename workspace keyboard shortcut
+   */
+  _on_rename_shortcut() {
+    // only allow renaming if custom names are enabled
+    if (!this._settings.indicator_use_custom_names) {
+      return
+    }
+
+    const workspace_manager = Shell.Global.get().get_workspace_manager()
+    const active_index = workspace_manager.get_active_workspace_index()
+
+    // find the workspace widget for the active workspace and trigger rename
+    const children = this._container.get_children()
+    for (const child of children) {
+      if (child._index === active_index && child._show_rename_menu) {
+        child._show_rename_menu()
+        break
+      }
+    }
   }
 
   /**

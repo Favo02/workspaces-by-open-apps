@@ -4,6 +4,7 @@ import Shell from "gi://Shell"
 import Meta from "gi://Meta"
 import GObject from "gi://GObject"
 import * as main from "resource:///org/gnome/shell/ui/main.js"
+import * as popupMenu from "resource:///org/gnome/shell/ui/popupMenu.js"
 import CONSTANTS from "./constants.js"
 import Application from "./application.js"
 
@@ -293,32 +294,85 @@ export default class Workspace extends St.Bin {
 
     // right click: rename workspace
     if (event.get_button() === CONSTANTS.RIGHT_CLICK) {
-      // if rename label exists, destroy it
-      if (this._rename_workspace) {
-        this._rename_workspace.destroy()
-        this._rename_workspace = null
-        return
+      // only allow renaming if custom names are enabled
+      if (this._settings.indicator_use_custom_names) {
+        this._show_rename_menu()
+      }
+    }
+  }
+
+  /**
+   * show popup menu for renaming workspace
+   */
+  _show_rename_menu() {
+    // only allow renaming if custom names are enabled
+    if (!this._settings.indicator_use_custom_names) {
+      return
+    }
+
+    // close existing menu if any
+    if (this._rename_menu) {
+      this._rename_menu.close(true)
+      this._rename_menu.destroy()
+      this._rename_menu = null
+    }
+
+    // create popup menu
+    this._rename_menu = new popupMenu.PopupMenu(this, 0.5, St.Side.TOP)
+    main.uiGroup.add_child(this._rename_menu.actor)
+    this._rename_menu.actor.hide()
+
+    // create menu item with text entry
+    const menuItem = new popupMenu.PopupBaseMenuItem({
+      reactive: false,
+      can_focus: false
+    })
+
+    const entry = new St.Entry({
+      text: Meta.prefs_get_workspace_name(this._index),
+      style_class: 'rename-workspace-entry',
+      can_focus: true,
+      x_expand: true
+    })
+
+    menuItem.actor.add_child(entry)
+    this._rename_menu.addMenuItem(menuItem)
+
+    // handle key press events
+    const entryClutterText = entry.get_clutter_text()
+    const keyPressId = entryClutterText.connect('key-press-event', (_, event) => {
+      const symbol = event.get_key_symbol()
+
+      // Enter key: apply rename and close menu
+      if (symbol === Clutter.KEY_Return || symbol === Clutter.KEY_KP_Enter) {
+        Meta.prefs_change_workspace_name(this._index, entry.get_text())
+        this._rename_menu.close(true)
+        this.get_child().remove_child(this.get_child().get_first_child())
+        this._render_label()
+        return Clutter.EVENT_STOP
       }
 
-      const css_classes_label = ["wboa-label"]
+      // Escape key: cancel and close menu
+      if (symbol === Clutter.KEY_Escape) {
+        this._rename_menu.close(true)
+        return Clutter.EVENT_STOP
+      }
 
-      // create text input
-      const entry = new St.Entry({
-        text: Meta.prefs_get_workspace_name(this._index),
-        style_class: css_classes_label.join(" ")
-      })
+      return Clutter.EVENT_PROPAGATE
+    })
 
-      // connect typing event: update workspace name
-      entry.connect("key-release-event", () => {
-        Meta.prefs_change_workspace_name(this._index, entry.get_text())
-      })
+    // cleanup when menu is closed
+    const closeId = this._rename_menu.connect('menu-closed', () => {
+      entryClutterText.disconnect(keyPressId)
+      this._rename_menu.disconnect(closeId)
+      this._rename_menu.destroy()
+      this._rename_menu = null
+    })
 
-      // add to indicator
-      this.get_child().insert_child_at_index(entry, 0)
-      entry.grab_key_focus()
-
-      this._rename_workspace = entry
-    }
+    // open menu and focus entry
+    this._rename_menu.open(true)
+    entry.grab_key_focus()
+    entryClutterText.set_selection(0, entry.get_text().length)
   }
 
   /** touch on workspace handler */
