@@ -33,10 +33,21 @@
   color: rgba(255, 255, 255, 1) !important;
 }
 
+/* themed label color: removes forced color to allow theme color */
+.wboa-label-themed {
+  color: inherit !important;
+}
+
 /* --- workspace indicator --- */
 /* workspace horizontal spacing is managed by spacing-workspace-{left, right} setttings */
 .wboa-workspace {
   border: none;
+}
+
+/* workspace with background */
+.wboa-workspace.wboa-background {
+  /* background-color set inline by settings */
+  /* padding set inline by settings */
 }
 
 /* --- workspace label --- */

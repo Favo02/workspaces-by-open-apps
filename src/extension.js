@@ -66,6 +66,10 @@ export default class WorkspacesByOpenApps extends Extension {
       indicator_color: rs.get_string("indicator-color"),
       indicator_round_borders: rs.get_boolean("indicator-round-borders"),
       indicator_swap_position: rs.get_boolean("indicator-swap-position"),
+      indicator_show_background: rs.get_boolean("indicator-show-background"),
+      indicator_background_color: rs.get_string("indicator-background-color"),
+      indicator_background_padding: rs.get_int("indicator-background-padding"),
+      indicator_text_use_theme_color: rs.get_boolean("indicator-text-use-theme-color"),
 
       indicator_show_indexes: rs.get_boolean("indicator-show-indexes"),
       indicator_hide_empty: rs.get_boolean("indicator-hide-empty"),
@@ -284,6 +288,8 @@ export default class WorkspacesByOpenApps extends Extension {
       border-color: ${this._settings.indicator_color};
       margin-left: ${this._settings.spacing_workspace_left}px;
       margin-right: ${this._settings.spacing_workspace_right}px;
+      padding: ${this._settings.indicator_background_padding}px;
+      ${is_active && this._settings.indicator_show_background ? `background-color: ${this._settings.indicator_background_color};` : ''}
       `
 
     const css_classes_workspace = ["wboa-workspace"]
@@ -295,6 +301,7 @@ export default class WorkspacesByOpenApps extends Extension {
     if (is_active) css_classes_workspace.push("wboa-active")
     if (!this._settings.indicator_show_active_workspace) css_classes_workspace.push("wboa-no-indicator")
     if (this._settings.indicator_round_borders) css_classes_workspace.push("wboa-rounded")
+    if (is_active && this._settings.indicator_show_background) css_classes_workspace.push("wboa-background")
 
     const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
     if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")

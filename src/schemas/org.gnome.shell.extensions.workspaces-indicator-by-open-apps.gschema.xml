@@ -114,6 +114,30 @@
       <description>Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below</description>
     </key>
 
+    <key type="b" name="indicator-show-background">
+      <default>false</default>
+      <summary>Show background for active workspace</summary>
+      <description>Show a background box around the current active workspace indicator</description>
+    </key>
+
+    <key type="s" name="indicator-background-color">
+      <default>"rgba(255,255,255,0.2)"</default>
+      <summary>Background color</summary>
+      <description>Background color for the active workspace indicator</description>
+    </key>
+
+    <key type="i" name="indicator-background-padding">
+      <default>4</default>
+      <summary>Background padding</summary>
+      <description>Padding around the workspace indicator background (affects both label and icons). Default: 4</description>
+    </key>
+
+    <key type="b" name="indicator-text-use-theme-color">
+      <default>false</default>
+      <summary>Use theme color for text</summary>
+      <description>Use the theme color for workspace text labels (similar to how icons are colored)</description>
+    </key>
+
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
 
     <key type="b" name="indicator-show-indexes">

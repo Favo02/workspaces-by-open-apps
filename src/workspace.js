@@ -34,6 +34,7 @@ export default class Workspace extends St.Bin {
     this._settings = settings
     this._index = index
     this._workspace = workspace
+    this._is_active = is_active
 
     // setup signals
     this._setup_signals()
@@ -260,6 +261,9 @@ export default class Workspace extends St.Bin {
       margin-bottom: ${this._settings.spacing_label_bottom}px;
     `
     const css_classes_label = ["wboa-label"]
+    if (this._settings.indicator_text_use_theme_color) {
+      css_classes_label.push("wboa-label-themed")
+    }
 
     // add label to indicator
     this.get_child().insert_child_at_index(new St.Label({
