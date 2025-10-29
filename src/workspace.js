@@ -16,7 +16,7 @@ export default class Workspace extends St.Bin {
     GObject.registerClass(this)
   }
 
-  constructor(settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace, on_rename_callback) {
+  constructor(settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace) {
     super({
       style_class: css_classes_panel.join(" "),
       reactive: true,
@@ -34,7 +34,6 @@ export default class Workspace extends St.Bin {
     this._settings = settings
     this._index = index
     this._workspace = workspace
-    this._on_rename_callback = on_rename_callback
 
     // setup signals
     this._setup_signals()
@@ -340,10 +339,8 @@ export default class Workspace extends St.Bin {
       if (symbol === Clutter.KEY_Return || symbol === Clutter.KEY_KP_Enter) {
         Meta.prefs_change_workspace_name(this._index, entry.get_text())
         this._rename_menu.close(true)
-        // trigger re-render to update the workspace name display
-        if (this._on_rename_callback) {
-          this._on_rename_callback()
-        }
+        this.get_child().remove_child(this.get_child().get_first_child())
+        this._render_label()
         return Clutter.EVENT_STOP
       }
 

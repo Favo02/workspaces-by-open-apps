@@ -294,7 +294,7 @@ export default class WorkspacesByOpenApps extends Extension {
     const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
     if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")
 
-    return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace, this._render.bind(this))
+    return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace)
   }
 
 }
