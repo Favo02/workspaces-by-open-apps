@@ -238,9 +238,14 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     })
     widget.set_text(settings.get_strv("rename-workspace-shortcut")[0] || "")
     widget.connect("changed", w => {
-      const shortcut = w.get_text()
-      if (shortcut.length > 0) {
+      const shortcut = w.get_text().trim()
+      // Only save if non-empty and contains typical keybinding patterns
+      if (shortcut.length > 0 && this._is_valid_keybinding(shortcut)) {
         settings.set_strv("rename-workspace-shortcut", [shortcut])
+        widget.remove_css_class("error")
+      } else if (shortcut.length > 0) {
+        // Show error state but don't save invalid shortcut
+        widget.add_css_class("error")
       }
     })
     row.add_suffix(widget)
@@ -248,6 +253,18 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     group.add(row)
 
     return group
+  }
+
+  /**
+   * validate keyboard shortcut format
+   * @param {string} shortcut keyboard shortcut string
+   * @returns {boolean} true if valid format
+   */
+  _is_valid_keybinding(shortcut) {
+    // Basic validation: should contain angle brackets for modifiers
+    // Examples: <Super>r, <Control><Alt>Delete, <Shift><Super>F1
+    const pattern = /^(<[A-Za-z]+>)+[A-Za-z0-9_]+$/
+    return pattern.test(shortcut)
   }
 
   _page2_group1(settings) {
