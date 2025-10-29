@@ -279,7 +279,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Swap indicators position",
-      subtitle: "Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below."
+      subtitle: "Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below"
     })
     widget = new Gtk.Switch({
       valign: Gtk.Align.CENTER
@@ -348,7 +348,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Use custom names for workspaces",
-      subtitle: "Display custom (editable by rigth click on workspace) names instead of indexes"
+      subtitle: "Display custom names instead of indexes. Enabling this settings activates the rename workspace UI (right click on workspace/keyboard shortcut)"
     })
     widget = new Gtk.Switch({
       valign: Gtk.Align.CENTER
@@ -360,7 +360,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Rename active workspace shortcut",
-      subtitle: "Keyboard shortcut to rename the currently active workspace. If 'Use custom names for workspaces' is off, workspace renaming has no effect."
+      subtitle: "Keyboard shortcut to rename the currently active workspace. If 'Use custom names for workspaces' is off, workspace renaming is disabled"
     })
     widget = new Gtk.Entry({
       halign: Gtk.Align.END,

@@ -111,7 +111,7 @@
     <key type="b" name="indicator-swap-position">
       <default>false</default>
       <summary>Swap indicators position</summary>
-      <description>Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below.</description>
+      <description>Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below</description>
     </key>
 
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
@@ -137,7 +137,7 @@
     <key type="b" name="indicator-use-custom-names">
       <default>false</default>
       <summary>Use custom names for workspaces</summary>
-      <description>Display custom (editable by rigth click on workspace) names instead of indexes</description>
+      <description>Display custom names instead of indexes. Enabling this settings activates the rename workspace UI (right click on workspace/keyboard shortcut)</description>
     </key>
 
     <!-- PAGE 2 GROUP 3: ICONS APPEARANCE -->
@@ -259,7 +259,7 @@
     <key type="as" name="rename-workspace-shortcut">
       <default>['&lt;Super&gt;&lt;Shift&gt;r']</default>
       <summary>Rename active workspace shortcut</summary>
-      <description>Keyboard shortcut to open the rename dialog for the active workspace</description>
+      <description>Keyboard shortcut to rename the currently active workspace. If 'Use custom names for workspaces' is off, workspace renaming is disabled</description>
     </key>
 
   </schema>
