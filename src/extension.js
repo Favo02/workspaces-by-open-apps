@@ -185,7 +185,7 @@ export default class WorkspacesByOpenApps extends Extension {
   _on_rename_shortcut() {
     const workspace_manager = Shell.Global.get().get_workspace_manager()
     const active_index = workspace_manager.get_active_workspace_index()
-    
+
     // find the workspace widget for the active workspace and trigger rename
     const children = this._container.get_children()
     for (const child of children) {

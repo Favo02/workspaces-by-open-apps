@@ -246,14 +246,7 @@ export default class Workspace extends St.Bin {
     }
     // custom workspace name
     else if (this._settings.indicator_use_custom_names) {
-      const workspace_name = Meta.prefs_get_workspace_name(index)
-      // Check if workspace has a default name (e.g., "Workspace 1", "Workspace 2")
-      // If so, show only the number
-      if (this._is_default_workspace_name(workspace_name, index)) {
-        indicator_text = (index + 1).toString()
-      } else {
-        indicator_text = workspace_name
-      }
+      indicator_text = Meta.prefs_get_workspace_name(index)
     }
     // default text: index
     else {
@@ -276,18 +269,6 @@ export default class Workspace extends St.Bin {
       y_align: Clutter.ActorAlign.CENTER,
       text: indicator_text
     }), 0)
-  }
-
-  /**
-   * check if workspace name is a default name (e.g., "Workspace 1")
-   * @param {string} name workspace name
-   * @param {number} index workspace index
-   * @returns {boolean} true if default name
-   */
-  _is_default_workspace_name(name, index) {
-    // Match "Workspace N" where N is index+1 (case insensitive)
-    const expected_default = `Workspace ${index + 1}`
-    return name.toLowerCase() === expected_default.toLowerCase()
   }
 
   /**
@@ -354,7 +335,7 @@ export default class Workspace extends St.Bin {
     const entryClutterText = entry.get_clutter_text()
     const keyPressId = entryClutterText.connect('key-press-event', (_, event) => {
       const symbol = event.get_key_symbol()
-      
+
       // Enter key: apply rename and close menu
       if (symbol === Clutter.KEY_Return || symbol === Clutter.KEY_KP_Enter) {
         Meta.prefs_change_workspace_name(this._index, entry.get_text())
@@ -365,13 +346,13 @@ export default class Workspace extends St.Bin {
         }
         return Clutter.EVENT_STOP
       }
-      
+
       // Escape key: cancel and close menu
       if (symbol === Clutter.KEY_Escape) {
         this._rename_menu.close(true)
         return Clutter.EVENT_STOP
       }
-      
+
       return Clutter.EVENT_PROPAGATE
     })
 
