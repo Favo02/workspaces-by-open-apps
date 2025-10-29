@@ -7,9 +7,11 @@
 
   label: font size of labels
   active > label (direct child): toggle color of labels
+  label-themed: use theme color for text (overrides default colors)
 
   workspace: indicator spacing
   workspace > label (direct child): workspace label color and spacing
+  workspace background (same element): background color and padding for active workspace
 
   app (:hover and :focus): app icon hover effect
   app > label (direct child): app group label color and spacing
