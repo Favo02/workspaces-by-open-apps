@@ -264,8 +264,10 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
    * @returns {boolean} true if valid format
    */
   _is_valid_keybinding(shortcut) {
-    // Permissive validation: allows modifiers and keys
-    // Examples: <Super>r, <Control><Alt>Delete, <Shift><Super_L>F1, <Primary>a
+    // Basic format validation: allow GNOME keybinding patterns
+    // GNOME Shell will perform the actual validation at runtime
+    // We just check for reasonable format to catch obvious typos
+    // Examples: <Super>r, <Control><Alt>Delete, F1, <Primary>a
     const pattern = /^(<[A-Za-z0-9_]+>)*[A-Za-z0-9_]+$/
     return pattern.test(shortcut)
   }
