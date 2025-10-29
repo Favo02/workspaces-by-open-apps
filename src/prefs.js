@@ -240,7 +240,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.connect("changed", w => {
       const shortcut = w.get_text().trim()
       // Only save if non-empty and contains typical keybinding patterns
-      if (shortcut.length > 0 && this._is_valid_keybinding(shortcut)) {
+      if (shortcut.length > 0) {
         settings.set_strv("rename-workspace-shortcut", [shortcut])
         widget.remove_css_class("error")
       } else if (shortcut.length > 0) {
@@ -256,20 +256,6 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     group.add(row)
 
     return group
-  }
-
-  /**
-   * validate keyboard shortcut format
-   * @param {string} shortcut keyboard shortcut string
-   * @returns {boolean} true if valid format
-   */
-  _is_valid_keybinding(shortcut) {
-    // Basic format validation: allow GNOME keybinding patterns
-    // GNOME Shell will perform the actual validation at runtime
-    // We just check for reasonable format to catch obvious typos
-    // Examples: <Super>r, <Control><Alt>Delete, F1, <Primary>a
-    const pattern = /^(<[A-Za-z0-9_]+>)*[A-Za-z0-9_]+$/
-    return pattern.test(shortcut)
   }
 
   _page2_group1(settings) {
