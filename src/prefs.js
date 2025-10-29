@@ -246,6 +246,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       } else if (shortcut.length > 0) {
         // Show error state but don't save invalid shortcut
         widget.add_css_class("error")
+      } else {
+        // Empty input: remove error state
+        widget.remove_css_class("error")
       }
     })
     row.add_suffix(widget)
@@ -261,9 +264,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
    * @returns {boolean} true if valid format
    */
   _is_valid_keybinding(shortcut) {
-    // Basic validation: should contain angle brackets for modifiers
-    // Examples: <Super>r, <Control><Alt>Delete, <Shift><Super>F1
-    const pattern = /^(<[A-Za-z]+>)+[A-Za-z0-9_]+$/
+    // Permissive validation: allows modifiers and keys
+    // Examples: <Super>r, <Control><Alt>Delete, <Shift><Super_L>F1, <Primary>a
+    const pattern = /^(<[A-Za-z0-9_]+>)*[A-Za-z0-9_]+$/
     return pattern.test(shortcut)
   }
 
