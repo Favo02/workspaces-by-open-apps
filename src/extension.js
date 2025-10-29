@@ -288,7 +288,7 @@ export default class WorkspacesByOpenApps extends Extension {
       border-color: ${this._settings.indicator_color};
       margin-left: ${this._settings.spacing_workspace_left}px;
       margin-right: ${this._settings.spacing_workspace_right}px;
-      padding: ${this._settings.indicator_background_padding}px;
+      ${is_active && this._settings.indicator_show_background ? `padding: ${this._settings.indicator_background_padding}px;` : ''}
       ${is_active && this._settings.indicator_show_background ? `background-color: ${this._settings.indicator_background_color};` : ''}
       `
 
