@@ -166,6 +166,12 @@
       <description>Effect to apply to minimized apps icons</description>
     </key>
 
+    <key type="b" name="apps-show-window-title">
+      <default>false</default>
+      <summary>Show window title</summary>
+      <description>Display the window title alongside the application icon</description>
+    </key>
+
     <!-- PAGE 2 GROUP 4: SIZES AND SPACING -->
 
     <key type="i" name="size-app-icon">

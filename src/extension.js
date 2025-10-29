@@ -76,6 +76,7 @@ export default class WorkspacesByOpenApps extends Extension {
       apps_all_desaturate: rs.get_boolean("apps-all-desaturate"),
       apps_inactive_effect: rs.get_enum("apps-inactive-effect"),
       apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
+      apps_show_window_title: rs.get_boolean("apps-show-window-title"),
 
       icons_limit: rs.get_int("icons-limit"),
       icons_group: rs.get_enum("icons-group"),
