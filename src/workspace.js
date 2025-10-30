@@ -200,6 +200,13 @@ export default class Workspace extends St.Bin {
       border-color: ${this._settings.indicator_color};
       margin-left: ${this._settings.spacing_app_left}px;
       margin-right: ${this._settings.spacing_app_right}px;
+      ${is_focus && this._settings.indicator_show_focused_app ? 
+        (this._settings.indicator_swap_position ? 
+          `border-bottom-width: ${this._settings.indicator_height}px; margin-bottom: 0px;` : 
+          `border-top-width: ${this._settings.indicator_height}px; margin-top: 0px;`) : 
+        (this._settings.indicator_swap_position ? 
+          `margin-bottom: ${this._settings.indicator_height}px;` : 
+          `margin-top: ${this._settings.indicator_height}px;`)}
     `
 
     const css_classes_app = ["wboa-app"]
