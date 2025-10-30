@@ -260,8 +260,8 @@
 
     <key type="d" name="indicator-height-scale">
       <default>1.0</default>
-      <summary>Indicator height scale</summary>
-      <description>Scale multiplier for the indicator line thickness. The base thickness is 2px. Default: 1.0 (2px)</description>
+      <summary>Global size scale</summary>
+      <description>Global scale multiplier applied to all sizes including icon sizes, spacings, indicators, padding, and font sizes. Default: 1.0 (no scaling)</description>
     </key>
 
     <!-- PAGE 3 GROUP 1: HIDE AND IGNORE APPS -->

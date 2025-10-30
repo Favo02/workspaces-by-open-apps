@@ -90,9 +90,10 @@ export default class Workspace extends St.Bin {
 
     // render + icon (for icon limit)
     if (windows.length > icons_limit) {
+      const scale = this._settings.indicator_height_scale
       const plus_icon = new St.Icon({
         icon_name: "list-add-symbolic",
-        icon_size: this._settings.size_app_icon / 2
+        icon_size: Math.round(this._settings.size_app_icon * scale / 2)
       })
       plus_icon.set_opacity(CONSTANTS.LOW_OPACITY)
       this.get_child().add_child(plus_icon)
@@ -162,8 +163,12 @@ export default class Workspace extends St.Bin {
     // convert from Meta.window to Shell.app
     const app = Shell.WindowTracker.get_default().get_window_app(window)
 
+    // apply global scale to icon size
+    const scale = this._settings.indicator_height_scale
+    const scaled_icon_size = Math.round(this._settings.size_app_icon * scale)
+
     // create Clutter.actor
-    const app_icon = app.create_icon_texture(this._settings.size_app_icon)
+    const app_icon = app.create_icon_texture(scaled_icon_size)
 
     // effects for not focused apps
     const is_focus = window.has_focus() || occurrences.get(window.app_id)?.focus
@@ -196,13 +201,15 @@ export default class Workspace extends St.Bin {
       app_icon.add_effect(new Clutter.DesaturateEffect())
     }
 
-    // calculate indicator height from scale (base is 2px)
-    const indicator_height = Math.round(2 * this._settings.indicator_height_scale)
+    // apply global scale to all sizes
+    const indicator_height = Math.round(2 * scale)
+    const spacing_app_left = Math.round(this._settings.spacing_app_left * scale)
+    const spacing_app_right = Math.round(this._settings.spacing_app_right * scale)
 
     const css_inline_app = `
       border-color: ${this._settings.indicator_color};
-      margin-left: ${this._settings.spacing_app_left}px;
-      margin-right: ${this._settings.spacing_app_right}px;
+      margin-left: ${spacing_app_left}px;
+      margin-right: ${spacing_app_right}px;
       ${is_focus && this._settings.indicator_show_focused_app ? 
         (this._settings.indicator_swap_position ? 
           `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;` : 
@@ -276,12 +283,20 @@ export default class Workspace extends St.Bin {
       indicator_text = (index + 1).toString()
     }
 
+    // apply global scale to label sizes
+    const scale = this._settings.indicator_height_scale
+    const size_labels = Math.round(this._settings.size_labels * scale)
+    const spacing_label_left = Math.round(this._settings.spacing_label_left * scale)
+    const spacing_label_right = Math.round(this._settings.spacing_label_right * scale)
+    const spacing_label_top = Math.round(this._settings.spacing_label_top * scale)
+    const spacing_label_bottom = Math.round(this._settings.spacing_label_bottom * scale)
+
     const css_style_label = `
-      font-size: ${this._settings.size_labels}px;
-      margin-left: ${this._settings.spacing_label_left}px;
-      margin-right: ${this._settings.spacing_label_right}px;
-      margin-top: ${this._settings.spacing_label_top}px;
-      margin-bottom: ${this._settings.spacing_label_bottom}px;
+      font-size: ${size_labels}px;
+      margin-left: ${spacing_label_left}px;
+      margin-right: ${spacing_label_right}px;
+      margin-top: ${spacing_label_top}px;
+      margin-bottom: ${spacing_label_bottom}px;
     `
     const css_classes_label = ["wboa-label"]
     if (this._settings.indicator_text_use_theme_color) {

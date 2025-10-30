@@ -696,8 +696,8 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     group.add(row)
 
     row = new Adw.ActionRow({
-      title: "Indicator height scale",
-      subtitle: "Scale multiplier for the indicator line thickness (base: 2px). For example: 0.5 = 1px, 1.0 = 2px, 1.5 = 3px, 2.0 = 4px. Default: 1.0"
+      title: "Global size scale",
+      subtitle: "Global scale multiplier applied to ALL sizes (icons, spacings, indicators, padding, fonts). For example: 0.5 = half size, 1.0 = normal, 2.0 = double size. Default: 1.0"
     })
     widget = new Gtk.SpinButton({
       valign: Gtk.Align.CENTER,

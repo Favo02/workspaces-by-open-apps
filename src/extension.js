@@ -290,14 +290,18 @@ export default class WorkspacesByOpenApps extends Extension {
     // check if background should be shown for this workspace
     const show_background = is_active && this._settings.indicator_show_background
 
-    // calculate indicator height from scale (base is 2px)
-    const indicator_height = Math.round(2 * this._settings.indicator_height_scale)
+    // apply global scale to all sizes
+    const scale = this._settings.indicator_height_scale
+    const indicator_height = Math.round(2 * scale)
+    const spacing_workspace_left = Math.round(this._settings.spacing_workspace_left * scale)
+    const spacing_workspace_right = Math.round(this._settings.spacing_workspace_right * scale)
+    const indicator_background_padding = Math.round(this._settings.indicator_background_padding * scale)
 
     const css_inline_workspace = `
       border-color: ${this._settings.indicator_color};
-      margin-left: ${this._settings.spacing_workspace_left}px;
-      margin-right: ${this._settings.spacing_workspace_right}px;
-      ${show_background ? `padding: ${this._settings.indicator_background_padding}px;` : ''}
+      margin-left: ${spacing_workspace_left}px;
+      margin-right: ${spacing_workspace_right}px;
+      ${show_background ? `padding: ${indicator_background_padding}px;` : ''}
       ${show_background ? `background-color: ${this._settings.indicator_background_color};` : ''}
       ${is_active && this._settings.indicator_show_active_workspace ? 
         (this._settings.indicator_swap_position ? 
