@@ -303,12 +303,12 @@ export default class WorkspacesByOpenApps extends Extension {
       margin-right: ${spacing_workspace_right}px;
       ${show_background ? `padding: ${indicator_background_padding}px;` : ''}
       ${show_background ? `background-color: ${this._settings.indicator_background_color};` : ''}
-      ${is_active && this._settings.indicator_show_active_workspace ? 
-        (this._settings.indicator_swap_position ? 
-          `border-top-width: ${indicator_height}px; margin-top: 0px;` : 
-          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;`) : 
-        (this._settings.indicator_swap_position ? 
-          `margin-top: ${indicator_height}px;` : 
+      ${is_active && this._settings.indicator_show_active_workspace ?
+        (this._settings.indicator_swap_position ?
+          `border-top-width: ${indicator_height}px; margin-top: 0px;` :
+          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;`) :
+        (this._settings.indicator_swap_position ?
+          `margin-top: ${indicator_height}px;` :
           `margin-bottom: ${indicator_height}px;`)}
       `
 

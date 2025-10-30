@@ -210,12 +210,12 @@ export default class Workspace extends St.Bin {
       border-color: ${this._settings.indicator_color};
       margin-left: ${spacing_app_left}px;
       margin-right: ${spacing_app_right}px;
-      ${is_focus && this._settings.indicator_show_focused_app ? 
-        (this._settings.indicator_swap_position ? 
-          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;` : 
-          `border-top-width: ${indicator_height}px; margin-top: 0px;`) : 
-        (this._settings.indicator_swap_position ? 
-          `margin-bottom: ${indicator_height}px;` : 
+      ${is_focus && this._settings.indicator_show_focused_app ?
+        (this._settings.indicator_swap_position ?
+          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;` :
+          `border-top-width: ${indicator_height}px; margin-top: 0px;`) :
+        (this._settings.indicator_swap_position ?
+          `margin-bottom: ${indicator_height}px;` :
           `margin-top: ${indicator_height}px;`)}
     `
 
