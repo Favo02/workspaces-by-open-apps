@@ -196,17 +196,20 @@ export default class Workspace extends St.Bin {
       app_icon.add_effect(new Clutter.DesaturateEffect())
     }
 
+    // calculate indicator height from scale (base is 2px)
+    const indicator_height = Math.round(2 * this._settings.indicator_height_scale)
+
     const css_inline_app = `
       border-color: ${this._settings.indicator_color};
       margin-left: ${this._settings.spacing_app_left}px;
       margin-right: ${this._settings.spacing_app_right}px;
       ${is_focus && this._settings.indicator_show_focused_app ? 
         (this._settings.indicator_swap_position ? 
-          `border-bottom-width: ${this._settings.indicator_height}px; margin-bottom: 0px;` : 
-          `border-top-width: ${this._settings.indicator_height}px; margin-top: 0px;`) : 
+          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;` : 
+          `border-top-width: ${indicator_height}px; margin-top: 0px;`) : 
         (this._settings.indicator_swap_position ? 
-          `margin-bottom: ${this._settings.indicator_height}px;` : 
-          `margin-top: ${this._settings.indicator_height}px;`)}
+          `margin-bottom: ${indicator_height}px;` : 
+          `margin-top: ${indicator_height}px;`)}
     `
 
     const css_classes_app = ["wboa-app"]

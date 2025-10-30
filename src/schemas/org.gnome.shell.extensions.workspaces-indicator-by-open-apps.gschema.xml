@@ -138,12 +138,6 @@
       <description>Use the theme color for workspace text labels (similar to how icons are colored)</description>
     </key>
 
-    <key type="i" name="indicator-height">
-      <default>2</default>
-      <summary>Indicator height</summary>
-      <description>Height/thickness of the active workspace and focused app indicator lines in pixels. Default: 2</description>
-    </key>
-
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
 
     <key type="b" name="indicator-show-indexes">
@@ -262,6 +256,12 @@
       <default>0</default>
       <summary>App icon spacing right</summary>
       <description>Right spacing for an application icon. Default: 0</description>
+    </key>
+
+    <key type="d" name="indicator-height-scale">
+      <default>1.0</default>
+      <summary>Indicator height scale</summary>
+      <description>Scale multiplier for the indicator line thickness. The base thickness is 2px. Default: 1.0 (2px)</description>
     </key>
 
     <!-- PAGE 3 GROUP 1: HIDE AND IGNORE APPS -->

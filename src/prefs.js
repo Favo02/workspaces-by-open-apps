@@ -347,22 +347,6 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
-    row = new Adw.ActionRow({
-      title: "Indicator height",
-      subtitle: "Height/thickness of the active workspace and focused app indicator lines in pixels. Default: 2"
-    })
-    widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
-    })
-    widget.set_sensitive(true)
-    widget.set_range(1, 10)
-    widget.set_value(settings.get_int("indicator-height"))
-    widget.set_increments(1, 1)
-    widget.connect("value-changed", w => { settings.set_int("indicator-height", w.get_value_as_int()) })
-    row.add_suffix(widget)
-    row.activatable_widget = widget
-    group.add(row)
-
     return group
   }
 
@@ -707,6 +691,23 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_value(settings.get_int("spacing-app-right"))
     widget.set_increments(1, 2)
     widget.connect("value-changed", w => { settings.set_int("spacing-app-right", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Indicator height scale",
+      subtitle: "Scale multiplier for the indicator line thickness (base: 2px). For example: 0.5 = 1px, 1.0 = 2px, 1.5 = 3px, 2.0 = 4px. Default: 1.0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER,
+      digits: 1
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0.5, 5.0)
+    widget.set_value(settings.get_double("indicator-height-scale"))
+    widget.set_increments(0.5, 0.5)
+    widget.connect("value-changed", w => { settings.set_double("indicator-height-scale", w.get_value()) })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)

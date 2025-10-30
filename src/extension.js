@@ -70,7 +70,6 @@ export default class WorkspacesByOpenApps extends Extension {
       indicator_background_color: rs.get_string("indicator-background-color"),
       indicator_background_padding: rs.get_int("indicator-background-padding"),
       indicator_text_use_theme_color: rs.get_boolean("indicator-text-use-theme-color"),
-      indicator_height: rs.get_int("indicator-height"),
 
       indicator_show_indexes: rs.get_boolean("indicator-show-indexes"),
       indicator_hide_empty: rs.get_boolean("indicator-hide-empty"),
@@ -100,7 +99,9 @@ export default class WorkspacesByOpenApps extends Extension {
       spacing_label_bottom: rs.get_int("spacing-label-bottom"),
 
       spacing_app_left: rs.get_int("spacing-app-left"),
-      spacing_app_right: rs.get_int("spacing-app-right")
+      spacing_app_right: rs.get_int("spacing-app-right"),
+
+      indicator_height_scale: rs.get_double("indicator-height-scale")
     }
 
     // hide activities button
@@ -289,6 +290,9 @@ export default class WorkspacesByOpenApps extends Extension {
     // check if background should be shown for this workspace
     const show_background = is_active && this._settings.indicator_show_background
 
+    // calculate indicator height from scale (base is 2px)
+    const indicator_height = Math.round(2 * this._settings.indicator_height_scale)
+
     const css_inline_workspace = `
       border-color: ${this._settings.indicator_color};
       margin-left: ${this._settings.spacing_workspace_left}px;
@@ -297,11 +301,11 @@ export default class WorkspacesByOpenApps extends Extension {
       ${show_background ? `background-color: ${this._settings.indicator_background_color};` : ''}
       ${is_active && this._settings.indicator_show_active_workspace ? 
         (this._settings.indicator_swap_position ? 
-          `border-top-width: ${this._settings.indicator_height}px; margin-top: 0px;` : 
-          `border-bottom-width: ${this._settings.indicator_height}px; margin-bottom: 0px;`) : 
+          `border-top-width: ${indicator_height}px; margin-top: 0px;` : 
+          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;`) : 
         (this._settings.indicator_swap_position ? 
-          `margin-top: ${this._settings.indicator_height}px;` : 
-          `margin-bottom: ${this._settings.indicator_height}px;`)}
+          `margin-top: ${indicator_height}px;` : 
+          `margin-bottom: ${indicator_height}px;`)}
       `
 
     const css_classes_workspace = ["wboa-workspace"]
