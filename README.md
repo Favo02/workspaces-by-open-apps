@@ -6,37 +6,22 @@
 
 <img src="https://github.com/Favo02/workspaces-by-open-apps/assets/59796435/52ab2be9-ad78-4cb4-9a7a-f51fc734d2a3" alt="Preview" height="40">
 
-## Features
+## Features and Customization
 
-- Show a simple indicator to **display workspaces** and **apps open** in it
-- Support for **drag and drop**: change an application workspace just dragging its icon
-- **Right/Left** click to focus/minimize application, **Middle click** to close
-- **Workspaces scrolling**: change active workspace scrolling hover the indicator
-- Support for **multiple monitor** _(for both static and dynamic workspaces)_
-- **Rename workspaces** directly from the extension _(activate in settings)_
-- Hide/show **GNOME default workspace indicator** (former activities button)
-
-## Customization
-
-- Indicator **position**
-- Mouse **scroll** direction (normal or inverse)
-- Activate/deactivate "**middle click** to close app"
-- Activate/deactivate "**click on active workspace to overview**"
-- Activate/deactivate "**click on focused application to minimize**"
-- Activate/deactivate "**workspace indicator**"
-- Activate/deactivate "**app indicator**"
-- Customize indicator **color**
-- Activate/deactivate "**round borders**"
-- Show/Hide **workspaces names**
-- Show/Hide **empty** workspaces
-- Customize apps on all workspaces **text indicator**
-- **Desaturate** all icons
-- **No effect**/**Reduce opacity**/**Desaturate** for both **minimized** and **inactive** apps
-- Show/Hide **window titles** alongside icons
-- **Limit icons** per workspace
-- **Group icons** of same application
-- **Ignore** applications (with regex)
-- **Spacing** and **Size** of applications icons and labels
+- Show a simple indicator to display workspaces and the apps open in them
+- Support for drag and drop: move an application to another workspace by dragging its icon
+- Right- or left-click to focus or minimize an application; middle-click to close it
+- Workspaces scrolling: change the active workspace by scrolling over the indicator
+- Support for multiple monitors _(for both static and dynamic workspaces)_
+- Rename workspaces directly from the extension _(enable in settings)_
+- Hide or show the GNOME default workspace indicator (formerly the Activities button)
+- Customize indicator position, size, color, and background
+- Customize which elements are shown (indicator, empty workspaces, etc.)
+- Icon style and saturation
+- Show or hide window titles alongside icons
+- Limit and group icons per workspace
+- Ignore applications (using regular expressions)
+- and many more in _extension preferences_
 
 > [!TIP]
 > Customize CSS editing `stylesheet.css` file. Add more classes simply searching `css_*` variables in `extension.js`.
