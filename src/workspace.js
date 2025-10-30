@@ -132,7 +132,7 @@ export default class Workspace extends St.Bin {
    */
   _remove_duplicates(windows) {
     const app_windows = new Map()
-    
+
     // group windows by app_id
     for (const win of windows) {
       if (!app_windows.has(win.app_id)) {
@@ -140,14 +140,14 @@ export default class Workspace extends St.Bin {
       }
       app_windows.get(win.app_id).push(win)
     }
-    
+
     // for each app, keep the focused window or the first one
     const result = []
     for (const [app_id, wins] of app_windows) {
       const focused = wins.find(w => w.has_focus())
       result.push(focused || wins[0])
     }
-    
+
     return result
   }
 
