@@ -66,6 +66,10 @@ export default class WorkspacesByOpenApps extends Extension {
       indicator_color: rs.get_string("indicator-color"),
       indicator_round_borders: rs.get_boolean("indicator-round-borders"),
       indicator_swap_position: rs.get_boolean("indicator-swap-position"),
+      indicator_show_background: rs.get_boolean("indicator-show-background"),
+      indicator_background_color: rs.get_string("indicator-background-color"),
+      indicator_background_padding: rs.get_int("indicator-background-padding"),
+      indicator_text_use_theme_color: rs.get_boolean("indicator-text-use-theme-color"),
 
       indicator_show_indexes: rs.get_boolean("indicator-show-indexes"),
       indicator_hide_empty: rs.get_boolean("indicator-hide-empty"),
@@ -95,7 +99,9 @@ export default class WorkspacesByOpenApps extends Extension {
       spacing_label_bottom: rs.get_int("spacing-label-bottom"),
 
       spacing_app_left: rs.get_int("spacing-app-left"),
-      spacing_app_right: rs.get_int("spacing-app-right")
+      spacing_app_right: rs.get_int("spacing-app-right"),
+
+      indicator_height_scale: rs.get_double("indicator-height-scale")
     }
 
     // hide activities button
@@ -281,10 +287,29 @@ export default class WorkspacesByOpenApps extends Extension {
     // hide empty workspaces
     if (this._settings.indicator_hide_empty && !is_active && windows.length === 0) return
 
+    // check if background should be shown for this workspace
+    const show_background = is_active && this._settings.indicator_show_background
+
+    // apply global scale to all sizes
+    const scale = this._settings.indicator_height_scale
+    const indicator_height = Math.round(2 * scale)
+    const spacing_workspace_left = Math.round(this._settings.spacing_workspace_left * scale)
+    const spacing_workspace_right = Math.round(this._settings.spacing_workspace_right * scale)
+    const indicator_background_padding = Math.round(this._settings.indicator_background_padding * scale)
+
     const css_inline_workspace = `
       border-color: ${this._settings.indicator_color};
-      margin-left: ${this._settings.spacing_workspace_left}px;
-      margin-right: ${this._settings.spacing_workspace_right}px;
+      margin-left: ${spacing_workspace_left}px;
+      margin-right: ${spacing_workspace_right}px;
+      ${show_background ? `padding: ${indicator_background_padding}px;` : ''}
+      ${show_background ? `background-color: ${this._settings.indicator_background_color};` : ''}
+      ${is_active && this._settings.indicator_show_active_workspace ?
+        (this._settings.indicator_swap_position ?
+          `border-top-width: ${indicator_height}px; margin-top: 0px;` :
+          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;`) :
+        (this._settings.indicator_swap_position ?
+          `margin-top: ${indicator_height}px;` :
+          `margin-bottom: ${indicator_height}px;`)}
       `
 
     const css_classes_workspace = ["wboa-workspace"]
@@ -296,6 +321,7 @@ export default class WorkspacesByOpenApps extends Extension {
     if (is_active) css_classes_workspace.push("wboa-active")
     if (!this._settings.indicator_show_active_workspace) css_classes_workspace.push("wboa-no-indicator")
     if (this._settings.indicator_round_borders) css_classes_workspace.push("wboa-rounded")
+    if (show_background) css_classes_workspace.push("wboa-background")
 
     const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
     if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")

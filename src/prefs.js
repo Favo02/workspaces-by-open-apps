@@ -289,6 +289,64 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "Show background for active workspace",
+      subtitle: "Show a background box around the current active workspace indicator"
+    })
+    widget = new Gtk.Switch({
+      valign: Gtk.Align.CENTER
+    })
+    settings.bind("indicator-show-background", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Background color",
+      subtitle: "Background color for the active workspace indicator"
+    })
+    const bgRgba = new Gdk.RGBA()
+    bgRgba.parse(settings.get_string("indicator-background-color"))
+    widget = new Gtk.ColorButton({
+      rgba: bgRgba,
+      show_editor: true,
+      use_alpha: true,
+      visible: true,
+      valign: Gtk.Align.CENTER
+    })
+    widget.connect("color-set", w => { settings.set_string("indicator-background-color", w.get_rgba().to_string()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Background padding",
+      subtitle: "Padding around the workspace indicator background (affects both label and icons). Default: 4"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0, 20)
+    widget.set_value(settings.get_int("indicator-background-padding"))
+    widget.set_increments(1, 2)
+    widget.connect("value-changed", w => { settings.set_int("indicator-background-padding", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Use theme color for text",
+      subtitle: "Use the theme color for workspace text labels (similar to how icons are colored)"
+    })
+    widget = new Gtk.Switch({
+      valign: Gtk.Align.CENTER
+    })
+    settings.bind("indicator-text-use-theme-color", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 
@@ -633,6 +691,23 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_value(settings.get_int("spacing-app-right"))
     widget.set_increments(1, 2)
     widget.connect("value-changed", w => { settings.set_int("spacing-app-right", w.get_value_as_int()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "Global size scale",
+      subtitle: "Global scale multiplier applied to ALL sizes (icons, spacings, indicators, padding, fonts). For example: 0.5 = half size, 1.0 = normal, 2.0 = double size. Default: 1.0"
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER,
+      digits: 1
+    })
+    widget.set_sensitive(true)
+    widget.set_range(0.5, 5.0)
+    widget.set_value(settings.get_double("indicator-height-scale"))
+    widget.set_increments(0.5, 0.5)
+    widget.connect("value-changed", w => { settings.set_double("indicator-height-scale", w.get_value()) })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)

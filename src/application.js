@@ -64,7 +64,11 @@ export default class Application extends St.BoxLayout {
    */
   _render_occurrences_label(occurrences, window) {
 
-    const css_style_text = `font-size: ${this._settings.size_labels}px`
+    // apply global scale to label size
+    const scale = this._settings.indicator_height_scale
+    const size_labels = Math.round(this._settings.size_labels * scale)
+
+    const css_style_text = `font-size: ${size_labels}px`
     const css_classes_text = [ "wboa-label" ]
 
     if ((this._settings.icons_group === 1) && (occurrences.get(window.app_id).count > 1)) {
