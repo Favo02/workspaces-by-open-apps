@@ -454,6 +454,18 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "Show window title",
+      subtitle: "Display the window title alongside the application icon"
+    })
+    widget = new Gtk.Switch({
+      valign: Gtk.Align.CENTER
+    })
+    settings.bind("apps-show-window-title", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 

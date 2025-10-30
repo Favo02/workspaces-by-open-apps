@@ -126,16 +126,29 @@ export default class Workspace extends St.Bin {
 
   /**
    * remove duplicate windows based on window pid
+   * keeps the focused window for each app, or the first one if none is focused
    * @param {Meta.Window[]} windows windows to remove duplicates from
    * @returns {Meta.Window[]} windows without duplicates
    */
   _remove_duplicates(windows) {
-    const seen = new Set()
-    return windows.filter(win => {
-      if (seen.has(win.app_id)) return false
-      seen.add(win.app_id)
-      return true
-    })
+    const app_windows = new Map()
+
+    // group windows by app_id
+    for (const win of windows) {
+      if (!app_windows.has(win.app_id)) {
+        app_windows.set(win.app_id, [])
+      }
+      app_windows.get(win.app_id).push(win)
+    }
+
+    // for each app, keep the focused window or the first one
+    const result = []
+    for (const [app_id, wins] of app_windows) {
+      const focused = wins.find(w => w.has_focus())
+      result.push(focused || wins[0])
+    }
+
+    return result
   }
 
   /**

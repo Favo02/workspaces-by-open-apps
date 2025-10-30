@@ -32,6 +32,7 @@
 - Customize apps on all workspaces **text indicator**
 - **Desaturate** all icons
 - **No effect**/**Reduce opacity**/**Desaturate** for both **minimized** and **inactive** apps
+- Show/Hide **window titles** alongside icons
 - **Limit icons** per workspace
 - **Group icons** of same application
 - **Ignore** applications (with regex)
