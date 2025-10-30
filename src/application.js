@@ -37,6 +37,9 @@ export default class Application extends St.BoxLayout {
 
     // add x{occurrences} label to icon button (group same application)
     this._render_occurrences_label(occurrences, window)
+
+    // add window title label to icon button (if setting is enabled)
+    this._render_window_title()
   }
 
   /**
@@ -72,6 +75,30 @@ export default class Application extends St.BoxLayout {
         text: `x${occurrences.get(window.app_id).count}`
       }))
     }
+  }
+
+  /**
+   * add window title label to icon button (if setting is enabled)
+   */
+  _render_window_title() {
+    if (!this._settings.apps_show_window_title) {
+      return
+    }
+
+    const window_title = this._window.get_title()
+    if (!window_title) {
+      return
+    }
+
+    const css_style_text = `font-size: ${this._settings.size_labels}px; margin-left: 4px;`
+    const css_classes_text = [ "wboa-label", "wboa-window-title" ]
+
+    this.add_child(new St.Label({
+      style: css_style_text,
+      style_class: css_classes_text.join(" "),
+      y_align: Clutter.ActorAlign.CENTER,
+      text: window_title
+    }))
   }
 
   /**
