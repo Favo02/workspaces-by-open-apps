@@ -25,8 +25,8 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
    */
   _debounce(key, func, wait = 500) {
     return (...args) => {
-      // Store the pending update for this setting
-      this._pendingUpdates.set(key, { func, args })
+      // Store the pending update for this setting (with a defensive copy of args)
+      this._pendingUpdates.set(key, { func, args: [...args] })
       
       // Clear the global timeout if it exists
       if (this._globalDebounceTimeout) {
@@ -35,9 +35,13 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       
       // Set a new global timeout that will apply all pending updates
       this._globalDebounceTimeout = setTimeout(() => {
-        // Apply all pending updates
-        this._pendingUpdates.forEach((update) => {
-          update.func(...update.args)
+        // Apply all pending updates with error handling
+        this._pendingUpdates.forEach((update, key) => {
+          try {
+            update.func(...update.args)
+          } catch (error) {
+            console.error(`Failed to apply setting update for "${key}":`, error)
+          }
         })
         // Clear the pending updates
         this._pendingUpdates.clear()
