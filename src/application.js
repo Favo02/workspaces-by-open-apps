@@ -122,17 +122,29 @@ export default class Application extends St.BoxLayout {
       else {
         this._window.activate(Shell.Global.get().get_current_time())
       }
+      return Clutter.EVENT_STOP
     }
 
     // middle click: close application
     if (this._settings.middle_click_close_app && event.get_button() === CONSTANTS.MIDDLE_CLICK) {
       this._window.delete(Shell.Global.get().get_current_time())
+      return Clutter.EVENT_STOP
     }
+
+    return Clutter.EVENT_PROPAGATE
   }
 
   /** touch on application handler */
   _on_touch_application() {
-    this._window.activate(Shell.Global.get().get_current_time())
+    // focused and setting on: minimize
+    if (this._window.has_focus() && this._settings.click_on_focus_minimize) {
+      this._window.minimize(Shell.Global.get().get_current_time())
+    }
+    // not focused or setting off: focus
+    else {
+      this._window.activate(Shell.Global.get().get_current_time())
+    }
+    return Clutter.EVENT_STOP
   }
 
 }
