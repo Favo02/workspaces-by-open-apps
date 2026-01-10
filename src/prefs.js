@@ -8,29 +8,41 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
   constructor(metadata) {
     super(metadata)
-    // Map to store individual timeout IDs for each debounced function
-    this._debounceTimeouts = new Map()
+    // Global timeout for all debounced settings updates
+    this._globalDebounceTimeout = null
+    // Map to store pending setting updates
+    this._pendingUpdates = new Map()
   }
 
   /**
-   * Debounce helper to delay function execution until after a specified wait time
-   * @param {string} key - Unique identifier for this debounced function
-   * @param {Function} func - The function to debounce
-   * @param {number} wait - The delay in milliseconds
+   * Global debounce helper that batches all setting updates together
+   * When any setting changes, it stores the pending update and resets a global timer
+   * All pending updates are applied together after the user stops making changes for 500ms
+   * @param {string} key - Unique identifier for this setting
+   * @param {Function} func - The function to execute (setting update)
+   * @param {number} wait - The delay in milliseconds (default: 500ms)
    * @returns {Function} - The debounced function
    */
   _debounce(key, func, wait = 500) {
     return (...args) => {
-      // Clear existing timeout for this specific key
-      if (this._debounceTimeouts.has(key)) {
-        clearTimeout(this._debounceTimeouts.get(key))
+      // Store the pending update for this setting
+      this._pendingUpdates.set(key, { func, args })
+      
+      // Clear the global timeout if it exists
+      if (this._globalDebounceTimeout) {
+        clearTimeout(this._globalDebounceTimeout)
       }
-      // Set new timeout and store it with the key
-      const timeout = setTimeout(() => {
-        this._debounceTimeouts.delete(key)
-        func(...args)
+      
+      // Set a new global timeout that will apply all pending updates
+      this._globalDebounceTimeout = setTimeout(() => {
+        // Apply all pending updates
+        this._pendingUpdates.forEach((update) => {
+          update.func(...update.args)
+        })
+        // Clear the pending updates
+        this._pendingUpdates.clear()
+        this._globalDebounceTimeout = null
       }, wait)
-      this._debounceTimeouts.set(key, timeout)
     }
   }
 
