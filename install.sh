@@ -30,6 +30,22 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Check if glib-compile-schemas is available
+if ! command -v glib-compile-schemas >/dev/null 2>&1; then
+    echo "glib-compile-schemas command not found. Please install glib2.0-tools or equivalent."
+    exit 1
+fi
+
+echo "Compiling settings schemas..."
+
+glib-compile-schemas "$BASE_PATH/src/schemas/"
+
+# Check if compilation failed
+if [ $? -ne 0 ]; then
+    echo "Compiling settings schemas failed. Exiting."
+    exit 1
+fi
+
 echo "Copying src/ directory to the extension directory..."
 
 # Copy to extensions folder

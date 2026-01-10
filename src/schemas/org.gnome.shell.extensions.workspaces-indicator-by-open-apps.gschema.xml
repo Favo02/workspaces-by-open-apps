@@ -2,6 +2,7 @@
 <schemalist>
 
   <!-- Compile with: glib-compile-schemas ./schemas/ -->
+  <!-- For GNOME 45+ no need to include compiled version -->
 
   <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-position-in-panel">
     <value value="0" nick="LEFT"/>
