@@ -8,9 +8,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
   constructor(metadata) {
     super(metadata)
-    // Global timeout for all debounced settings updates
+    // global timeout for all debounced settings updates
     this._globalDebounceTimeout = null
-    // Map to store pending setting updates
+    // map to store pending setting updates
     this._pendingUpdates = new Map()
   }
 
@@ -25,17 +25,18 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
    */
   _debounce(key, func, wait = 500) {
     return (...args) => {
-      // Store the pending update for this setting (with a defensive copy of args)
+      // store the pending update for this setting
+      // args are copied to prevent issues
       this._pendingUpdates.set(key, { func, args: [...args] })
-      
-      // Clear the global timeout if it exists
+
+      // clear the global timeout if it exists
       if (this._globalDebounceTimeout) {
         clearTimeout(this._globalDebounceTimeout)
       }
-      
-      // Set a new global timeout that will apply all pending updates
+
+      // set a new global timeout
       this._globalDebounceTimeout = setTimeout(() => {
-        // Apply all pending updates with error handling
+        // apply all pending updates
         this._pendingUpdates.forEach((update, key) => {
           try {
             update.func(...update.args)
@@ -43,7 +44,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
             console.error(`Failed to apply setting update for "${key}":`, error)
           }
         })
-        // Clear the pending updates
+        // clear the pending updates
         this._pendingUpdates.clear()
         this._globalDebounceTimeout = null
       }, wait)
