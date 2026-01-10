@@ -6,6 +6,26 @@ import { ExtensionPreferences } from "resource:///org/gnome/Shell/Extensions/js/
 
 export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
+  /**
+   * Debounce helper to delay function execution until after a specified wait time
+   * @param {Function} func - The function to debounce
+   * @param {number} wait - The delay in milliseconds
+   * @returns {Function} - The debounced function
+   */
+  _debounce(func, wait) {
+    let timeout
+    return function executedFunction(...args) {
+      const later = () => {
+        timeout = null
+        func(...args)
+      }
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+      timeout = setTimeout(later, wait)
+    }
+  }
+
   fillPreferencesWindow(window) {
     window.set_search_enabled(true)
     window.set_default_size(1000, 800)
@@ -112,7 +132,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("position-index"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("position-index", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("position-index", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -330,7 +350,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 20)
     widget.set_value(settings.get_int("indicator-background-padding"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("indicator-background-padding", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("indicator-background-padding", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -546,7 +566,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(1, 50)
     widget.set_value(settings.get_int("size-app-icon"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("size-app-icon", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("size-app-icon", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -562,7 +582,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(1, 50)
     widget.set_value(settings.get_int("size-labels"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("size-labels", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("size-labels", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -578,7 +598,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-workspace-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-workspace-left", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("spacing-workspace-left", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -594,7 +614,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-workspace-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-workspace-right", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("spacing-workspace-right", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -610,7 +630,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-label-left", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("spacing-label-left", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -626,7 +646,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-label-right", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("spacing-label-right", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -642,7 +662,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-top"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-label-top", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("spacing-label-top", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -658,7 +678,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-bottom"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-label-bottom", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("spacing-label-bottom", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -674,7 +694,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-app-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-app-left", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("spacing-app-left", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -690,7 +710,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-app-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-app-right", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("spacing-app-right", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -707,7 +727,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0.5, 5.0)
     widget.set_value(settings.get_double("indicator-height-scale"))
     widget.set_increments(0.5, 0.5)
-    widget.connect("value-changed", w => { settings.set_double("indicator-height-scale", w.get_value()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_double("indicator-height-scale", w.get_value()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -734,7 +754,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 99)
     widget.set_value(settings.get_int("icons-limit"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("icons-limit", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce(w => { settings.set_int("icons-limit", w.get_value_as_int()) }, 300))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
