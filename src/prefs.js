@@ -6,6 +6,51 @@ import { ExtensionPreferences } from "resource:///org/gnome/Shell/Extensions/js/
 
 export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
+  constructor(metadata) {
+    super(metadata)
+    // global timeout for all debounced settings updates
+    this._globalDebounceTimeout = null
+    // map to store pending setting updates
+    this._pendingUpdates = new Map()
+  }
+
+  /**
+   * Global debounce helper that batches all setting updates together
+   * When any setting changes, it stores the pending update and resets a global timer
+   * All pending updates are applied together after the user stops making changes for 500ms
+   * @param {string} key - Unique identifier for this setting
+   * @param {Function} func - The function to execute (setting update)
+   * @param {number} wait - The delay in milliseconds (default: 500ms)
+   * @returns {Function} - The debounced function
+   */
+  _debounce(key, func, wait = 500) {
+    return (...args) => {
+      // store the pending update for this setting
+      // args are copied to prevent issues
+      this._pendingUpdates.set(key, { func, args: [...args] })
+
+      // clear the global timeout if it exists
+      if (this._globalDebounceTimeout) {
+        clearTimeout(this._globalDebounceTimeout)
+      }
+
+      // set a new global timeout
+      this._globalDebounceTimeout = setTimeout(() => {
+        // apply all pending updates
+        this._pendingUpdates.forEach((update, key) => {
+          try {
+            update.func(...update.args)
+          } catch (error) {
+            console.error(`Failed to apply setting update for "${key}":`, error)
+          }
+        })
+        // clear the pending updates
+        this._pendingUpdates.clear()
+        this._globalDebounceTimeout = null
+      }, wait)
+    }
+  }
+
   fillPreferencesWindow(window) {
     window.set_search_enabled(true)
     window.set_default_size(1000, 800)
@@ -112,7 +157,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("position-index"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("position-index", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("position-index",
+      w => { settings.set_int("position-index", w.get_value_as_int())}
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -330,7 +377,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 20)
     widget.set_value(settings.get_int("indicator-background-padding"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("indicator-background-padding", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("indicator-background-padding",
+      w => { settings.set_int("indicator-background-padding", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -546,7 +595,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(1, 50)
     widget.set_value(settings.get_int("size-app-icon"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("size-app-icon", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("size-app-icon",
+      w => { settings.set_int("size-app-icon", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -562,7 +613,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(1, 50)
     widget.set_value(settings.get_int("size-labels"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("size-labels", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("size-labels",
+      w => { settings.set_int("size-labels", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -578,7 +631,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-workspace-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-workspace-left", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("spacing-workspace-left",
+      w => { settings.set_int("spacing-workspace-left", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -594,7 +649,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-workspace-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-workspace-right", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("spacing-workspace-right",
+      w => { settings.set_int("spacing-workspace-right", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -610,7 +667,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-label-left", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("spacing-label-left",
+      w => { settings.set_int("spacing-label-left", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -626,7 +685,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-label-right", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("spacing-label-right",
+      w => { settings.set_int("spacing-label-right", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -642,7 +703,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-top"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-label-top", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("spacing-label-top",
+      w => { settings.set_int("spacing-label-top", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -658,7 +721,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-bottom"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-label-bottom", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("spacing-label-bottom",
+      w => { settings.set_int("spacing-label-bottom", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -674,7 +739,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-app-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-app-left", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("spacing-app-left",
+      w => { settings.set_int("spacing-app-left", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -690,7 +757,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-app-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("spacing-app-right", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("spacing-app-right",
+      w => { settings.set_int("spacing-app-right", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -707,7 +776,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0.5, 5.0)
     widget.set_value(settings.get_double("indicator-height-scale"))
     widget.set_increments(0.5, 0.5)
-    widget.connect("value-changed", w => { settings.set_double("indicator-height-scale", w.get_value()) })
+    widget.connect("value-changed", this._debounce("indicator-height-scale",
+      w => { settings.set_double("indicator-height-scale", w.get_value()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -734,7 +805,9 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     widget.set_range(0, 99)
     widget.set_value(settings.get_int("icons-limit"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", w => { settings.set_int("icons-limit", w.get_value_as_int()) })
+    widget.connect("value-changed", this._debounce("icons-limit",
+      w => { settings.set_int("icons-limit", w.get_value_as_int()) }
+    ))
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
