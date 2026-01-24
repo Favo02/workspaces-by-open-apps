@@ -1,7 +1,6 @@
 import St from "gi://St"
 import Shell from "gi://Shell"
 import Meta from "gi://Meta"
-import Gio from "gi://Gio"
 import * as main from "resource:///org/gnome/shell/ui/main.js"
 import { Extension } from "resource:///org/gnome/shell/extensions/extension.js"
 import CONSTANTS from "./constants.js"
@@ -14,9 +13,6 @@ export default class WorkspacesByOpenApps extends Extension {
    * enable extension: initialize everything, connect signals and trigger first render
    * */
   enable() {
-    // initialize default label color based on OS theme (only if not customized)
-    this._initialize_default_label_color(this.getSettings())
-
     // initialize settings
     this._update_settings(this.getSettings(), false) // no re-render
 
@@ -332,46 +328,6 @@ export default class WorkspacesByOpenApps extends Extension {
     if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")
 
     return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace)
-  }
-
-  /**
-   * initialize default label text color based on OS theme (dark vs light)
-   * only sets the default if the user hasn't customized it yet (still using default value)
-   * @param {Gio.Settings} settings the extension settings
-   */
-  _initialize_default_label_color(settings) {
-    const current_color = settings.get_string("label-text-color")
-    
-    // Check if the current color is still the default value (white with 70% opacity)
-    // Only set OS-theme-based default if user hasn't customized it
-    const default_color = "rgba(255,255,255,0.7)"
-    if (current_color !== default_color) {
-      // User has customized the color, don't override it
-      return
-    }
-
-    try {
-      // Get the GNOME interface settings
-      const interfaceSettings = new Gio.Settings({ schema: "org.gnome.desktop.interface" })
-      const colorScheme = interfaceSettings.get_string("color-scheme")
-      
-      // Determine if dark theme is being used
-      // color-scheme can be: "default", "prefer-dark", or "prefer-light"
-      // For "default", we keep white text as it's the safest choice (works on most themes)
-      // Only set dark text if explicitly using light theme
-      const isLightTheme = colorScheme === "prefer-light"
-      
-      // Set appropriate default: white for dark/default themes, dark for explicitly light themes
-      if (isLightTheme) {
-        // Light theme: use dark text for better contrast
-        settings.set_string("label-text-color", "rgba(0,0,0,0.7)")
-      }
-      // For "prefer-dark" or "default", keep the default white color
-      // (no action needed as default is already white)
-    } catch (e) {
-      // If we can't access the color scheme, just keep the default white color
-      console.warn("workspaces-by-open-apps: Could not detect OS theme, using default label color")
-    }
   }
 
 }
