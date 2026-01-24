@@ -139,6 +139,12 @@
       <description>Use the theme color for workspace text labels (similar to how icons are colored)</description>
     </key>
 
+    <key type="s" name="label-text-color">
+      <default>"rgba(255,255,255,0.7)"</default>
+      <summary>Label text color</summary>
+      <description>Color for workspace labels, app occurrence labels, and window title labels. This is used only when "Use theme color for text" is disabled</description>
+    </key>
+
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
 
     <key type="b" name="indicator-show-indexes">
