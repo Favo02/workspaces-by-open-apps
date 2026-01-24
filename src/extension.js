@@ -357,16 +357,17 @@ export default class WorkspacesByOpenApps extends Extension {
       
       // Determine if dark theme is being used
       // color-scheme can be: "default", "prefer-dark", or "prefer-light"
-      const isDarkTheme = colorScheme === "prefer-dark"
+      // For "default", we keep white text as it's the safest choice (works on most themes)
+      // Only set dark text if explicitly using light theme
+      const isLightTheme = colorScheme === "prefer-light"
       
-      // Set appropriate default: white for dark themes, dark for light themes
-      if (isDarkTheme) {
-        // Dark theme: use white text (already the default)
-        // No need to change
-      } else {
+      // Set appropriate default: white for dark/default themes, dark for explicitly light themes
+      if (isLightTheme) {
         // Light theme: use dark text for better contrast
         settings.set_string("label-text-color", "rgba(0,0,0,0.7)")
       }
+      // For "prefer-dark" or "default", keep the default white color
+      // (no action needed as default is already white)
     } catch (e) {
       // If we can't access the color scheme, just keep the default white color
       console.log("workspaces-by-open-apps: Could not detect OS theme, using default label color")
