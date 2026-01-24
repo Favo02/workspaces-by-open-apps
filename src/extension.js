@@ -16,7 +16,7 @@ export default class WorkspacesByOpenApps extends Extension {
   enable() {
     // initialize default label color based on OS theme (only if not customized)
     this._initialize_default_label_color(this.getSettings())
-    
+
     // initialize settings
     this._update_settings(this.getSettings(), false) // no re-render
 
@@ -370,7 +370,7 @@ export default class WorkspacesByOpenApps extends Extension {
       // (no action needed as default is already white)
     } catch (e) {
       // If we can't access the color scheme, just keep the default white color
-      console.log("workspaces-by-open-apps: Could not detect OS theme, using default label color")
+      console.warn("workspaces-by-open-apps: Could not detect OS theme, using default label color")
     }
   }
 

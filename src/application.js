@@ -101,7 +101,7 @@ export default class Application extends St.BoxLayout {
     }
 
     const css_style_text = `
-      font-size: ${this._settings.size_labels}px; 
+      font-size: ${this._settings.size_labels}px;
       margin-left: 4px;
       ${!this._settings.indicator_text_use_theme_color ? `color: ${this._settings.label_text_color};` : ''}
     `
