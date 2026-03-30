@@ -210,19 +210,61 @@ export default class WorkspacesByOpenApps extends Extension {
     }
   }
 
-   /**
-    * calculate maximum label length for dynamic truncation
-    * @param {Meta.Window[]} windows windows in the workspace
-    * @returns {number} maximum characters allowed per label
-    */
-   _calculate_max_label_length(windows) {
-     // if dynamic label length is disabled, return unlimited
+  /**
+   * calculate maximum label length for dynamic truncation
+   * based on TOTAL windows across ALL workspaces (not per-workspace)
+   * @returns {number} maximum characters allowed per label
+   */
+  _calculate_max_label_length() {
+  // if dynamic label length is disabled, return unlimited
      if (!this._settings.apps_dynamic_label_length || !this._settings.apps_show_window_title) {
        return Infinity
      }
 
-     // get panel width - assume standard panel width around 1920px (or use a reasonable default)
-     // GNOME Shell doesn't expose panel width easily, so we estimate based on common screen sizes
+    // count ALL windows across all workspaces
+    const workspace_manager = Shell.Global.get().get_workspace_manager()
+    let total_windows = 0
+
+    for (let i = 0; i < workspace_manager.get_n_workspaces(); i++) {
+      const workspace = workspace_manager.get_workspace_by_index(i)
+      const windows = workspace.list_windows().filter(win => {
+        // undefined window
+        if (!win) return false
+
+        // undefined app
+        const app = Shell.WindowTracker.get_default().get_window_app(win)
+        if (!app) return false
+
+       // apps on all workspaces (for normal workspace indicator)
+       if (win.is_on_all_workspaces()) return false
+
+       // ignored in settings (regex match)
+       const matches = this._settings.icons_ignored.filter(ignored => new RegExp(ignored, "i").test(app.get_id()))
+       if (matches.length > 0) return false
+
+       // dialogs, popovers and tooltip (only if not focused)
+       if (!win.has_focus() && win.is_skip_taskbar()) return false
+
+       return true
+       })
+       total_windows += windows.length
+     }
+
+     // also count windows on all workspaces
+     const workspace = workspace_manager.get_workspace_by_index(0)
+     const all_workspace_windows = workspace.list_windows().filter(win => {
+       if (!win) return false
+       const app = Shell.WindowTracker.get_default().get_window_app(win)
+       if (!app) return false
+       if (!win.is_on_all_workspaces()) return false
+       const matches = this._settings.icons_ignored.filter(ignored => new RegExp(ignored, "i").test(app.get_id()))
+       if (matches.length > 0) return false
+       if (!win.has_focus() && win.is_skip_taskbar()) return false
+       return true
+     })
+     total_windows += all_workspace_windows.length
+
+     // get panel width
      const panel = main.panel
      const panel_width = panel.width || 1920
 
@@ -239,17 +281,14 @@ export default class WorkspacesByOpenApps extends Extension {
      // approximate width per icon widget
      const width_per_icon = icon_size + spacing_left + spacing_right + label_spacing
 
-     // count how many app containers we'll have
-     let app_count = windows.length
-
      // total fixed width for all icons (not including titles)
-     const fixed_width = width_per_icon * app_count
+     const fixed_width = width_per_icon * total_windows
 
      // remaining space for all titles
      const remaining_space = Math.max(100, max_available - fixed_width)
 
      // average space per title
-     const space_per_title = remaining_space / Math.max(1, app_count)
+     const space_per_title = remaining_space / Math.max(1, total_windows)
 
      // estimate character width based on font size
      // rough approximation: each character is about 0.6 * font_size pixels
@@ -266,30 +305,34 @@ export default class WorkspacesByOpenApps extends Extension {
     * render indicators: destroy current indicators and rebuild
     * */
    _render() {
-    this._container.destroy_all_children()
+     this._container.destroy_all_children()
 
-    // build indicator for other monitor
-    const other_monitor = this._render_workspace(0, true)
-    if (other_monitor) {
-      this._container.add_child(other_monitor)
-    }
+     // calculate max label length once for all workspaces
+     const max_label_length = this._calculate_max_label_length()
 
-    // build normal workspaces indicators
-    for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++) {
-      const workspace = this._render_workspace(i, false)
-      if (workspace) {
-        this._container.add_child(workspace)
-      }
-    }
-  }
+     // build indicator for other monitor
+     const other_monitor = this._render_workspace(0, true, max_label_length)
+     if (other_monitor) {
+       this._container.add_child(other_monitor)
+     }
 
-  /**
-   * create indicator for a single workspace
-   * @param {number} index index of workspace
-   * @param {boolean} is_other_monitor special indicator for other monitor
-   * @returns {Workspace} workspace indicator
-   */
-  _render_workspace(index, is_other_monitor) {
+     // build normal workspaces indicators
+     for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++) {
+       const workspace = this._render_workspace(i, false, max_label_length)
+       if (workspace) {
+         this._container.add_child(workspace)
+       }
+     }
+   }
+
+   /**
+    * create indicator for a single workspace
+    * @param {number} index index of workspace
+    * @param {boolean} is_other_monitor special indicator for other monitor
+    * @param {number} max_label_length maximum characters per label (calculated globally)
+    * @returns {Workspace} workspace indicator
+    */
+   _render_workspace(index, is_other_monitor, max_label_length) {
     const workspace = Shell.Global.get().get_workspace_manager().get_workspace_by_index(index)
 
     const windows = workspace
@@ -377,13 +420,10 @@ export default class WorkspacesByOpenApps extends Extension {
     if (this._settings.indicator_round_borders) css_classes_workspace.push("wboa-rounded")
     if (show_background) css_classes_workspace.push("wboa-background")
 
-    const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
-    if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")
+     const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
+     if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")
 
-    // calculate max label length for dynamic truncation
-    const max_label_length = this._calculate_max_label_length(windows)
-
-    return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace, max_label_length)
-  }
+     return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace, max_label_length)
+   }
 
 }
