@@ -206,7 +206,7 @@
     <key type="i" name="apps-dynamic-label-max-percentage">
       <default>40</default>
       <summary>Max top bar usage percentage</summary>
-      <description>Maximum percentage of the top bar that the extension can use. Titles will be truncated to stay under this limit. Only has effect when Dynamic window title truncation is enabled. Range: 10-100. Default: 40</description>
+      <description>Maximum percentage of the top bar that the extension can use. Titles will be truncated to stay under this limit. Only has effect when Dynamic window title truncation is enabled. Range: 5-100. Default: 40</description>
     </key>
 
     <!-- PAGE 2 GROUP 4: SIZES AND SPACING -->

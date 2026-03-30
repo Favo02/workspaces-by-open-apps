@@ -295,10 +295,10 @@ export default class WorkspacesByOpenApps extends Extension {
      const font_size = Math.round(this._settings.size_labels * scale)
      const char_width = font_size * 0.6
 
-     // calculate max characters per label (with minimum of 3 to show ellipsis)
-     const max_chars = Math.max(3, Math.floor(space_per_title / char_width))
+      // calculate max characters per label
+      const max_chars = Math.max(0, Math.floor(space_per_title / char_width))
 
-     return max_chars
+      return max_chars
    }
 
    /**

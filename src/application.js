@@ -97,7 +97,7 @@ export default class Application extends St.BoxLayout {
 
     // truncate title if dynamic label length is enabled
     if (this._max_label_length !== Infinity && window_title.length > this._max_label_length) {
-      window_title = window_title.substring(0, Math.max(0, this._max_label_length - 3)) + "..."
+      window_title = window_title.substring(0, this._max_label_length)
     }
 
     // apply global scale to label size
