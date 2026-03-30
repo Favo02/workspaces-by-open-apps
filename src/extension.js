@@ -81,6 +81,8 @@ export default class WorkspacesByOpenApps extends Extension {
       apps_inactive_effect: rs.get_enum("apps-inactive-effect"),
       apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
       apps_show_window_title: rs.get_boolean("apps-show-window-title"),
+      apps_dynamic_label_length: rs.get_boolean("apps-dynamic-label-length"),
+      apps_dynamic_label_max_percentage: rs.get_int("apps-dynamic-label-max-percentage"),
 
       icons_limit: rs.get_int("icons-limit"),
       icons_group: rs.get_enum("icons-group"),
@@ -208,10 +210,62 @@ export default class WorkspacesByOpenApps extends Extension {
     }
   }
 
-  /**
-   * render indicators: destroy current indicators and rebuild
-   * */
-  _render() {
+   /**
+    * calculate maximum label length for dynamic truncation
+    * @param {Meta.Window[]} windows windows in the workspace
+    * @returns {number} maximum characters allowed per label
+    */
+   _calculate_max_label_length(windows) {
+     // if dynamic label length is disabled, return unlimited
+     if (!this._settings.apps_dynamic_label_length || !this._settings.apps_show_window_title) {
+       return Infinity
+     }
+
+     // get panel width - assume standard panel width around 1920px (or use a reasonable default)
+     // GNOME Shell doesn't expose panel width easily, so we estimate based on common screen sizes
+     const panel = main.panel
+     const panel_width = panel.width || 1920
+
+     // calculate available space based on percentage setting
+     const max_available = panel_width * (this._settings.apps_dynamic_label_max_percentage / 100)
+
+     // estimate fixed width per window (icon + margins + spacing)
+     const scale = this._settings.indicator_height_scale
+     const icon_size = Math.round(this._settings.size_app_icon * scale)
+     const spacing_left = Math.round(this._settings.spacing_app_left * scale)
+     const spacing_right = Math.round(this._settings.spacing_app_right * scale)
+     const label_spacing = Math.round(this._settings.spacing_label_left * scale) + Math.round(this._settings.spacing_label_right * scale)
+
+     // approximate width per icon widget
+     const width_per_icon = icon_size + spacing_left + spacing_right + label_spacing
+
+     // count how many app containers we'll have
+     let app_count = windows.length
+
+     // total fixed width for all icons (not including titles)
+     const fixed_width = width_per_icon * app_count
+
+     // remaining space for all titles
+     const remaining_space = Math.max(100, max_available - fixed_width)
+
+     // average space per title
+     const space_per_title = remaining_space / Math.max(1, app_count)
+
+     // estimate character width based on font size
+     // rough approximation: each character is about 0.6 * font_size pixels
+     const font_size = Math.round(this._settings.size_labels * scale)
+     const char_width = font_size * 0.6
+
+     // calculate max characters per label (with minimum of 3 to show ellipsis)
+     const max_chars = Math.max(3, Math.floor(space_per_title / char_width))
+
+     return max_chars
+   }
+
+   /**
+    * render indicators: destroy current indicators and rebuild
+    * */
+   _render() {
     this._container.destroy_all_children()
 
     // build indicator for other monitor
@@ -326,7 +380,10 @@ export default class WorkspacesByOpenApps extends Extension {
     const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
     if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")
 
-    return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace)
+    // calculate max label length for dynamic truncation
+    const max_label_length = this._calculate_max_label_length(windows)
+
+    return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace, max_label_length)
   }
 
 }

@@ -13,7 +13,7 @@ export default class Application extends St.BoxLayout {
     GObject.registerClass(this)
   }
 
-  constructor(settings, index, window, occurrences, app_icon, css_inline_app, css_classes_app) {
+  constructor(settings, index, window, occurrences, app_icon, css_inline_app, css_classes_app, max_label_length = Infinity) {
     super({
       style: css_inline_app,
       style_class: css_classes_app.join(" "),
@@ -25,6 +25,7 @@ export default class Application extends St.BoxLayout {
     this._settings = settings
     this._index = index
     this._window = window
+    this._max_label_length = max_label_length
 
     // setup signals
     this._setup_signals()
@@ -89,12 +90,21 @@ export default class Application extends St.BoxLayout {
       return
     }
 
-    const window_title = this._window.get_title()
+    let window_title = this._window.get_title()
     if (!window_title) {
       return
     }
 
-    const css_style_text = `font-size: ${this._settings.size_labels}px; margin-left: 4px;`
+    // truncate title if dynamic label length is enabled
+    if (this._max_label_length !== Infinity && window_title.length > this._max_label_length) {
+      window_title = window_title.substring(0, Math.max(0, this._max_label_length - 3)) + "..."
+    }
+
+    // apply global scale to label size
+    const scale = this._settings.indicator_height_scale
+    const size_labels = Math.round(this._settings.size_labels * scale)
+
+    const css_style_text = `font-size: ${size_labels}px; margin-left: 4px;`
     const css_classes_text = [ "wboa-label", "wboa-window-title" ]
 
     this.add_child(new St.Label({
