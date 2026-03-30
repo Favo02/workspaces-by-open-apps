@@ -573,6 +573,36 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "Dynamic window title truncation",
+      subtitle: "Automatically truncate window titles based on available top bar space"
+    })
+    widget = new Gtk.Switch({
+      valign: Gtk.Align.CENTER
+    })
+    settings.bind("apps-dynamic-label-length", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+     row = new Adw.ActionRow({
+       title: "Max top bar usage",
+       subtitle: "Maximum percentage of the top bar the extension can use (5-100). Requires Dynamic window title truncation to be enabled. Default: 40"
+     })
+     widget = new Gtk.SpinButton({
+       valign: Gtk.Align.CENTER
+     })
+     widget.set_sensitive(true)
+     widget.set_range(5, 100)
+     widget.set_value(settings.get_int("apps-dynamic-label-max-percentage"))
+     widget.set_increments(1, 5)
+    widget.connect("value-changed", this._debounce("apps-dynamic-label-max-percentage",
+      w => { settings.set_int("apps-dynamic-label-max-percentage", w.get_value_as_int()) }
+    ))
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 

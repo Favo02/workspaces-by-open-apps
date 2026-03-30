@@ -16,7 +16,7 @@ export default class Workspace extends St.Bin {
     GObject.registerClass(this)
   }
 
-  constructor(settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace) {
+  constructor(settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace, max_label_length = Infinity) {
     super({
       style_class: css_classes_panel.join(" "),
       reactive: true,
@@ -35,6 +35,7 @@ export default class Workspace extends St.Bin {
     this._index = index
     this._workspace = workspace
     this._is_active = is_active
+    this._max_label_length = max_label_length
 
     // setup signals
     this._setup_signals()
@@ -230,7 +231,7 @@ export default class Workspace extends St.Bin {
     if (this._settings.indicator_round_borders) css_classes_app.push("wboa-rounded")
     if (this._settings.apps_symbolic_icons) css_classes_app.push("wboa-symbolic-icons")
 
-    return new Application(this._settings, this._index, window, occurrences, app_icon, css_inline_app, css_classes_app)
+    return new Application(this._settings, this._index, window, occurrences, app_icon, css_inline_app, css_classes_app, this._max_label_length)
   }
 
   /**
