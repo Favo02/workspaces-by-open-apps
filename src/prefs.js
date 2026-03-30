@@ -587,7 +587,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Max top bar usage",
-      subtitle: "Maximum percentage of the top bar the extension can use (10-100). Default: 80"
+      subtitle: "Maximum percentage of the top bar the extension can use (10-100). Requires Dynamic window title truncation to be enabled. Default: 40"
     })
     widget = new Gtk.SpinButton({
       valign: Gtk.Align.CENTER
