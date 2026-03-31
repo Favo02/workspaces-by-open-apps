@@ -299,7 +299,7 @@ export default class Workspace extends St.Bin {
       margin-top: ${spacing_label_top}px;
       margin-bottom: ${spacing_label_bottom}px;
       color: ${this._settings.label_text_color};
-     `
+    `
     const css_classes_label = ["wboa-label"]
 
     // add label to indicator
