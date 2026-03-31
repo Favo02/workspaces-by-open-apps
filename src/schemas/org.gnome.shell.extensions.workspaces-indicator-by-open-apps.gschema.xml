@@ -133,10 +133,16 @@
       <description>Padding around the workspace indicator background (affects both label and icons). Default: 4</description>
     </key>
 
-    <key type="s" name="label-text-color">
+    <key type="s" name="workspace-label-text-color">
       <default>"rgba(255,255,255,1)"</default>
-      <summary>Label text color</summary>
-      <description>Color for workspace labels, app occurrence labels, and window title labels</description>
+      <summary>Workspace label text color</summary>
+      <description>Color for workspace labels (workspace names)</description>
+    </key>
+
+    <key type="s" name="app-label-text-color">
+      <default>"rgba(255,255,255,1)"</default>
+      <summary>App label text color</summary>
+      <description>Color for app occurrence labels (x2, x3, ...) and window title labels</description>
     </key>
 
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->

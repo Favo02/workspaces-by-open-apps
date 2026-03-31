@@ -69,7 +69,7 @@ export default class Application extends St.BoxLayout {
     const scale = this._settings.indicator_height_scale
     const size_labels = Math.round(this._settings.size_labels * scale)
 
-    const css_style_text = `font-size: ${size_labels}px; color: ${this._settings.label_text_color};`
+    const css_style_text = `font-size: ${size_labels}px; color: ${this._settings.app_label_text_color};`
     const css_classes_text = [ "wboa-label" ]
 
     if ((this._settings.icons_group === 1) && (occurrences.get(window.app_id).count > 1)) {
@@ -110,7 +110,7 @@ export default class Application extends St.BoxLayout {
     const scale = this._settings.indicator_height_scale
     const size_labels = Math.round(this._settings.size_labels * scale)
 
-    const css_style_text = `font-size: ${size_labels}px; margin-left: 4px; color: ${this._settings.label_text_color};`
+    const css_style_text = `font-size: ${size_labels}px; margin-left: 4px; color: ${this._settings.app_label_text_color};`
     const css_classes_text = [ "wboa-label", "wboa-window-title" ]
 
     this.add_child(new St.Label({

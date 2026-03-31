@@ -69,7 +69,8 @@ export default class WorkspacesByOpenApps extends Extension {
       indicator_show_background: rs.get_boolean("indicator-show-background"),
       indicator_background_color: rs.get_string("indicator-background-color"),
       indicator_background_padding: rs.get_int("indicator-background-padding"),
-      label_text_color: rs.get_string("label-text-color"),
+      workspace_label_text_color: rs.get_string("workspace-label-text-color"),
+      app_label_text_color: rs.get_string("app-label-text-color"),
 
       indicator_show_indexes: rs.get_boolean("indicator-show-indexes"),
       indicator_hide_empty: rs.get_boolean("indicator-hide-empty"),

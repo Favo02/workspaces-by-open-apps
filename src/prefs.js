@@ -385,19 +385,37 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     group.add(row)
 
     row = new Adw.ActionRow({
-      title: "Label text color",
-      subtitle: "Color for workspace labels, app occurrence labels, and window title labels"
+      title: "Workspace label text color",
+      subtitle: "Color for workspace labels (workspace names)"
     })
-    const labelRgba = new Gdk.RGBA()
-    labelRgba.parse(settings.get_string("label-text-color"))
+    const workspaceLabelRgba = new Gdk.RGBA()
+    workspaceLabelRgba.parse(settings.get_string("workspace-label-text-color"))
     widget = new Gtk.ColorButton({
-      rgba: labelRgba,
+      rgba: workspaceLabelRgba,
       show_editor: true,
       use_alpha: true,
       visible: true,
       valign: Gtk.Align.CENTER
     })
-    widget.connect("color-set", w => { settings.set_string("label-text-color", w.get_rgba().to_string()) })
+    widget.connect("color-set", w => { settings.set_string("workspace-label-text-color", w.get_rgba().to_string()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
+      title: "App label text color",
+      subtitle: "Color for app occurrence labels (x2, x3, ...) and window title labels"
+    })
+    const appLabelRgba = new Gdk.RGBA()
+    appLabelRgba.parse(settings.get_string("app-label-text-color"))
+    widget = new Gtk.ColorButton({
+      rgba: appLabelRgba,
+      show_editor: true,
+      use_alpha: true,
+      visible: true,
+      valign: Gtk.Align.CENTER
+    })
+    widget.connect("color-set", w => { settings.set_string("app-label-text-color", w.get_rgba().to_string()) })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)

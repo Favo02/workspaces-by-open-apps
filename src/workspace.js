@@ -298,7 +298,7 @@ export default class Workspace extends St.Bin {
       margin-right: ${spacing_label_right}px;
       margin-top: ${spacing_label_top}px;
       margin-bottom: ${spacing_label_bottom}px;
-      color: ${this._settings.label_text_color};
+      color: ${this._settings.workspace_label_text_color};
     `
     const css_classes_label = ["wboa-label"]
 
