@@ -384,6 +384,24 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "Label text color",
+      subtitle: "Color for workspace labels, app occurrence labels, and window title labels"
+    })
+    const labelRgba = new Gdk.RGBA()
+    labelRgba.parse(settings.get_string("label-text-color"))
+    widget = new Gtk.ColorButton({
+      rgba: labelRgba,
+      show_editor: true,
+      use_alpha: true,
+      visible: true,
+      valign: Gtk.Align.CENTER
+    })
+    widget.connect("color-set", w => { settings.set_string("label-text-color", w.get_rgba().to_string()) })
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 
