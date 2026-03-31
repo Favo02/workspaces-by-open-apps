@@ -133,12 +133,6 @@
       <description>Padding around the workspace indicator background (affects both label and icons). Default: 4</description>
     </key>
 
-    <key type="b" name="indicator-text-use-theme-color">
-      <default>false</default>
-      <summary>Use theme color for text</summary>
-      <description>Use the theme color for workspace text labels (similar to how icons are colored)</description>
-    </key>
-
     <!-- PAGE 2 GROUP 2: WORKSPACES APPEARANCE -->
 
     <key type="b" name="indicator-show-indexes">

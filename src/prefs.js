@@ -384,18 +384,6 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
-    row = new Adw.ActionRow({
-      title: "Use theme color for text",
-      subtitle: "Use the theme color for workspace text labels (similar to how icons are colored)"
-    })
-    widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
-    })
-    settings.bind("indicator-text-use-theme-color", widget, "active", Gio.SettingsBindFlags.DEFAULT)
-    row.add_suffix(widget)
-    row.activatable_widget = widget
-    group.add(row)
-
     return group
   }
 
