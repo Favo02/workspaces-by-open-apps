@@ -13,13 +13,22 @@ export default class Application extends St.BoxLayout {
     GObject.registerClass(this)
   }
 
-  constructor(settings, index, window, occurrences, app_icon, css_inline_app, css_classes_app, max_label_length = Infinity) {
+  constructor(
+    settings,
+    index,
+    window,
+    occurrences,
+    app_icon,
+    css_inline_app,
+    css_classes_app,
+    max_label_length = Infinity,
+  ) {
     super({
       style: css_inline_app,
       style_class: css_classes_app.join(" "),
       reactive: true,
       can_focus: true,
-      track_hover: true
+      track_hover: true,
     })
 
     this._settings = settings
@@ -56,7 +65,9 @@ export default class Application extends St.BoxLayout {
    */
   _setup_drag_and_drop() {
     this._delegate = this
-    this._draggable = dnd.makeDraggable(this, { dragActorOpacity: CONSTANTS.LOW_OPACITY })
+    this._draggable = dnd.makeDraggable(this, {
+      dragActorOpacity: CONSTANTS.LOW_OPACITY,
+    })
   }
 
   /**
@@ -64,21 +75,25 @@ export default class Application extends St.BoxLayout {
    * @param {Map} occurrences
    */
   _render_occurrences_label(occurrences, window) {
-
     // apply global scale to label size
     const scale = this._settings.indicator_height_scale
     const size_labels = Math.round(this._settings.size_labels * scale)
 
-    const css_style_text = `font-size: ${size_labels}px`
-    const css_classes_text = [ "wboa-label" ]
+    const css_style_text = `font-size: ${size_labels}px; color: ${this._settings.app_label_text_color};`
+    const css_classes_text = ["wboa-label"]
 
-    if ((this._settings.icons_group === 1) && (occurrences.get(window.app_id).count > 1)) {
-      this.add_child(new St.Label({
-        style: css_style_text,
-        style_class: css_classes_text.join(" "),
-        y_align: Clutter.ActorAlign.CENTER,
-        text: `x${occurrences.get(window.app_id).count}`
-      }))
+    if (
+      this._settings.icons_group === 1 &&
+      occurrences.get(window.app_id).count > 1
+    ) {
+      this.add_child(
+        new St.Label({
+          style: css_style_text,
+          style_class: css_classes_text.join(" "),
+          y_align: Clutter.ActorAlign.CENTER,
+          text: `x${occurrences.get(window.app_id).count}`,
+        }),
+      )
     }
   }
 
@@ -110,15 +125,17 @@ export default class Application extends St.BoxLayout {
     const scale = this._settings.indicator_height_scale
     const size_labels = Math.round(this._settings.size_labels * scale)
 
-    const css_style_text = `font-size: ${size_labels}px; margin-left: 4px;`
-    const css_classes_text = [ "wboa-label", "wboa-window-title" ]
+    const css_style_text = `font-size: ${size_labels}px; margin-left: 4px; color: ${this._settings.app_label_text_color};`
+    const css_classes_text = ["wboa-label", "wboa-window-title"]
 
-    this.add_child(new St.Label({
-      style: css_style_text,
-      style_class: css_classes_text.join(" "),
-      y_align: Clutter.ActorAlign.CENTER,
-      text: window_title
-    }))
+    this.add_child(
+      new St.Label({
+        style: css_style_text,
+        style_class: css_classes_text.join(" "),
+        y_align: Clutter.ActorAlign.CENTER,
+        text: window_title,
+      }),
+    )
   }
 
   /**
@@ -128,8 +145,10 @@ export default class Application extends St.BoxLayout {
    */
   _on_click_application(_, event) {
     // left/right click: focus or minimize application
-    if (event.get_button() === CONSTANTS.LEFT_CLICK || event.get_button() === CONSTANTS.RIGHT_CLICK) {
-
+    if (
+      event.get_button() === CONSTANTS.LEFT_CLICK ||
+      event.get_button() === CONSTANTS.RIGHT_CLICK
+    ) {
       // focused and setting on: minimize
       if (this._window.has_focus() && this._settings.click_on_focus_minimize) {
         this._window.minimize(Shell.Global.get().get_current_time())
@@ -142,7 +161,10 @@ export default class Application extends St.BoxLayout {
     }
 
     // middle click: close application
-    if (this._settings.middle_click_close_app && event.get_button() === CONSTANTS.MIDDLE_CLICK) {
+    if (
+      this._settings.middle_click_close_app &&
+      event.get_button() === CONSTANTS.MIDDLE_CLICK
+    ) {
       this._window.delete(Shell.Global.get().get_current_time())
       return Clutter.EVENT_STOP
     }
@@ -162,5 +184,4 @@ export default class Application extends St.BoxLayout {
     }
     return Clutter.EVENT_STOP
   }
-
 }
