@@ -512,6 +512,7 @@ export default class WorkspacesByOpenApps extends Extension {
       css_inline_workspace,
       css_classes_workspace,
       max_label_length,
+      this._render.bind(this),
     )
   }
 }

@@ -27,6 +27,7 @@ export default class Workspace extends St.Bin {
     css_inline_workspace,
     css_classes_workspace,
     max_label_length = Infinity,
+    onRename = null,
   ) {
     super({
       style_class: css_classes_panel.join(" "),
@@ -47,6 +48,8 @@ export default class Workspace extends St.Bin {
     this._workspace = workspace
     this._is_active = is_active
     this._max_label_length = max_label_length
+    this._is_other_monitor = is_other_monitor
+    this._onRename = onRename
 
     // setup signals
     this._setup_signals()
@@ -287,10 +290,19 @@ export default class Workspace extends St.Bin {
    * setup signals: click, touch, scroll
    */
   _setup_signals() {
-    this.connect("button-release-event", this._on_click_workspace.bind(this))
-    this.connect("touch-event", this._on_touch_workspace.bind(this))
+    this._sig_click = this.connect(
+      "button-release-event",
+      this._on_click_workspace.bind(this),
+    )
+    this._sig_touch = this.connect(
+      "touch-event",
+      this._on_touch_workspace.bind(this),
+    )
     if (this._settings.scroll_enable) {
-      this.connect("scroll-event", this._on_scroll_workspace.bind(this))
+      this._sig_scroll = this.connect(
+        "scroll-event",
+        this._on_scroll_workspace.bind(this),
+      )
     }
   }
 
@@ -437,7 +449,11 @@ export default class Workspace extends St.Bin {
           Meta.prefs_change_workspace_name(this._index, entry.get_text())
           this._rename_menu.close(true)
           this.get_child().remove_child(this.get_child().get_first_child())
-          this._render_label()
+          this._render_label(this._index, this._is_other_monitor)
+          // trigger re-render to update all workspace indicators immediately
+          if (this._onRename) {
+            this._onRename()
+          }
           return Clutter.EVENT_STOP
         }
 
@@ -463,6 +479,26 @@ export default class Workspace extends St.Bin {
     this._rename_menu.open(true)
     entry.grab_key_focus()
     entryClutterText.set_selection(0, entry.get_text().length)
+  }
+
+  /**
+   * cleanup: disconnect all signal handlers before widget destruction
+   */
+  destroy() {
+    // disconnect signals to prevent memory leaks
+    this.disconnect(this._sig_click)
+    this.disconnect(this._sig_touch)
+    if (this._sig_scroll !== undefined) {
+      this.disconnect(this._sig_scroll)
+    }
+
+    // cleanup rename menu if still exists
+    if (this._rename_menu) {
+      this._rename_menu.destroy()
+      this._rename_menu = null
+    }
+
+    super.destroy()
   }
 
   /** touch on workspace handler */
