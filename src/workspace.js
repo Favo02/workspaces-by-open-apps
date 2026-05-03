@@ -287,10 +287,19 @@ export default class Workspace extends St.Bin {
    * setup signals: click, touch, scroll
    */
   _setup_signals() {
-    this.connect("button-release-event", this._on_click_workspace.bind(this))
-    this.connect("touch-event", this._on_touch_workspace.bind(this))
+    this._sig_click = this.connect(
+      "button-release-event",
+      this._on_click_workspace.bind(this),
+    )
+    this._sig_touch = this.connect(
+      "touch-event",
+      this._on_touch_workspace.bind(this),
+    )
     if (this._settings.scroll_enable) {
-      this.connect("scroll-event", this._on_scroll_workspace.bind(this))
+      this._sig_scroll = this.connect(
+        "scroll-event",
+        this._on_scroll_workspace.bind(this),
+      )
     }
   }
 
@@ -463,6 +472,26 @@ export default class Workspace extends St.Bin {
     this._rename_menu.open(true)
     entry.grab_key_focus()
     entryClutterText.set_selection(0, entry.get_text().length)
+  }
+
+  /**
+   * cleanup: disconnect all signal handlers before widget destruction
+   */
+  destroy() {
+    // disconnect signals to prevent memory leaks
+    this.disconnect(this._sig_click)
+    this.disconnect(this._sig_touch)
+    if (this._sig_scroll !== undefined) {
+      this.disconnect(this._sig_scroll)
+    }
+
+    // cleanup rename menu if still exists
+    if (this._rename_menu) {
+      this._rename_menu.destroy()
+      this._rename_menu = null
+    }
+
+    super.destroy()
   }
 
   /** touch on workspace handler */

@@ -56,8 +56,14 @@ export default class Application extends St.BoxLayout {
    * setup signals: click, touch
    */
   _setup_signals() {
-    this.connect("button-release-event", this._on_click_application.bind(this))
-    this.connect("touch-event", this._on_touch_application.bind(this))
+    this._sig_click = this.connect(
+      "button-release-event",
+      this._on_click_application.bind(this),
+    )
+    this._sig_touch = this.connect(
+      "touch-event",
+      this._on_touch_application.bind(this),
+    )
   }
 
   /**
@@ -183,5 +189,22 @@ export default class Application extends St.BoxLayout {
       this._window.activate(Shell.Global.get().get_current_time())
     }
     return Clutter.EVENT_STOP
+  }
+
+  /**
+   * cleanup: disconnect all signal handlers and drag resources before widget destruction
+   */
+  destroy() {
+    // disconnect signals to prevent memory leaks
+    this.disconnect(this._sig_click)
+    this.disconnect(this._sig_touch)
+
+    // cleanup draggable
+    if (this._draggable) {
+      this._draggable.destroy()
+      this._draggable = null
+    }
+
+    super.destroy()
   }
 }
