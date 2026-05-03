@@ -51,10 +51,12 @@
 /* --- app icon --- */
 /* app icon size managed by size-app-icon setting */
 /* app icon spacing managed by spacing-app-{left, right} settings */
-.wboa-app:hover, .wboa-app:focus {
+.wboa-app:hover,
+.wboa-app:focus {
   /* hover effect */
   margin-top: -2px;
 }
+
 /* symbolic icon */
 .wboa-symbolic-icons {
   -st-icon-style: symbolic;
@@ -62,7 +64,7 @@
 
 /* --- apps group label (x2, x3, ...) --- */
 /* app group label color managed by label-text-color setting via inline styles */
-.wboa-app > .wboa-label {
+.wboa-app>.wboa-label {
   /* space horizontally app groups */
   margin-right: 2px;
 }
@@ -79,10 +81,12 @@
 .wboa-rounded {
   border-radius: 5px;
 }
+
 /* round panel button borders */
 .wboa-panel-rounded {
   border-radius: 15px !important;
 }
+
 /* do not round indicator borders */
 .wboa-no-rounded {
   border-radius: 0px !important;
@@ -94,11 +98,13 @@
   /* simulate presence of active indicator */
   margin-top: 2px;
 }
+
 .wboa-top.wboa-active {
   border-top: 2px solid white;
   /* disable simulation of presence of active indicator */
   margin-top: 0px;
 }
+
 .wboa-top.wboa-no-indicator {
   border: none !important;
   /* simulate presence of active indicator */
@@ -111,11 +117,13 @@
   /* simulate presence of active indicator */
   margin-bottom: 2px;
 }
+
 .wboa-bottom.wboa-active {
   border-bottom: 2px solid white;
   /* disable simulation of presence of active indicator */
   margin-bottom: 0px;
 }
+
 .wboa-bottom.wboa-no-indicator {
   border: none !important;
   /* simulate presence of active indicator */

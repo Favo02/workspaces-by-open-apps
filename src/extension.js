@@ -8,7 +8,6 @@ import Workspace from "./workspace.js"
 
 // extension workspace indicator
 export default class WorkspacesByOpenApps extends Extension {
-
   /**
    * enable extension: initialize everything, connect signals and trigger first render
    * */
@@ -19,7 +18,10 @@ export default class WorkspacesByOpenApps extends Extension {
     // create container and insert in panel
     this._container = new St.BoxLayout()
     const box = CONSTANTS.PANEL_BOX[this._settings.position_in_panel]
-    main.panel[box].insert_child_at_index(this._container, this._settings.position_index)
+    main.panel[box].insert_child_at_index(
+      this._container,
+      this._settings.position_index,
+    )
 
     // setup keyboard shortcuts
     this._setup_keybindings()
@@ -61,7 +63,9 @@ export default class WorkspacesByOpenApps extends Extension {
       click_on_active_overview: rs.get_boolean("click-on-active-overview"),
       click_on_focus_minimize: rs.get_boolean("click-on-focus-minimize"),
 
-      indicator_show_active_workspace: rs.get_boolean("indicator-show-active-workspace"),
+      indicator_show_active_workspace: rs.get_boolean(
+        "indicator-show-active-workspace",
+      ),
       indicator_show_focused_app: rs.get_boolean("indicator-show-focused-app"),
       indicator_color: rs.get_string("indicator-color"),
       indicator_round_borders: rs.get_boolean("indicator-round-borders"),
@@ -83,7 +87,9 @@ export default class WorkspacesByOpenApps extends Extension {
       apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
       apps_show_window_title: rs.get_boolean("apps-show-window-title"),
       apps_dynamic_label_length: rs.get_boolean("apps-dynamic-label-length"),
-      apps_dynamic_label_max_percentage: rs.get_int("apps-dynamic-label-max-percentage"),
+      apps_dynamic_label_max_percentage: rs.get_int(
+        "apps-dynamic-label-max-percentage",
+      ),
 
       icons_limit: rs.get_int("icons-limit"),
       icons_group: rs.get_enum("icons-group"),
@@ -104,14 +110,13 @@ export default class WorkspacesByOpenApps extends Extension {
       spacing_app_left: rs.get_int("spacing-app-left"),
       spacing_app_right: rs.get_int("spacing-app-right"),
 
-      indicator_height_scale: rs.get_double("indicator-height-scale")
+      indicator_height_scale: rs.get_double("indicator-height-scale"),
     }
 
     // hide activities button
     if (this._settings.hide_activities_button)
       main.panel.statusArea["activities"]?.hide()
-    else
-      main.panel.statusArea["activities"]?.show()
+    else main.panel.statusArea["activities"]?.show()
 
     if (render) {
       // disabling and enabling the extension is needed for settings that change
@@ -126,23 +131,41 @@ export default class WorkspacesByOpenApps extends Extension {
    * */
   _connect_signals() {
     const workspace_manager = Shell.Global.get().get_workspace_manager()
-    this._sig_wm1 = workspace_manager.connect("active-workspace-changed", () => this._render())
-    this._sig_wm2 = workspace_manager.connect("showing-desktop-changed", () => this._render())
-    this._sig_wm3 = workspace_manager.connect("workspace-added", () => this._render())
-    this._sig_wm4 = workspace_manager.connect("workspace-removed", () => this._render())
-    this._sig_wm5 = workspace_manager.connect("workspace-switched", () => this._render())
-    this._sig_wm6 = workspace_manager.connect("workspaces-reordered", () => this._render())
+    this._sig_wm1 = workspace_manager.connect("active-workspace-changed", () =>
+      this._render(),
+    )
+    this._sig_wm2 = workspace_manager.connect("showing-desktop-changed", () =>
+      this._render(),
+    )
+    this._sig_wm3 = workspace_manager.connect("workspace-added", () =>
+      this._render(),
+    )
+    this._sig_wm4 = workspace_manager.connect("workspace-removed", () =>
+      this._render(),
+    )
+    this._sig_wm5 = workspace_manager.connect("workspace-switched", () =>
+      this._render(),
+    )
+    this._sig_wm6 = workspace_manager.connect("workspaces-reordered", () =>
+      this._render(),
+    )
 
     const window_tracker = Shell.WindowTracker.get_default()
-    this._sig_wt1 = window_tracker.connect("tracked-windows-changed", () => this._render())
+    this._sig_wt1 = window_tracker.connect("tracked-windows-changed", () =>
+      this._render(),
+    )
 
     const display = Shell.Global.get().get_display()
     this._sig_dp1 = display.connect("restacked", () => this._render())
     this._sig_dp2 = display.connect("window-left-monitor", () => this._render())
-    this._sig_dp3 = display.connect("window-entered-monitor", () => this._render())
+    this._sig_dp3 = display.connect("window-entered-monitor", () =>
+      this._render(),
+    )
 
     const raw_settings = this.getSettings()
-    this._sig_sett = raw_settings.connect("changed", () => this._update_settings(raw_settings, true))
+    this._sig_sett = raw_settings.connect("changed", () =>
+      this._update_settings(raw_settings, true),
+    )
   }
 
   /**
@@ -174,11 +197,11 @@ export default class WorkspacesByOpenApps extends Extension {
    */
   _setup_keybindings() {
     main.wm.addKeybinding(
-      'rename-workspace-shortcut',
+      "rename-workspace-shortcut",
       this.getSettings(),
       Meta.KeyBindingFlags.NONE,
       Shell.ActionMode.NORMAL,
-      this._on_rename_shortcut.bind(this)
+      this._on_rename_shortcut.bind(this),
     )
   }
 
@@ -186,7 +209,7 @@ export default class WorkspacesByOpenApps extends Extension {
    * remove keyboard shortcuts
    */
   _remove_keybindings() {
-    main.wm.removeKeybinding('rename-workspace-shortcut')
+    main.wm.removeKeybinding("rename-workspace-shortcut")
   }
 
   /**
@@ -231,7 +254,9 @@ export default class WorkspacesByOpenApps extends Extension {
     if (!only_all_workspaces && on_all_workspaces) return false
 
     // ignored in settings (regex match)
-    const matches = this._settings.icons_ignored.filter(ignored => new RegExp(ignored, "i").test(app.get_id()))
+    const matches = this._settings.icons_ignored.filter((ignored) =>
+      new RegExp(ignored, "i").test(app.get_id()),
+    )
     if (matches.length > 0) return false
 
     // dialogs, popovers and tooltip (only if not focused)
@@ -247,7 +272,10 @@ export default class WorkspacesByOpenApps extends Extension {
    */
   _calculate_max_label_length() {
     // if dynamic label length is disabled, return unlimited
-    if (!this._settings.apps_dynamic_label_length || !this._settings.apps_show_window_title) {
+    if (
+      !this._settings.apps_dynamic_label_length ||
+      !this._settings.apps_show_window_title
+    ) {
       return Infinity
     }
 
@@ -259,8 +287,14 @@ export default class WorkspacesByOpenApps extends Extension {
     // iterate through all workspaces and count unique windows
     for (let i = 0; i < workspace_manager.get_n_workspaces(); i++) {
       const workspace = workspace_manager.get_workspace_by_index(i)
-      const windows = workspace.list_windows().filter(win => this._should_count_window(win, false) || this._should_count_window(win, true))
-      windows.forEach(win => {
+      const windows = workspace
+        .list_windows()
+        .filter(
+          (win) =>
+            this._should_count_window(win, false) ||
+            this._should_count_window(win, true),
+        )
+      windows.forEach((win) => {
         if (!seen_windows.has(win)) {
           seen_windows.add(win)
           total_windows++
@@ -278,17 +312,21 @@ export default class WorkspacesByOpenApps extends Extension {
     }
 
     // calculate available space based on percentage setting
-    const max_available = panel_width * (this._settings.apps_dynamic_label_max_percentage / 100)
+    const max_available =
+      panel_width * (this._settings.apps_dynamic_label_max_percentage / 100)
 
     // estimate fixed width per window (icon + margins + spacing)
     const scale = this._settings.indicator_height_scale
     const icon_size = Math.round(this._settings.size_app_icon * scale)
     const spacing_left = Math.round(this._settings.spacing_app_left * scale)
     const spacing_right = Math.round(this._settings.spacing_app_right * scale)
-    const label_spacing = Math.round(this._settings.spacing_label_left * scale) + Math.round(this._settings.spacing_label_right * scale)
+    const label_spacing =
+      Math.round(this._settings.spacing_label_left * scale) +
+      Math.round(this._settings.spacing_label_right * scale)
 
     // approximate width per icon widget
-    const width_per_icon = icon_size + spacing_left + spacing_right + label_spacing
+    const width_per_icon =
+      icon_size + spacing_left + spacing_right + label_spacing
 
     // total fixed width for all icons (not including titles)
     const fixed_width = width_per_icon * total_windows
@@ -310,46 +348,52 @@ export default class WorkspacesByOpenApps extends Extension {
     const max_chars = Math.max(0, Math.floor(space_per_title / char_width))
 
     return max_chars
+  }
+
+  /**
+   * render indicators: destroy current indicators and rebuild
+   * */
+  _render() {
+    this._container.destroy_all_children()
+
+    // calculate max label length once for all workspaces
+    const max_label_length = this._calculate_max_label_length()
+
+    // build indicator for other monitor
+    const other_monitor = this._render_workspace(0, true, max_label_length)
+    if (other_monitor) {
+      this._container.add_child(other_monitor)
     }
 
-   /**
-    * render indicators: destroy current indicators and rebuild
-    * */
-   _render() {
-     this._container.destroy_all_children()
+    // build normal workspaces indicators
+    for (
+      let i = 0;
+      i < Shell.Global.get().get_workspace_manager().get_n_workspaces();
+      i++
+    ) {
+      const workspace = this._render_workspace(i, false, max_label_length)
+      if (workspace) {
+        this._container.add_child(workspace)
+      }
+    }
+  }
 
-     // calculate max label length once for all workspaces
-     const max_label_length = this._calculate_max_label_length()
-
-     // build indicator for other monitor
-     const other_monitor = this._render_workspace(0, true, max_label_length)
-     if (other_monitor) {
-       this._container.add_child(other_monitor)
-     }
-
-     // build normal workspaces indicators
-     for (let i = 0; i < Shell.Global.get().get_workspace_manager().get_n_workspaces(); i++) {
-       const workspace = this._render_workspace(i, false, max_label_length)
-       if (workspace) {
-         this._container.add_child(workspace)
-       }
-     }
-   }
-
-   /**
-    * create indicator for a single workspace
-    * @param {number} index index of workspace
-    * @param {boolean} is_other_monitor special indicator for other monitor
-    * @param {number} max_label_length maximum characters per label (calculated globally)
-    * @returns {Workspace} workspace indicator
-    */
-   _render_workspace(index, is_other_monitor, max_label_length) {
-    const workspace = Shell.Global.get().get_workspace_manager().get_workspace_by_index(index)
+  /**
+   * create indicator for a single workspace
+   * @param {number} index index of workspace
+   * @param {boolean} is_other_monitor special indicator for other monitor
+   * @param {number} max_label_length maximum characters per label (calculated globally)
+   * @returns {Workspace} workspace indicator
+   */
+  _render_workspace(index, is_other_monitor, max_label_length) {
+    const workspace = Shell.Global.get()
+      .get_workspace_manager()
+      .get_workspace_by_index(index)
 
     const windows = workspace
       .list_windows()
       // filter out apps
-      .filter(win => {
+      .filter((win) => {
         // undefined window
         if (!win) return false
 
@@ -367,7 +411,9 @@ export default class WorkspacesByOpenApps extends Extension {
         if (is_other_monitor && !win.is_on_all_workspaces()) return false
 
         // ignored in settings (regex match)
-        const matches = this._settings.icons_ignored.filter(ignored => new RegExp(ignored, "i").test(app.get_id()))
+        const matches = this._settings.icons_ignored.filter((ignored) =>
+          new RegExp(ignored, "i").test(app.get_id()),
+        )
         if (matches.length > 0) {
           // debug log ignored app id
           if (this._settings.log_apps_id) {
@@ -390,34 +436,52 @@ export default class WorkspacesByOpenApps extends Extension {
     // hide other monitor indicator if no windows on all workspaces
     if (is_other_monitor && windows.length === 0) return
 
-    const is_active = !is_other_monitor && Shell.Global.get().get_workspace_manager().get_active_workspace_index() === index
+    const is_active =
+      !is_other_monitor &&
+      Shell.Global.get()
+        .get_workspace_manager()
+        .get_active_workspace_index() === index
 
     // hide empty workspaces
-    if (this._settings.indicator_hide_empty && !is_active && windows.length === 0) return
+    if (
+      this._settings.indicator_hide_empty &&
+      !is_active &&
+      windows.length === 0
+    )
+      return
 
     // check if background should be shown for this workspace
-    const show_background = is_active && this._settings.indicator_show_background
+    const show_background =
+      is_active && this._settings.indicator_show_background
 
     // apply global scale to all sizes
     const scale = this._settings.indicator_height_scale
     const indicator_height = Math.round(2 * scale)
-    const spacing_workspace_left = Math.round(this._settings.spacing_workspace_left * scale)
-    const spacing_workspace_right = Math.round(this._settings.spacing_workspace_right * scale)
-    const indicator_background_padding = Math.round(this._settings.indicator_background_padding * scale)
+    const spacing_workspace_left = Math.round(
+      this._settings.spacing_workspace_left * scale,
+    )
+    const spacing_workspace_right = Math.round(
+      this._settings.spacing_workspace_right * scale,
+    )
+    const indicator_background_padding = Math.round(
+      this._settings.indicator_background_padding * scale,
+    )
 
     const css_inline_workspace = `
       border-color: ${this._settings.indicator_color};
       margin-left: ${spacing_workspace_left}px;
       margin-right: ${spacing_workspace_right}px;
-      ${show_background ? `padding: ${indicator_background_padding}px;` : ''}
-      ${show_background ? `background-color: ${this._settings.indicator_background_color};` : ''}
-      ${is_active && this._settings.indicator_show_active_workspace ?
-        (this._settings.indicator_swap_position ?
-          `border-top-width: ${indicator_height}px; margin-top: 0px;` :
-          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;`) :
-        (this._settings.indicator_swap_position ?
-          `margin-top: ${indicator_height}px;` :
-          `margin-bottom: ${indicator_height}px;`)}
+      ${show_background ? `padding: ${indicator_background_padding}px;` : ""}
+      ${show_background ? `background-color: ${this._settings.indicator_background_color};` : ""}
+      ${
+        is_active && this._settings.indicator_show_active_workspace
+          ? this._settings.indicator_swap_position
+            ? `border-top-width: ${indicator_height}px; margin-top: 0px;`
+            : `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;`
+          : this._settings.indicator_swap_position
+            ? `margin-top: ${indicator_height}px;`
+            : `margin-bottom: ${indicator_height}px;`
+      }
       `
 
     const css_classes_workspace = ["wboa-workspace"]
@@ -427,14 +491,27 @@ export default class WorkspacesByOpenApps extends Extension {
       css_classes_workspace.push("wboa-bottom")
     }
     if (is_active) css_classes_workspace.push("wboa-active")
-    if (!this._settings.indicator_show_active_workspace) css_classes_workspace.push("wboa-no-indicator")
-    if (this._settings.indicator_round_borders) css_classes_workspace.push("wboa-rounded")
+    if (!this._settings.indicator_show_active_workspace)
+      css_classes_workspace.push("wboa-no-indicator")
+    if (this._settings.indicator_round_borders)
+      css_classes_workspace.push("wboa-rounded")
     if (show_background) css_classes_workspace.push("wboa-background")
 
-     const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
-     if (!this._settings.indicator_round_borders) css_classes_panel.push("wboa-no-rounded")
+    const css_classes_panel = ["panel-button", "wboa-panel-rounded"]
+    if (!this._settings.indicator_round_borders)
+      css_classes_panel.push("wboa-no-rounded")
 
-     return new Workspace(this._settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace, max_label_length)
-   }
-
+    return new Workspace(
+      this._settings,
+      workspace,
+      windows,
+      index,
+      is_active,
+      is_other_monitor,
+      css_classes_panel,
+      css_inline_workspace,
+      css_classes_workspace,
+      max_label_length,
+    )
+  }
 }

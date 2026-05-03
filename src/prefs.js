@@ -5,7 +5,6 @@ import Gdk from "gi://Gdk"
 import { ExtensionPreferences } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js"
 
 export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
-
   constructor(metadata) {
     super(metadata)
     // global timeout for all debounced settings updates
@@ -61,7 +60,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     const page1 = new Adw.PreferencesPage({
       name: "page1",
       title: "Position and Behavior",
-      icon_name: "preferences-other-symbolic"
+      icon_name: "preferences-other-symbolic",
     })
     page1.add(this._page1_group1(settings))
     page1.add(this._page1_group2(settings))
@@ -71,7 +70,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     const page2 = new Adw.PreferencesPage({
       name: "page2",
       title: "Appearance",
-      icon_name: "applications-graphics-symbolic"
+      icon_name: "applications-graphics-symbolic",
     })
     page2.add(this._page2_group1(settings))
     page2.add(this._page2_group2(settings))
@@ -83,7 +82,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     const page3 = new Adw.PreferencesPage({
       name: "page3",
       title: "Hide and ignore apps",
-      icon_name: "edit-clear-all-symbolic"
+      icon_name: "edit-clear-all-symbolic",
     })
     page3.add(this._page3_group1(settings))
     // these groups needs to be saved to be updated (removed and readded) when a new app is ignored
@@ -112,7 +111,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     const page4 = new Adw.PreferencesPage({
       name: "page4",
       title: "About",
-      icon_name: "help-about-symbolic"
+      icon_name: "help-about-symbolic",
     })
     page4.add(this._about_page())
     page4.add(this._star_label())
@@ -126,52 +125,66 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page1_group1(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Position",
-      description: ""
+      description: "",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
       title: "Panel position",
-      subtitle: "Panel to show the indicator in"
+      subtitle: "Panel to show the indicator in",
     })
     widget = new Gtk.ComboBoxText({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.append("LEFT", "Left")
     widget.append("CENTER", "Center")
     widget.append("RIGHT", "Right")
-    settings.bind("position-in-panel", widget, "active-id", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "position-in-panel",
+      widget,
+      "active-id",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Position index",
-      subtitle: "Number of other elements in the panel before the indicator"
+      subtitle: "Number of other elements in the panel before the indicator",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("position-index"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("position-index",
-      w => { settings.set_int("position-index", w.get_value_as_int())}
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("position-index", (w) => {
+        settings.set_int("position-index", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Hide GNOME workspace indicator",
-      subtitle: "Hide GNOME default workspace indicator (formerly \"Activities\" button)"
+      subtitle:
+        'Hide GNOME default workspace indicator (formerly "Activities" button)',
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("hide-activities-button", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "hide-activities-button",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -182,79 +195,113 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page1_group2(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Behavior",
-      description: ""
+      description: "",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
       title: "Enable scroll",
-      subtitle: "Change workspace by scrolling the mouse wheel (or touchpad gesture) over the indicator"
+      subtitle:
+        "Change workspace by scrolling the mouse wheel (or touchpad gesture) over the indicator",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("scroll-enable", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "scroll-enable",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Scroll wraparound",
-      subtitle: "Scrolling past the last workspace will wrap around to the first one (and viceversa)"
+      subtitle:
+        "Scrolling past the last workspace will wrap around to the first one (and viceversa)",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("scroll-wraparound", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "scroll-wraparound",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Inverse scroll",
-      subtitle: "Invert the direction of scrolling"
+      subtitle: "Invert the direction of scrolling",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("scroll-inverse", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "scroll-inverse",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Middle click closes app",
-      subtitle: "Clicking with the middle mouse button on an app icon will close the app"
+      subtitle:
+        "Clicking with the middle mouse button on an app icon will close the app",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("middle-click-close-app", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "middle-click-close-app",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Click on current workspace triggers overview",
-      subtitle: "Clicking on the current active workspace will trigger the overview"
+      subtitle:
+        "Clicking on the current active workspace will trigger the overview",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("click-on-active-overview", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "click-on-active-overview",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Click on focused application to minimize",
-      subtitle: "Clicking on the current focused application will minimize it"
+      subtitle: "Clicking on the current focused application will minimize it",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("click-on-focus-minimize", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "click-on-focus-minimize",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -265,38 +312,48 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page2_group1(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Indicator appearance",
-      description: ""
+      description: "",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
       title: "Active workspace indicator",
-      subtitle: "Show an indicator below the current active workspace"
+      subtitle: "Show an indicator below the current active workspace",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("indicator-show-active-workspace", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "indicator-show-active-workspace",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Focused app indicator",
-      subtitle: "Show an indicator above the current focused app"
+      subtitle: "Show an indicator above the current focused app",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("indicator-show-focused-app", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "indicator-show-focused-app",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Indicators color",
-      subtitle: "Color of active workspace and focused app indicators"
+      subtitle: "Color of active workspace and focused app indicators",
     })
     const rgba = new Gdk.RGBA()
     rgba.parse(settings.get_string("indicator-color"))
@@ -305,52 +362,71 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       show_editor: true,
       use_alpha: true,
       visible: true,
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    widget.connect("color-set", w => { settings.set_string("indicator-color", w.get_rgba().to_string()) })
+    widget.connect("color-set", (w) => {
+      settings.set_string("indicator-color", w.get_rgba().to_string())
+    })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Round indicators borders",
-      subtitle: "Round borders of active workspace and focused app indicators"
+      subtitle: "Round borders of active workspace and focused app indicators",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("indicator-round-borders", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "indicator-round-borders",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Swap indicators position",
-      subtitle: "Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below"
+      subtitle:
+        "Move active app indicator to bottom and active workspace to top. This could break centering of labels, fix it manually using Spacing settings below",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("indicator-swap-position", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "indicator-swap-position",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Show background for active workspace",
-      subtitle: "Show a background box around the current active workspace indicator"
+      subtitle:
+        "Show a background box around the current active workspace indicator",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("indicator-show-background", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "indicator-show-background",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Background color",
-      subtitle: "Background color for the active workspace indicator"
+      subtitle: "Background color for the active workspace indicator",
     })
     const bgRgba = new Gdk.RGBA()
     bgRgba.parse(settings.get_string("indicator-background-color"))
@@ -359,34 +435,43 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       show_editor: true,
       use_alpha: true,
       visible: true,
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    widget.connect("color-set", w => { settings.set_string("indicator-background-color", w.get_rgba().to_string()) })
+    widget.connect("color-set", (w) => {
+      settings.set_string(
+        "indicator-background-color",
+        w.get_rgba().to_string(),
+      )
+    })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Background padding",
-      subtitle: "Padding around the workspace indicator background (affects both label and icons). Default: 4"
+      subtitle:
+        "Padding around the workspace indicator background (affects both label and icons). Default: 4",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 20)
     widget.set_value(settings.get_int("indicator-background-padding"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("indicator-background-padding",
-      w => { settings.set_int("indicator-background-padding", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("indicator-background-padding", (w) => {
+        settings.set_int("indicator-background-padding", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Workspace label text color",
-      subtitle: "Color for workspace labels (workspace names)"
+      subtitle: "Color for workspace labels (workspace names)",
     })
     const workspaceLabelRgba = new Gdk.RGBA()
     workspaceLabelRgba.parse(settings.get_string("workspace-label-text-color"))
@@ -395,16 +480,22 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       show_editor: true,
       use_alpha: true,
       visible: true,
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    widget.connect("color-set", w => { settings.set_string("workspace-label-text-color", w.get_rgba().to_string()) })
+    widget.connect("color-set", (w) => {
+      settings.set_string(
+        "workspace-label-text-color",
+        w.get_rgba().to_string(),
+      )
+    })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "App label text color",
-      subtitle: "Color for app occurrence labels (x2, x3, ...) and window title labels"
+      subtitle:
+        "Color for app occurrence labels (x2, x3, ...) and window title labels",
     })
     const appLabelRgba = new Gdk.RGBA()
     appLabelRgba.parse(settings.get_string("app-label-text-color"))
@@ -413,9 +504,11 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       show_editor: true,
       use_alpha: true,
       visible: true,
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    widget.connect("color-set", w => { settings.set_string("app-label-text-color", w.get_rgba().to_string()) })
+    widget.connect("color-set", (w) => {
+      settings.set_string("app-label-text-color", w.get_rgba().to_string())
+    })
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -426,38 +519,48 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page2_group2(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Workspaces appearance",
-      description: ""
+      description: "",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
       title: "Show workspace names",
-      subtitle: "Show the workspace names before the workspace icons"
+      subtitle: "Show the workspace names before the workspace icons",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("indicator-show-indexes", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "indicator-show-indexes",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Hide empty workspaces indicator",
-      subtitle: "Hides the name of empty workspaces"
+      subtitle: "Hides the name of empty workspaces",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("indicator-hide-empty", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "indicator-hide-empty",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Apps on all workspaces indicator text",
-      subtitle: "Text indicator to show when there are apps on all workspaces"
+      subtitle: "Text indicator to show when there are apps on all workspaces",
     })
     widget = new Gtk.Entry({
       halign: Gtk.Align.END,
@@ -466,7 +569,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       xalign: 0,
     })
     widget.set_text(settings.get_string("indicator-all-text"))
-    widget.connect("changed", w => {
+    widget.connect("changed", (w) => {
       if (w.get_text().length > 0) {
         settings.set_string("indicator-all-text", w.get_text())
       } else {
@@ -479,19 +582,26 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
 
     row = new Adw.ActionRow({
       title: "Use custom names for workspaces",
-      subtitle: "Display custom names instead of indexes. Enabling this settings activates the rename workspace UI (right click on workspace/keyboard shortcut)"
+      subtitle:
+        "Display custom names instead of indexes. Enabling this settings activates the rename workspace UI (right click on workspace/keyboard shortcut)",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("indicator-use-custom-names", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "indicator-use-custom-names",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Rename active workspace shortcut",
-      subtitle: "Keyboard shortcut to rename the currently active workspace. If 'Use custom names for workspaces' is off, workspace renaming is disabled"
+      subtitle:
+        "Keyboard shortcut to rename the currently active workspace. If 'Use custom names for workspaces' is off, workspace renaming is disabled",
     })
     widget = new Gtk.Entry({
       halign: Gtk.Align.END,
@@ -502,7 +612,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       placeholder_text: "<Super><Shift>r",
     })
     widget.set_text(settings.get_strv("rename-workspace-shortcut")[0] || "")
-    widget.connect("changed", w => {
+    widget.connect("changed", (w) => {
       const shortcut = w.get_text().trim()
       // Only save if non-empty and contains typical keybinding patterns
       if (shortcut.length > 0) {
@@ -526,103 +636,141 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page2_group3(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Icons appearance",
-      description: ""
+      description: "",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
       title: "Use symbolic icons",
-      subtitle: "Use symbolic icons for apps"
+      subtitle: "Use symbolic icons for apps",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("apps-symbolic-icons", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "apps-symbolic-icons",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Desaturate all apps icons",
-      subtitle: "Show only black and white apps icons"
+      subtitle: "Show only black and white apps icons",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("apps-all-desaturate", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "apps-all-desaturate",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Inactive apps effect",
-      subtitle: "Effect to apply to inactive (not focused) apps icons"
+      subtitle: "Effect to apply to inactive (not focused) apps icons",
     })
     widget = new Gtk.ComboBoxText({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.append("NOTHING", "Nothing")
     widget.append("REDUCE OPACITY", "Reduce opacity")
     widget.append("DESATURATE", "Desaturate")
-    settings.bind("apps-inactive-effect", widget, "active-id", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "apps-inactive-effect",
+      widget,
+      "active-id",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Minimized apps effect",
-      subtitle: "Effect to apply to minimized apps icons"
+      subtitle: "Effect to apply to minimized apps icons",
     })
     widget = new Gtk.ComboBoxText({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.append("NOTHING", "Nothing")
     widget.append("REDUCE OPACITY", "Reduce opacity")
     widget.append("DESATURATE", "Desaturate")
-    settings.bind("apps-minimized-effect", widget, "active-id", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "apps-minimized-effect",
+      widget,
+      "active-id",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Show window title",
-      subtitle: "Display the window title alongside the application icon"
+      subtitle: "Display the window title alongside the application icon",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("apps-show-window-title", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "apps-show-window-title",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Dynamic window title truncation",
-      subtitle: "Automatically truncate window titles based on available top bar space"
+      subtitle:
+        "Automatically truncate window titles based on available top bar space",
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("apps-dynamic-label-length", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "apps-dynamic-label-length",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
-     row = new Adw.ActionRow({
-       title: "Max top bar usage",
-       subtitle: "Maximum percentage of the top bar the extension can use (5-100). Requires Dynamic window title truncation to be enabled. Default: 40"
-     })
-     widget = new Gtk.SpinButton({
-       valign: Gtk.Align.CENTER
-     })
-     widget.set_sensitive(true)
-     widget.set_range(5, 100)
-     widget.set_value(settings.get_int("apps-dynamic-label-max-percentage"))
-     widget.set_increments(1, 5)
-    widget.connect("value-changed", this._debounce("apps-dynamic-label-max-percentage",
-      w => { settings.set_int("apps-dynamic-label-max-percentage", w.get_value_as_int()) }
-    ))
+    row = new Adw.ActionRow({
+      title: "Max top bar usage",
+      subtitle:
+        "Maximum percentage of the top bar the extension can use (5-100). Requires Dynamic window title truncation to be enabled. Default: 40",
+    })
+    widget = new Gtk.SpinButton({
+      valign: Gtk.Align.CENTER,
+    })
+    widget.set_sensitive(true)
+    widget.set_range(5, 100)
+    widget.set_value(settings.get_int("apps-dynamic-label-max-percentage"))
+    widget.set_increments(1, 5)
+    widget.connect(
+      "value-changed",
+      this._debounce("apps-dynamic-label-max-percentage", (w) => {
+        settings.set_int(
+          "apps-dynamic-label-max-percentage",
+          w.get_value_as_int(),
+        )
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -633,206 +781,242 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page2_group4(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Size and spacing",
-      description: ""
+      description: "",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
       title: "Application icon size",
-      subtitle: "Size of a single application icon. The icon is limited by the panel height (edit panel height with extensions like Just Perfection). Default: 20"
+      subtitle:
+        "Size of a single application icon. The icon is limited by the panel height (edit panel height with extensions like Just Perfection). Default: 20",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(1, 50)
     widget.set_value(settings.get_int("size-app-icon"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("size-app-icon",
-      w => { settings.set_int("size-app-icon", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("size-app-icon", (w) => {
+        settings.set_int("size-app-icon", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Labels font size",
-      subtitle: "Font sizes for all labels (workspace name, apps groups). Default: 12"
+      subtitle:
+        "Font sizes for all labels (workspace name, apps groups). Default: 12",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(1, 50)
     widget.set_value(settings.get_int("size-labels"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("size-labels",
-      w => { settings.set_int("size-labels", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("size-labels", (w) => {
+        settings.set_int("size-labels", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Workspace spacing left",
-      subtitle: "Left spacing for a workspace indicator. Default: 2"
+      subtitle: "Left spacing for a workspace indicator. Default: 2",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-workspace-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("spacing-workspace-left",
-      w => { settings.set_int("spacing-workspace-left", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("spacing-workspace-left", (w) => {
+        settings.set_int("spacing-workspace-left", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Workspace spacing right",
-      subtitle: "Right spacing for a workspace indicator. Default: 2"
+      subtitle: "Right spacing for a workspace indicator. Default: 2",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-workspace-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("spacing-workspace-right",
-      w => { settings.set_int("spacing-workspace-right", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("spacing-workspace-right", (w) => {
+        settings.set_int("spacing-workspace-right", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Label spacing left",
-      subtitle: "Left spacing for a workspace label. Default: 2"
+      subtitle: "Left spacing for a workspace label. Default: 2",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("spacing-label-left",
-      w => { settings.set_int("spacing-label-left", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("spacing-label-left", (w) => {
+        settings.set_int("spacing-label-left", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Label spacing right",
-      subtitle: "Right spacing for a workspace label. Default: 2"
+      subtitle: "Right spacing for a workspace label. Default: 2",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("spacing-label-right",
-      w => { settings.set_int("spacing-label-right", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("spacing-label-right", (w) => {
+        settings.set_int("spacing-label-right", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Label spacing top",
-      subtitle: "Top spacing for a workspace label. Default: 0"
+      subtitle: "Top spacing for a workspace label. Default: 0",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-top"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("spacing-label-top",
-      w => { settings.set_int("spacing-label-top", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("spacing-label-top", (w) => {
+        settings.set_int("spacing-label-top", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Label spacing bottom",
-      subtitle: "Bottom spacing for a workspace label. Default: 0"
+      subtitle: "Bottom spacing for a workspace label. Default: 0",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-label-bottom"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("spacing-label-bottom",
-      w => { settings.set_int("spacing-label-bottom", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("spacing-label-bottom", (w) => {
+        settings.set_int("spacing-label-bottom", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "App icon spacing left",
-      subtitle: "Left spacing for an application icon. Default: 0"
+      subtitle: "Left spacing for an application icon. Default: 0",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-app-left"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("spacing-app-left",
-      w => { settings.set_int("spacing-app-left", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("spacing-app-left", (w) => {
+        settings.set_int("spacing-app-left", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "App icon spacing right",
-      subtitle: "Right spacing for an application icon. Default: 0"
+      subtitle: "Right spacing for an application icon. Default: 0",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 50)
     widget.set_value(settings.get_int("spacing-app-right"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("spacing-app-right",
-      w => { settings.set_int("spacing-app-right", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("spacing-app-right", (w) => {
+        settings.set_int("spacing-app-right", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Global size scale",
-      subtitle: "Global scale multiplier applied to ALL sizes (icons, spacings, indicators, padding, fonts). For example: 0.5 = half size, 1.0 = normal, 2.0 = double size. Default: 1.0"
+      subtitle:
+        "Global scale multiplier applied to ALL sizes (icons, spacings, indicators, padding, fonts). For example: 0.5 = half size, 1.0 = normal, 2.0 = double size. Default: 1.0",
     })
     widget = new Gtk.SpinButton({
       valign: Gtk.Align.CENTER,
-      digits: 1
+      digits: 1,
     })
     widget.set_sensitive(true)
     widget.set_range(0.5, 5.0)
     widget.set_value(settings.get_double("indicator-height-scale"))
     widget.set_increments(0.5, 0.5)
-    widget.connect("value-changed", this._debounce("indicator-height-scale",
-      w => { settings.set_double("indicator-height-scale", w.get_value()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("indicator-height-scale", (w) => {
+        settings.set_double("indicator-height-scale", w.get_value())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -843,40 +1027,50 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page3_group1(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Icons appearance",
-      description: ""
+      description: "",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
       title: "Icons limit",
-      subtitle: "Maximum number of icons displayed in a single inactive workspace indicator. Active workspace is always unlimited. 0 = unlimited"
+      subtitle:
+        "Maximum number of icons displayed in a single inactive workspace indicator. Active workspace is always unlimited. 0 = unlimited",
     })
     widget = new Gtk.SpinButton({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.set_sensitive(true)
     widget.set_range(0, 99)
     widget.set_value(settings.get_int("icons-limit"))
     widget.set_increments(1, 2)
-    widget.connect("value-changed", this._debounce("icons-limit",
-      w => { settings.set_int("icons-limit", w.get_value_as_int()) }
-    ))
+    widget.connect(
+      "value-changed",
+      this._debounce("icons-limit", (w) => {
+        settings.set_int("icons-limit", w.get_value_as_int())
+      }),
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Group icons of same application",
-      subtitle: "Show only one icon for each application in the workspace indicator"
+      subtitle:
+        "Show only one icon for each application in the workspace indicator",
     })
     widget = new Gtk.ComboBoxText({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
     widget.append("OFF", "Off")
     widget.append("GROUP AND SHOW COUNT", "Group and show count")
     widget.append("GROUP WITHOUT COUNT", "Group without count")
-    settings.bind("icons-group", widget, "active-id", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "icons-group",
+      widget,
+      "active-id",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
@@ -887,24 +1081,27 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page3_group2(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Ignored applications",
-      description: "List of applications currently ignored (no icons will be shown for them)"
+      description:
+        "List of applications currently ignored (no icons will be shown for them)",
     })
 
     const ignored_apps = settings.get_strv("icons-ignored")
 
     if (ignored_apps.length === 0) {
-      group.add(new Gtk.Label({
-        label: "No currently ignored apps"
-      }))
+      group.add(
+        new Gtk.Label({
+          label: "No currently ignored apps",
+        }),
+      )
     }
 
     for (const app of ignored_apps) {
       const row = new Adw.ActionRow({
-        title: app
+        title: app,
       })
       const widget = new Gtk.Button({
         valign: Gtk.Align.CENTER,
-        label: "Reactivate"
+        label: "Reactivate",
       })
       widget.connect("clicked", () => {
         ignored_apps.splice(ignored_apps.indexOf(app), 1)
@@ -922,26 +1119,33 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
   _page3_group3(settings) {
     const group = new Adw.PreferencesGroup({
       title: "Add ignored application",
-      description: "Add an application to the list of ignored applications"
+      description: "Add an application to the list of ignored applications",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
       title: "Log displayed applications ids",
-      subtitle: "Console log the ids of the applications currently running, to find the ids of the applications to ignore. Open log with \"journalctl /usr/bin/gnome-shell -f -o cat\""
+      subtitle:
+        'Console log the ids of the applications currently running, to find the ids of the applications to ignore. Open log with "journalctl /usr/bin/gnome-shell -f -o cat"',
     })
     widget = new Gtk.Switch({
-      valign: Gtk.Align.CENTER
+      valign: Gtk.Align.CENTER,
     })
-    settings.bind("log-apps-id", widget, "active", Gio.SettingsBindFlags.DEFAULT)
+    settings.bind(
+      "log-apps-id",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
     row.add_suffix(widget)
     row.activatable_widget = widget
     group.add(row)
 
     row = new Adw.ActionRow({
       title: "Add application to ignore",
-      subtitle: "Insert id of the application to ignore. Regular expressions (regex) are supported"
+      subtitle:
+        "Insert id of the application to ignore. Regular expressions (regex) are supported",
     })
     widget = new Gtk.Entry({
       halign: Gtk.Align.END,
@@ -951,9 +1155,12 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     })
     widget.set_width_chars(25)
     widget.set_placeholder_text("org.gnome.example")
-    widget.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "object-select-symbolic")
+    widget.set_icon_from_icon_name(
+      Gtk.EntryIconPosition.SECONDARY,
+      "object-select-symbolic",
+    )
     widget.set_icon_activatable(Gtk.EntryIconPosition.SECONDARY, true)
-    widget.connect("icon-press", w => {
+    widget.connect("icon-press", (w) => {
       const ignored_apps = settings.get_strv("icons-ignored")
       if (w.get_text().length === 0 || ignored_apps.includes(w.get_text()))
         return
@@ -971,30 +1178,32 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     return new Adw.PreferencesGroup({
       title: "",
       description: "Closing settings may be necessary to apply modifications",
-      halign: Gtk.Align.CENTER
+      halign: Gtk.Align.CENTER,
     })
   }
 
   _about_page() {
     const group = new Adw.PreferencesGroup({
       title: "Workspaces Indicator by Open Apps",
-      description: "About this extension"
+      description: "About this extension",
     })
 
     let row, widget
 
     row = new Adw.ActionRow({
-      title: "Version"
+      title: "Version",
     })
     widget = new Gtk.Label({
-      label: ExtensionPreferences.lookupByUUID("workspaces-by-open-apps@favo02.github.com").metadata.version.toString(),
-      valign: Gtk.Align.CENTER
+      label: ExtensionPreferences.lookupByUUID(
+        "workspaces-by-open-apps@favo02.github.com",
+      ).metadata.version.toString(),
+      valign: Gtk.Align.CENTER,
     })
     row.add_suffix(widget)
     group.add(row)
 
     row = new Adw.ActionRow({
-      title: "Source code"
+      title: "Source code",
     })
     widget = new Gtk.LinkButton({
       label: "Favo02/workspaces-by-open-apps on GitHub",
@@ -1006,7 +1215,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     group.add(row)
 
     row = new Adw.ActionRow({
-      title: "Report a bug / Feature request"
+      title: "Report a bug / Feature request",
     })
     widget = new Gtk.LinkButton({
       label: "Open an issue on GitHub",
@@ -1018,7 +1227,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     group.add(row)
 
     row = new Adw.ActionRow({
-      title: "GNOME extensions store"
+      title: "GNOME extensions store",
     })
     widget = new Gtk.LinkButton({
       label: "Workspaces indicator by open apps",
@@ -1036,7 +1245,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     return new Adw.PreferencesGroup({
       title: "",
       description: "Do not forget to leave a star if you like this extension!",
-      halign: Gtk.Align.CENTER
+      halign: Gtk.Align.CENTER,
     })
   }
 }

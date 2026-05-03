@@ -16,7 +16,18 @@ export default class Workspace extends St.Bin {
     GObject.registerClass(this)
   }
 
-  constructor(settings, workspace, windows, index, is_active, is_other_monitor, css_classes_panel, css_inline_workspace, css_classes_workspace, max_label_length = Infinity) {
+  constructor(
+    settings,
+    workspace,
+    windows,
+    index,
+    is_active,
+    is_other_monitor,
+    css_classes_panel,
+    css_inline_workspace,
+    css_classes_workspace,
+    max_label_length = Infinity,
+  ) {
     super({
       style_class: css_classes_panel.join(" "),
       reactive: true,
@@ -27,7 +38,7 @@ export default class Workspace extends St.Bin {
         style_class: css_classes_workspace.join(" "),
         reactive: true,
         can_focus: true,
-        track_hover: true
+        track_hover: true,
       }),
     })
 
@@ -58,7 +69,6 @@ export default class Workspace extends St.Bin {
    * @param {boolean} is_active if the workspace is active
    */
   _render_applications(windows, is_active) {
-
     // count occurrences of each application
     const occurrences = this._count_application_occurrences(windows)
 
@@ -76,14 +86,15 @@ export default class Workspace extends St.Bin {
     }
 
     windows
-      .sort((w1, w2) => { // sort by focus and id
+      .sort((w1, w2) => {
+        // sort by focus and id
         if (w1.has_focus()) return -1
         if (w2.has_focus()) return 1
         return w1.get_id() - w2.get_id()
       })
       .slice(0, icons_limit) // limit icons
       .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id only
-      .forEach(window => {
+      .forEach((window) => {
         // create app indicator and add to workspace
         const app_container = this._create_application(window, occurrences)
         this.get_child().add_child(app_container)
@@ -94,7 +105,7 @@ export default class Workspace extends St.Bin {
       const scale = this._settings.indicator_height_scale
       const plus_icon = new St.Icon({
         icon_name: "list-add-symbolic",
-        icon_size: Math.round(this._settings.size_app_icon * scale / 2)
+        icon_size: Math.round((this._settings.size_app_icon * scale) / 2),
       })
       plus_icon.set_opacity(CONSTANTS.LOW_OPACITY)
       this.get_child().add_child(plus_icon)
@@ -114,12 +125,16 @@ export default class Workspace extends St.Bin {
     if (this._settings.icons_group !== CONSTANTS.OFF) {
       for (const window of windows) {
         const id = window.app_id
-        const get_or_default = occurrences.get(id) ?? { count: 0, focus: false, not_minimized: false }
+        const get_or_default = occurrences.get(id) ?? {
+          count: 0,
+          focus: false,
+          not_minimized: false,
+        }
 
         occurrences.set(id, {
           count: get_or_default.count + 1,
           focus: get_or_default.focus || window.has_focus(),
-          not_minimized: get_or_default.not_minimized || !window.is_hidden()
+          not_minimized: get_or_default.not_minimized || !window.is_hidden(),
         })
       }
     }
@@ -147,7 +162,7 @@ export default class Workspace extends St.Bin {
     // for each app, keep the focused window or the first one
     const result = []
     for (const [app_id, wins] of app_windows) {
-      const focused = wins.find(w => w.has_focus())
+      const focused = wins.find((w) => w.has_focus())
       result.push(focused || wins[0])
     }
 
@@ -185,7 +200,8 @@ export default class Workspace extends St.Bin {
     }
 
     // effects for minimized apps
-    const is_not_minimized = !window.is_hidden() || occurrences.get(window.app_id)?.not_minimized
+    const is_not_minimized =
+      !window.is_hidden() || occurrences.get(window.app_id)?.not_minimized
     if (!is_not_minimized) {
       // reduce opacity
       if (this._settings.apps_minimized_effect === CONSTANTS.REDUCE_OPACITY) {
@@ -205,19 +221,23 @@ export default class Workspace extends St.Bin {
     // apply global scale to all sizes
     const indicator_height = Math.round(2 * scale)
     const spacing_app_left = Math.round(this._settings.spacing_app_left * scale)
-    const spacing_app_right = Math.round(this._settings.spacing_app_right * scale)
+    const spacing_app_right = Math.round(
+      this._settings.spacing_app_right * scale,
+    )
 
     const css_inline_app = `
       border-color: ${this._settings.indicator_color};
       margin-left: ${spacing_app_left}px;
       margin-right: ${spacing_app_right}px;
-      ${is_focus && this._settings.indicator_show_focused_app ?
-        (this._settings.indicator_swap_position ?
-          `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;` :
-          `border-top-width: ${indicator_height}px; margin-top: 0px;`) :
-        (this._settings.indicator_swap_position ?
-          `margin-bottom: ${indicator_height}px;` :
-          `margin-top: ${indicator_height}px;`)}
+      ${
+        is_focus && this._settings.indicator_show_focused_app
+          ? this._settings.indicator_swap_position
+            ? `border-bottom-width: ${indicator_height}px; margin-bottom: 0px;`
+            : `border-top-width: ${indicator_height}px; margin-top: 0px;`
+          : this._settings.indicator_swap_position
+            ? `margin-bottom: ${indicator_height}px;`
+            : `margin-top: ${indicator_height}px;`
+      }
     `
 
     const css_classes_app = ["wboa-app"]
@@ -227,11 +247,23 @@ export default class Workspace extends St.Bin {
       css_classes_app.push("wboa-top")
     }
     if (is_focus) css_classes_app.push("wboa-active")
-    if (!this._settings.indicator_show_focused_app) css_classes_app.push("wboa-no-indicator")
-    if (this._settings.indicator_round_borders) css_classes_app.push("wboa-rounded")
-    if (this._settings.apps_symbolic_icons) css_classes_app.push("wboa-symbolic-icons")
+    if (!this._settings.indicator_show_focused_app)
+      css_classes_app.push("wboa-no-indicator")
+    if (this._settings.indicator_round_borders)
+      css_classes_app.push("wboa-rounded")
+    if (this._settings.apps_symbolic_icons)
+      css_classes_app.push("wboa-symbolic-icons")
 
-    return new Application(this._settings, this._index, window, occurrences, app_icon, css_inline_app, css_classes_app, this._max_label_length)
+    return new Application(
+      this._settings,
+      this._index,
+      window,
+      occurrences,
+      app_icon,
+      css_inline_app,
+      css_classes_app,
+      this._max_label_length,
+    )
   }
 
   /**
@@ -287,10 +319,18 @@ export default class Workspace extends St.Bin {
     // apply global scale to label sizes
     const scale = this._settings.indicator_height_scale
     const size_labels = Math.round(this._settings.size_labels * scale)
-    const spacing_label_left = Math.round(this._settings.spacing_label_left * scale)
-    const spacing_label_right = Math.round(this._settings.spacing_label_right * scale)
-    const spacing_label_top = Math.round(this._settings.spacing_label_top * scale)
-    const spacing_label_bottom = Math.round(this._settings.spacing_label_bottom * scale)
+    const spacing_label_left = Math.round(
+      this._settings.spacing_label_left * scale,
+    )
+    const spacing_label_right = Math.round(
+      this._settings.spacing_label_right * scale,
+    )
+    const spacing_label_top = Math.round(
+      this._settings.spacing_label_top * scale,
+    )
+    const spacing_label_bottom = Math.round(
+      this._settings.spacing_label_bottom * scale,
+    )
 
     const css_style_label = `
       font-size: ${size_labels}px;
@@ -303,12 +343,15 @@ export default class Workspace extends St.Bin {
     const css_classes_label = ["wboa-label"]
 
     // add label to indicator
-    this.get_child().insert_child_at_index(new St.Label({
-      style: css_style_label,
-      style_class: css_classes_label.join(" "),
-      y_align: Clutter.ActorAlign.CENTER,
-      text: indicator_text
-    }), 0)
+    this.get_child().insert_child_at_index(
+      new St.Label({
+        style: css_style_label,
+        style_class: css_classes_label.join(" "),
+        y_align: Clutter.ActorAlign.CENTER,
+        text: indicator_text,
+      }),
+      0,
+    )
   }
 
   /**
@@ -319,7 +362,10 @@ export default class Workspace extends St.Bin {
   _on_click_workspace(_, event) {
     // left click: focus workspace or activate overview
     if (event.get_button() === CONSTANTS.LEFT_CLICK) {
-      const is_active = Shell.Global.get().get_workspace_manager().get_active_workspace_index() === this._index
+      const is_active =
+        Shell.Global.get()
+          .get_workspace_manager()
+          .get_active_workspace_index() === this._index
 
       // active and setting on: activate overview
       if (is_active && this._settings.click_on_active_overview) {
@@ -366,14 +412,14 @@ export default class Workspace extends St.Bin {
     // create menu item with text entry
     const menuItem = new popupMenu.PopupBaseMenuItem({
       reactive: false,
-      can_focus: false
+      can_focus: false,
     })
 
     const entry = new St.Entry({
       text: Meta.prefs_get_workspace_name(this._index),
-      style_class: 'rename-workspace-entry',
+      style_class: "rename-workspace-entry",
       can_focus: true,
-      x_expand: true
+      x_expand: true,
     })
 
     menuItem.actor.add_child(entry)
@@ -381,29 +427,32 @@ export default class Workspace extends St.Bin {
 
     // handle key press events
     const entryClutterText = entry.get_clutter_text()
-    const keyPressId = entryClutterText.connect('key-press-event', (_, event) => {
-      const symbol = event.get_key_symbol()
+    const keyPressId = entryClutterText.connect(
+      "key-press-event",
+      (_, event) => {
+        const symbol = event.get_key_symbol()
 
-      // Enter key: apply rename and close menu
-      if (symbol === Clutter.KEY_Return || symbol === Clutter.KEY_KP_Enter) {
-        Meta.prefs_change_workspace_name(this._index, entry.get_text())
-        this._rename_menu.close(true)
-        this.get_child().remove_child(this.get_child().get_first_child())
-        this._render_label()
-        return Clutter.EVENT_STOP
-      }
+        // Enter key: apply rename and close menu
+        if (symbol === Clutter.KEY_Return || symbol === Clutter.KEY_KP_Enter) {
+          Meta.prefs_change_workspace_name(this._index, entry.get_text())
+          this._rename_menu.close(true)
+          this.get_child().remove_child(this.get_child().get_first_child())
+          this._render_label()
+          return Clutter.EVENT_STOP
+        }
 
-      // Escape key: cancel and close menu
-      if (symbol === Clutter.KEY_Escape) {
-        this._rename_menu.close(true)
-        return Clutter.EVENT_STOP
-      }
+        // Escape key: cancel and close menu
+        if (symbol === Clutter.KEY_Escape) {
+          this._rename_menu.close(true)
+          return Clutter.EVENT_STOP
+        }
 
-      return Clutter.EVENT_PROPAGATE
-    })
+        return Clutter.EVENT_PROPAGATE
+      },
+    )
 
     // cleanup when menu is closed
-    const closeId = this._rename_menu.connect('menu-closed', () => {
+    const closeId = this._rename_menu.connect("menu-closed", () => {
       entryClutterText.disconnect(keyPressId)
       this._rename_menu.disconnect(closeId)
       this._rename_menu.destroy()
@@ -450,7 +499,7 @@ export default class Workspace extends St.Bin {
     let new_index = workspace_manager.get_active_workspace_index() + direction
 
     // modulo operator working for negative numbers
-    const mod = (n, m) => (((n % m) + m) % m)
+    const mod = (n, m) => ((n % m) + m) % m
 
     // wrap
     if (this._settings.scroll_wraparound) {
@@ -458,8 +507,9 @@ export default class Workspace extends St.Bin {
     }
 
     if (new_index >= 0 && new_index < workspace_manager.n_workspaces) {
-      workspace_manager.get_workspace_by_index(new_index).activate(Shell.Global.get().get_current_time())
+      workspace_manager
+        .get_workspace_by_index(new_index)
+        .activate(Shell.Global.get().get_current_time())
     }
   }
-
 }
