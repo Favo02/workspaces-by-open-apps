@@ -11,6 +11,8 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     this._globalDebounceTimeout = null
     // map to store pending setting updates
     this._pendingUpdates = new Map()
+    // array to track signal handler connections for cleanup
+    this._signalHandlers = []
   }
 
   /**
@@ -50,7 +52,36 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     }
   }
 
+  /**
+   * Cleanup method to destroy all window-scoped objects and signal handlers
+   * Called when the preferences window is closed
+   */
+  _cleanup() {
+    // Clear any pending debounce timeout
+    if (this._globalDebounceTimeout) {
+      clearTimeout(this._globalDebounceTimeout)
+      this._globalDebounceTimeout = null
+    }
+
+    // Clear pending updates
+    this._pendingUpdates.clear()
+
+    // Disconnect all signal handlers
+    for (const handler of this._signalHandlers) {
+      if (handler.object && handler.id) {
+        handler.object.disconnect(handler.id)
+      }
+    }
+    this._signalHandlers = []
+  }
+
   fillPreferencesWindow(window) {
+    // Set up cleanup handler for when the window closes
+    const closeHandlerId = window.connect("close-request", () => {
+      this._cleanup()
+    })
+    this._signalHandlers.push({ object: window, id: closeHandlerId })
+
     window.set_search_enabled(true)
     window.set_default_size(1000, 800)
 
@@ -92,7 +123,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     page3.add(p3g2)
     page3.add(p3g3)
     page3.add(label)
-    settings.connect("changed::icons-ignored", () => {
+    const settingsHandlerId = settings.connect("changed::icons-ignored", () => {
       // remove old groups (only p3g2 needs to be update but all groups below him needs to be removed)
       page3.remove(p3g2)
       page3.remove(p3g3)
@@ -106,6 +137,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       page3.add(p3g3)
       page3.add(label)
     })
+    this._signalHandlers.push({ object: settings, id: settingsHandlerId })
 
     // page4: about
     const page4 = new Adw.PreferencesPage({
@@ -1194,9 +1226,7 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
       title: "Version",
     })
     widget = new Gtk.Label({
-      label: ExtensionPreferences.lookupByUUID(
-        "workspaces-by-open-apps@favo02.github.com",
-      ).metadata.version.toString(),
+      label: this.metadata.version.toString(),
       valign: Gtk.Align.CENTER,
     })
     row.add_suffix(widget)
