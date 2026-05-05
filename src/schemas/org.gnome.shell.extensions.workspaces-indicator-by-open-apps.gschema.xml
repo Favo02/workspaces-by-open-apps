@@ -22,6 +22,11 @@
     <value value="2" nick="GROUP WITHOUT COUNT"/>
   </enum>
 
+  <enum id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-windows-sort">
+    <value value="0" nick="WINDOW ID"/>
+    <value value="1" nick="COORDINATES"/>
+  </enum>
+
   <schema id="org.gnome.shell.extensions.workspaces-indicator-by-open-apps"
     path="/org/gnome/shell/extensions/workspaces-indicator-by-open-apps/">
 
@@ -295,6 +300,12 @@
       <default>"OFF"</default>
       <summary>Group icons of same application</summary>
       <description>Show only one icon for each application in the workspace indicator</description>
+    </key>
+
+    <key name="windows-sort-method" enum="org.gnome.shell.extensions.workspaces-indicator-by-open-apps.enum-windows-sort">
+      <default>"WINDOW ID"</default>
+      <summary>Windows sorting method</summary>
+      <description>Method to sort application icons within each workspace</description>
     </key>
 
     <key name="icons-ignored" type="as">

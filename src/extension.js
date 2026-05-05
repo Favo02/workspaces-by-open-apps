@@ -93,6 +93,7 @@ export default class WorkspacesByOpenApps extends Extension {
 
       icons_limit: rs.get_int("icons-limit"),
       icons_group: rs.get_enum("icons-group"),
+      windows_sort_method: rs.get_string("windows-sort-method"),
       icons_ignored: rs.get_strv("icons-ignored"),
       log_apps_id: rs.get_boolean("log-apps-id"),
 

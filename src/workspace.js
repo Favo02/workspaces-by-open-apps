@@ -88,20 +88,27 @@ export default class Workspace extends St.Bin {
       icons_limit = this._settings.icons_limit
     }
 
-    windows
-      .sort((w1, w2) => {
-        // sort by focus and id
-        if (w1.has_focus()) return -1
-        if (w2.has_focus()) return 1
-        return w1.get_id() - w2.get_id()
-      })
-      .slice(0, icons_limit) // limit icons
-      .sort((w1, w2) => w1.get_id() - w2.get_id()) // sort by id only
-      .forEach((window) => {
-        // create app indicator and add to workspace
-        const app_container = this._create_application(window, occurrences)
-        this.get_child().add_child(app_container)
-      })
+    // 1. sort by focus first to ensure the focused window is not sliced out
+    const focusedWindows = windows.filter((w) => w.has_focus())
+    const unfocusedWindows = windows.filter((w) => !w.has_focus())
+    const focusSortedWindows = [...focusedWindows, ...unfocusedWindows]
+
+    // 2. slice to apply the icons limit
+    let slicedWindows = focusSortedWindows.slice(0, icons_limit)
+
+    // 3. always sort by window ID first
+    slicedWindows = slicedWindows.sort((w1, w2) => w1.get_id() - w2.get_id())
+
+    // 4. if coordinates sort is selected, apply it on the sliced array
+    if (this._settings.windows_sort_method === "COORDINATES") {
+      slicedWindows = this._sortByCoordinates(slicedWindows)
+    }
+
+    slicedWindows.forEach((window) => {
+      // create app indicator and add to workspace
+      const app_container = this._create_application(window, occurrences)
+      this.get_child().add_child(app_container)
+    })
 
     // render + icon (for icon limit)
     if (windows.length > icons_limit) {
@@ -112,6 +119,54 @@ export default class Workspace extends St.Bin {
       })
       plus_icon.set_opacity(CONSTANTS.LOW_OPACITY)
       this.get_child().add_child(plus_icon)
+    }
+  }
+
+  /**
+   * Sort windows by their screen coordinates (top-left corner)
+   * Sorts by Y coordinate rounded to nearest 10% of screen width,
+   * then by X coordinate for windows at similar heights
+   * @param {Meta.Window[]} windows windows to sort
+   * @returns {Meta.Window[]} sorted windows
+   */
+  _sortByCoordinates(windows) {
+    try {
+      // Get screen dimensions for calculating the rounding threshold
+      const display = global.display || Shell.Global.get().get_display()
+      const geometry = display.get_monitor_geometry(0)
+      const roundingThreshold = Math.round((geometry.width || 1920) * 0.1) // 10% of screen width
+
+      return windows.sort((w1, w2) => {
+        try {
+          const rect1 = w1.get_frame_rect()
+          const rect2 = w2.get_frame_rect()
+
+          // Handle invalid frame rects
+          if (!rect1 || !rect2) {
+            return 0
+          }
+
+          // Round Y coordinates to nearest 10% of screen width
+          const y1Rounded =
+            Math.round(rect1.y / roundingThreshold) * roundingThreshold
+          const y2Rounded =
+            Math.round(rect2.y / roundingThreshold) * roundingThreshold
+
+          // Sort by Y (vertical position)
+          if (y1Rounded !== y2Rounded) {
+            return y1Rounded - y2Rounded
+          }
+
+          // If Y is similar, sort by X (horizontal position)
+          return rect1.x - rect2.x
+        } catch (e) {
+          console.error("Error sorting by coordinates:", e)
+          return 0
+        }
+      })
+    } catch (e) {
+      console.error("Error in _sortByCoordinates:", e)
+      return windows // Return unsorted windows on error
     }
   }
 
