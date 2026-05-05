@@ -1107,6 +1107,25 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     row.activatable_widget = widget
     group.add(row)
 
+    row = new Adw.ActionRow({
+      title: "Sort windows by",
+      subtitle: "Method to sort application icons within each workspace",
+    })
+    widget = new Gtk.ComboBoxText({
+      valign: Gtk.Align.CENTER,
+    })
+    widget.append("WINDOW ID", "Window ID (default)")
+    widget.append("COORDINATES", "Window coordinates (top-left)")
+    settings.bind(
+      "windows-sort-method",
+      widget,
+      "active-id",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
     return group
   }
 
