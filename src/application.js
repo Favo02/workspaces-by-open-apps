@@ -199,11 +199,8 @@ export default class Application extends St.BoxLayout {
     this.disconnect(this._sig_click)
     this.disconnect(this._sig_touch)
 
-    // cleanup draggable
-    if (this._draggable) {
-      this._draggable.destroy()
-      this._draggable = null
-    }
+    // cleanup draggable reference (draggable itself is managed by the dnd module)
+    this._draggable = null
 
     super.destroy()
   }
