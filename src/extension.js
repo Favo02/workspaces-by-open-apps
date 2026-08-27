@@ -245,6 +245,9 @@ export default class WorkspacesByOpenApps extends Extension {
     // undefined window
     if (!win) return false
 
+    // desktop windows are shell components, not user applications
+    if (win.get_window_type() === Meta.WindowType.DESKTOP) return false
+
     // undefined app
     const app = Shell.WindowTracker.get_default().get_window_app(win)
     if (!app) return false
@@ -401,6 +404,9 @@ export default class WorkspacesByOpenApps extends Extension {
         // undefined app
         const app = Shell.WindowTracker.get_default().get_window_app(win)
         if (!app) return false
+
+        // desktop windows are shell components, not user applications
+        if (win.get_window_type() === Meta.WindowType.DESKTOP) return false
 
         // store app id on window
         win.app_id = app.get_id()
