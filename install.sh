@@ -56,4 +56,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+echo "Cleaning up compiled settings schemas..."
+rm "$BASE_PATH/src/schemas/gschemas.compiled"
+
 echo "Extension updated. Please restart GNOME Shell to apply changes (logout)."
