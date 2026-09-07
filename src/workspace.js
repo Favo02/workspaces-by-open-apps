@@ -104,9 +104,9 @@ export default class Workspace extends St.Bin {
       slicedWindows = this._sortByCoordinates(slicedWindows)
     }
 
-    slicedWindows.forEach((window) => {
+    slicedWindows.forEach((window, idx) => {
       // create app indicator and add to workspace
-      const app_container = this._create_application(window, occurrences)
+      const app_container = this._create_application(window, occurrences, idx)
       this.get_child().add_child(app_container)
     })
 
@@ -233,7 +233,7 @@ export default class Workspace extends St.Bin {
    * @param {Map} occurrences occurrences of each application
    * @returns {Application} application icon
    */
-  _create_application(window, occurrences) {
+  _create_application(window, occurrences, app_position = 0) {
     // convert from Meta.window to Shell.app
     const app = Shell.WindowTracker.get_default().get_window_app(window)
 
@@ -321,6 +321,7 @@ export default class Workspace extends St.Bin {
       css_inline_app,
       css_classes_app,
       this._max_label_length,
+      !this._settings.apps_show_window_title_first_only || app_position === 0,
     )
   }
 

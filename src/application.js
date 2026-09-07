@@ -22,6 +22,7 @@ export default class Application extends St.BoxLayout {
     css_inline_app,
     css_classes_app,
     max_label_length = Infinity,
+    show_window_title = true,
   ) {
     super({
       style: css_inline_app,
@@ -49,7 +50,7 @@ export default class Application extends St.BoxLayout {
     this._render_occurrences_label(occurrences, window)
 
     // add window title label to icon button (if setting is enabled)
-    this._render_window_title()
+    this._render_window_title(show_window_title)
   }
 
   /**
@@ -106,8 +107,8 @@ export default class Application extends St.BoxLayout {
   /**
    * add window title label to icon button (if setting is enabled)
    */
-  _render_window_title() {
-    if (!this._settings.apps_show_window_title) {
+  _render_window_title(show_window_title = true) {
+    if (!this._settings.apps_show_window_title || !show_window_title) {
       return
     }
 
