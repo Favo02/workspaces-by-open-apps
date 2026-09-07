@@ -765,6 +765,24 @@ export default class WorkspacesByOpenAppsPrefs extends ExtensionPreferences {
     group.add(row)
 
     row = new Adw.ActionRow({
+      title: "Show only first window title",
+      subtitle:
+        "Display the window title only for the first application in each workspace. Requires Show window title to be enabled",
+    })
+    widget = new Gtk.Switch({
+      valign: Gtk.Align.CENTER,
+    })
+    settings.bind(
+      "apps-show-window-title-first-only",
+      widget,
+      "active",
+      Gio.SettingsBindFlags.DEFAULT,
+    )
+    row.add_suffix(widget)
+    row.activatable_widget = widget
+    group.add(row)
+
+    row = new Adw.ActionRow({
       title: "Dynamic window title truncation",
       subtitle:
         "Automatically truncate window titles based on available top bar space",

@@ -1,2 +1,3 @@
 .vscode
-gschemas.compiled
+# for shexli (extension linter)
+venv

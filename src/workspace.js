@@ -104,9 +104,9 @@ export default class Workspace extends St.Bin {
       slicedWindows = this._sortByCoordinates(slicedWindows)
     }
 
-    slicedWindows.forEach((window) => {
+    slicedWindows.forEach((window, idx) => {
       // create app indicator and add to workspace
-      const app_container = this._create_application(window, occurrences)
+      const app_container = this._create_application(window, occurrences, idx)
       this.get_child().add_child(app_container)
     })
 
@@ -233,7 +233,7 @@ export default class Workspace extends St.Bin {
    * @param {Map} occurrences occurrences of each application
    * @returns {Application} application icon
    */
-  _create_application(window, occurrences) {
+  _create_application(window, occurrences, app_position = 0) {
     // convert from Meta.window to Shell.app
     const app = Shell.WindowTracker.get_default().get_window_app(window)
 
@@ -321,6 +321,7 @@ export default class Workspace extends St.Bin {
       css_inline_app,
       css_classes_app,
       this._max_label_length,
+      !this._settings.apps_show_window_title_first_only || app_position === 0,
     )
   }
 
@@ -466,7 +467,7 @@ export default class Workspace extends St.Bin {
 
     // close existing menu if any
     if (this._rename_menu) {
-      this._rename_menu.close(true)
+      this._rename_menu.close({ animate: true })
       this._rename_menu.destroy()
       this._rename_menu = null
     }
@@ -502,7 +503,7 @@ export default class Workspace extends St.Bin {
         // Enter key: apply rename and close menu
         if (symbol === Clutter.KEY_Return || symbol === Clutter.KEY_KP_Enter) {
           Meta.prefs_change_workspace_name(this._index, entry.get_text())
-          this._rename_menu.close(true)
+          this._rename_menu.close({ animate: true })
           this.get_child().remove_child(this.get_child().get_first_child())
           this._render_label(this._index, this._is_other_monitor)
           // trigger re-render to update all workspace indicators immediately
@@ -514,7 +515,7 @@ export default class Workspace extends St.Bin {
 
         // Escape key: cancel and close menu
         if (symbol === Clutter.KEY_Escape) {
-          this._rename_menu.close(true)
+          this._rename_menu.close({ animate: true })
           return Clutter.EVENT_STOP
         }
 
@@ -531,7 +532,7 @@ export default class Workspace extends St.Bin {
     })
 
     // open menu and focus entry
-    this._rename_menu.open(true)
+    this._rename_menu.open({ animate: true })
     entry.grab_key_focus()
     entryClutterText.set_selection(0, entry.get_text().length)
   }

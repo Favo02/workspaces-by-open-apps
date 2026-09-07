@@ -86,6 +86,9 @@ export default class WorkspacesByOpenApps extends Extension {
       apps_inactive_effect: rs.get_enum("apps-inactive-effect"),
       apps_minimized_effect: rs.get_enum("apps-minimized-effect"),
       apps_show_window_title: rs.get_boolean("apps-show-window-title"),
+      apps_show_window_title_first_only: rs.get_boolean(
+        "apps-show-window-title-first-only",
+      ),
       apps_dynamic_label_length: rs.get_boolean("apps-dynamic-label-length"),
       apps_dynamic_label_max_percentage: rs.get_int(
         "apps-dynamic-label-max-percentage",
@@ -286,6 +289,7 @@ export default class WorkspacesByOpenApps extends Extension {
     // count ALL windows across all workspaces
     const workspace_manager = Shell.Global.get().get_workspace_manager()
     let total_windows = 0
+    let total_titles = 0
     const seen_windows = new Set()
 
     // iterate through all workspaces and count unique windows
@@ -304,6 +308,12 @@ export default class WorkspacesByOpenApps extends Extension {
           total_windows++
         }
       })
+      if (
+        windows.some((win) => this._should_count_window(win, false)) ||
+        (i === 0 && windows.some((win) => this._should_count_window(win, true)))
+      ) {
+        total_titles++
+      }
     }
 
     // get panel width from the primary monitor if panel width is unavailable
@@ -338,8 +348,11 @@ export default class WorkspacesByOpenApps extends Extension {
     // remaining space for all titles
     const remaining_space = Math.max(100, max_available - fixed_width)
 
-    // average space per title
-    const space_per_title = remaining_space / Math.max(1, total_windows)
+    // average space per title (only first window per workspace if enabled)
+    const titles_count = this._settings.apps_show_window_title_first_only
+      ? total_titles
+      : total_windows
+    const space_per_title = remaining_space / Math.max(1, titles_count)
 
     // estimate character width based on font size
     // using 0.55 as a conservative estimate for proportional fonts

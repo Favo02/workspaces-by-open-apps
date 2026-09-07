@@ -208,6 +208,12 @@
       <description>Display the window title alongside the application icon</description>
     </key>
 
+    <key type="b" name="apps-show-window-title-first-only">
+      <default>false</default>
+      <summary>Show only first window title</summary>
+      <description>Display the window title only for the first application in each workspace. Requires Show window title to be enabled</description>
+    </key>
+
     <key type="b" name="apps-dynamic-label-length">
       <default>false</default>
       <summary>Dynamic window title truncation</summary>
