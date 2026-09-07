@@ -466,7 +466,7 @@ export default class Workspace extends St.Bin {
 
     // close existing menu if any
     if (this._rename_menu) {
-      this._rename_menu.close(true)
+      this._rename_menu.close({ animate: true })
       this._rename_menu.destroy()
       this._rename_menu = null
     }
@@ -502,7 +502,7 @@ export default class Workspace extends St.Bin {
         // Enter key: apply rename and close menu
         if (symbol === Clutter.KEY_Return || symbol === Clutter.KEY_KP_Enter) {
           Meta.prefs_change_workspace_name(this._index, entry.get_text())
-          this._rename_menu.close(true)
+          this._rename_menu.close({ animate: true })
           this.get_child().remove_child(this.get_child().get_first_child())
           this._render_label(this._index, this._is_other_monitor)
           // trigger re-render to update all workspace indicators immediately
@@ -514,7 +514,7 @@ export default class Workspace extends St.Bin {
 
         // Escape key: cancel and close menu
         if (symbol === Clutter.KEY_Escape) {
-          this._rename_menu.close(true)
+          this._rename_menu.close({ animate: true })
           return Clutter.EVENT_STOP
         }
 
@@ -531,7 +531,7 @@ export default class Workspace extends St.Bin {
     })
 
     // open menu and focus entry
-    this._rename_menu.open(true)
+    this._rename_menu.open({ animate: true })
     entry.grab_key_focus()
     entryClutterText.set_selection(0, entry.get_text().length)
   }
